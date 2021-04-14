@@ -2,7 +2,7 @@
   min-height: 100vh;
   padding: 0 0.5rem;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
 }
@@ -14,17 +14,7 @@
   flex-direction: column;
   justify-content: flex-start;
   align-items: flex-start;
-  background-color: red;
 }
-.explainerContainer {
-  width: '60%';
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  background-color: blue;
-}
-
 
 .logoContainer {
   display: flex;

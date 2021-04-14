@@ -1,0 +1,64 @@
+{
+  "compilerOptions": {
+    "jsx": "preserve",
+    "lib": [
+      "dom",
+      "es6",
+      "es7"
+    ],
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "strict": false,
+    "allowJs": true,
+    "removeComments": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "isolatedModules": true,
+    "moduleResolution": "node",
+    "noEmit": true,
+    "target": "es6",
+    "noImplicitAny": false,
+    "baseUrl": ".",
+    /* Base directory to resolve non-absolute module names. */
+    "paths": {
+      "modules": [
+        "./app-code-copy/modules"
+      ],
+      "assets": [
+        "./app-code-copy/assets"
+      ],
+      "utils": [
+        "./app-code-copy/utils"
+      ],
+      "components": [
+        "./app-code-copy/components"
+      ],
+      "constants": [
+        "./app-code-copy/constants"
+      ],
+      "reduxConfig": [
+        "./app-code-copy/reduxConfig"
+      ],
+      "root": [
+        "."
+      ],
+      "api": [
+        "./app-code-copy/api"
+      ]
+    },
+    "forceConsistentCasingInFileNames": true,
+    "module": "esnext"
+  },
+  "exclude": [
+    "node_modules",
+    "babel.config.js",
+    "metro.config.js",
+    "jest.config.js"
+  ],
+  "include": [
+    "next-env.d.ts",
+    "index.d.ts",
+    "**/*.ts",
+    "**/*.tsx"
+  ]
+}
