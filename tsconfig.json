@@ -21,30 +21,9 @@
     "baseUrl": ".",
     /* Base directory to resolve non-absolute module names. */
     "paths": {
-      "modules": [
-        "./app-code-copy/modules"
-      ],
-      "assets": [
-        "./app-code-copy/assets"
-      ],
       "utils": [
-        "./app-code-copy/utils"
+        "./utils"
       ],
-      "components": [
-        "./app-code-copy/components"
-      ],
-      "constants": [
-        "./app-code-copy/constants"
-      ],
-      "reduxConfig": [
-        "./app-code-copy/reduxConfig"
-      ],
-      "root": [
-        "."
-      ],
-      "api": [
-        "./app-code-copy/api"
-      ]
     },
     "forceConsistentCasingInFileNames": true,
     "module": "esnext"
