@@ -5,8 +5,11 @@ import {
   withAuthUser,
   withAuthUserTokenSSR,
 } from "next-firebase-auth";
-import { useAuth } from "firebase/useAuth";
+import { useAuth } from "firebaseHelpers/useAuth";
 import { useForm } from "react-hook-form";
+import { initAuth } from "firebaseHelpers/init";
+
+initAuth();
 
 type Inputs = {
   email: string;
@@ -16,14 +19,19 @@ type Inputs = {
 const SignIn = () => {
   const AuthUser = useAuthUser();
   console.log("AuthUser", AuthUser);
-  // const { signIn } = useAuth();
+  const { signIn } = useAuth();
 
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<Inputs>();
-  const onSubmit = (data) => console.log(data);
+  const onSubmit = ({ email, password }) => {
+    signIn({
+      email,
+      password,
+    });
+  };
 
   return (
     <>

@@ -1,5 +1,5 @@
 import "../styles/globals.css";
-import initAuth from "firebase/initAuth";
+import { initAuth } from "firebaseHelpers/init";
 
 initAuth();
 

@@ -1,16 +1,23 @@
 import { init } from "next-firebase-auth";
+import firebase from "firebase/app";
 
-console.log(".env.local", {
-  FIREBASE_PROJECT_ID: process.env.FIREBASE_PROJECT,
-  FIREBASE_ADMIN_CLIENT_EMAIL: process.env.FIREBASE_ADMIN_CLIENT_EMAIL,
-  FIREBASE_PRIVATE_KEY: process.env.FIREBASE_PRIVATE_KEY,
-  FIREBASE_DATABASE_URL: process.env.FIREBASE_DATABASE_URL,
-  FIREBASE_WEB_API_KEY: process.env.FIREBASE_WEB_API_KEY,
-  COOKIE_SECRET_CURRENT: process.env.COOKIE_SECRET_CURRENT,
-  COOKIE_SECRET_PREVIOUS: process.env.COOKIE_SECRET_PREVIOUS,
-});
+if (!firebase.apps.length) {
+  console.log(
+    "process",
+    process.env.FIREBASE_WEB_API_KEY,
+    process.env.FIREBASE_PROJECT_ID,
+    process.env.FIREBASE_DATABASE_URL
+  );
+  firebase.initializeApp({
+    apiKey: process.env.FIREBASE_WEB_API_KEY,
+    authDomain: `${process.env.FIREBASE_PROJECT_ID}.firebaseapp.com`,
+    databaseURL: process.env.FIREBASE_DATABASE_URL,
+    projectId: process.env.FIREBASE_PROJECT_ID,
+  });
+}
 
 const initAuth = () => {
+  console.log("initAuth");
   init({
     authPageURL: "/auth",
     appPageURL: "/",
@@ -27,9 +34,9 @@ const initAuth = () => {
     },
     firebaseClientInitConfig: {
       apiKey: process.env.FIREBASE_WEB_API_KEY, // required
-      authDomain: `${process.env.FIREBASE_PROJECT_ID}.firebaseapp.com`,
-      databaseURL: process.env.FIREBASE_DATABASE_URL,
-      projectId: process.env.FIREBASE_PROJECT_ID,
+      // authDomain: `${process.env.FIREBASE_PROJECT_ID}.firebaseapp.com`,
+      // databaseURL: process.env.FIREBASE_DATABASE_URL,
+      // projectId: process.env.FIREBASE_PROJECT_ID,
     },
     cookies: {
       name: "ExampleAppName", // required
@@ -50,4 +57,5 @@ const initAuth = () => {
   });
 };
 
-export default initAuth;
+export default firebase;
+export { initAuth };

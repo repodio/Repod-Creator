@@ -1,18 +1,31 @@
-import firebase from "firebase/app";
+import firebase from "./init";
 import "firebase/auth";
 
 export const useAuth = () => {
+  console.log("useAuth");
   const auth = firebase.auth();
 
   return {
-    signIn: ({ email, password, provider }) => {
+    signIn: ({
+      email,
+      password,
+      provider,
+    }: {
+      email: string;
+      password: string;
+      provider?: string;
+    }) => {
+      console.log("signIn", { email, password, provider });
+
       if (email && password) {
         return auth
           .signInWithEmailAndPassword(email, password)
           .then((response) => {
+            console.log("response.user", response.user);
             return response.user;
           })
           .catch((error) => {
+            console.log("error", error);
             return { error };
           });
       } else if (provider) {
