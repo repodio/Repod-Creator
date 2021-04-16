@@ -1,15 +1,15 @@
 // ./pages/demo
 import React from "react";
-import {
-  useAuthUser,
-  withAuthUser,
-  withAuthUserTokenSSR,
-} from "next-firebase-auth";
+import { useAuthUser, withAuthUser, AuthAction } from "next-firebase-auth";
 import { useAuth } from "firebaseHelpers/useAuth";
 import { useForm } from "react-hook-form";
 import { initAuth } from "firebaseHelpers/init";
+import LogoutButton from "components/logoutButton";
 
 initAuth();
+
+const TEMP_EMAIL = "nick17@example.com";
+const TEMP_PASSWORD = "password";
 
 type Inputs = {
   email: string;
@@ -18,7 +18,7 @@ type Inputs = {
 
 const SignIn = () => {
   const AuthUser = useAuthUser();
-  console.log("AuthUser", AuthUser);
+  console.log("SignIn", AuthUser);
   const { signIn } = useAuth();
 
   const {
@@ -51,7 +51,7 @@ const SignIn = () => {
               type="email"
               name="email"
               id="email"
-              defaultValue="nick17@gmail.com"
+              defaultValue={TEMP_EMAIL}
               {...register("email", { required: true })}
             />
             {errors.email && <span>Valid Email is required</span>}
@@ -68,6 +68,7 @@ const SignIn = () => {
               type="password"
               name="password"
               id="password"
+              defaultValue={TEMP_PASSWORD}
               {...register("password", { required: true })}
             />
             {errors.password && <span>Valid Password is required</span>}
@@ -85,12 +86,13 @@ const SignIn = () => {
         >
           Already have an account?
         </a>
+
+        <LogoutButton />
       </div>
     </>
   );
 };
 
-// Note that this is a higher-order function.
-export const getServerSideProps = withAuthUserTokenSSR()();
-
-export default withAuthUser()(SignIn);
+export default withAuthUser({
+  whenAuthed: AuthAction.REDIRECT_TO_APP,
+})(SignIn);

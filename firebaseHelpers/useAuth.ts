@@ -2,7 +2,6 @@ import firebase from "./init";
 import "firebase/auth";
 
 export const useAuth = () => {
-  console.log("useAuth");
   const auth = firebase.auth();
 
   return {
@@ -42,7 +41,7 @@ export const useAuth = () => {
         // }
       }
     },
-    signout: () => auth.signOut(),
+    signOut: () => auth.signOut(),
     signUp: ({ email, password }) => {
       return auth
         .createUserWithEmailAndPassword(email, password)

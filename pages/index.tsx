@@ -1,16 +1,12 @@
 // ./pages/demo
 import React from "react";
-import {
-  useAuthUser,
-  withAuthUser,
-  withAuthUserTokenSSR,
-  AuthAction,
-} from "next-firebase-auth";
+import { useAuthUser, withAuthUser, AuthAction } from "next-firebase-auth";
 import styles from "../styles/Home.module.css";
+import LogoutButton from "components/logoutButton";
 
 const Home = () => {
   const AuthUser = useAuthUser();
-  console.log("AuthUser", AuthUser);
+  console.log("Home", AuthUser);
   return (
     <>
       <div className={styles.logoContainer}>
@@ -21,15 +17,13 @@ const Home = () => {
       <div>
         <p>Your email is {AuthUser.email ? AuthUser.email : "unknown"}.</p>
       </div>
+
+      <LogoutButton />
     </>
   );
 };
 
-// Note that this is a higher-order function.
-export const getServerSideProps = withAuthUserTokenSSR()();
-
 export default withAuthUser({
-  whenAuthed: AuthAction.REDIRECT_TO_APP,
   whenUnauthedBeforeInit: AuthAction.RETURN_NULL,
   whenUnauthedAfterInit: AuthAction.REDIRECT_TO_LOGIN,
 })(Home);

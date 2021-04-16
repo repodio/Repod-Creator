@@ -24,6 +24,9 @@
       "utils": [
         "./utils"
       ],
+      "components": [
+        "./components"
+      ],
     },
     "forceConsistentCasingInFileNames": true,
     "module": "esnext"

@@ -2,12 +2,6 @@ import { init } from "next-firebase-auth";
 import firebase from "firebase/app";
 
 if (!firebase.apps.length) {
-  console.log(
-    "process",
-    process.env.FIREBASE_WEB_API_KEY,
-    process.env.FIREBASE_PROJECT_ID,
-    process.env.FIREBASE_DATABASE_URL
-  );
   firebase.initializeApp({
     apiKey: process.env.FIREBASE_WEB_API_KEY,
     authDomain: `${process.env.FIREBASE_PROJECT_ID}.firebaseapp.com`,
@@ -17,7 +11,6 @@ if (!firebase.apps.length) {
 }
 
 const initAuth = () => {
-  console.log("initAuth");
   init({
     authPageURL: "/auth",
     appPageURL: "/",
