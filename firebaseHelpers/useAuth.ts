@@ -1,6 +1,52 @@
 import firebase from "./init";
 import "firebase/auth";
 
+const signInWithProvider = (provider) => {
+  return firebase
+    .auth()
+    .signInWithPopup(provider)
+    .then((result) => {
+      console.log("signInWithProvider", provider, result);
+      // This gives you a Facebook Access Token. You can use it to access the Facebook API.
+      var token = result.credential.accessToken;
+
+      console.log("signInWithProvider token", token);
+      // The signed-in user info.
+      var user = result.user;
+      console.log("signInWithProvider user", user);
+      // ...
+    })
+    .catch(function (error) {
+      console.log("signInWithProvider error", error);
+      // Handle Errors here.
+      var errorCode = error.code;
+      var errorMessage = error.message;
+      // The email of the user's account used.
+      var email = error.email;
+      // The firebase.auth.AuthCredential type that was used.
+      var credential = error.credential;
+      // ...
+    });
+};
+
+const AppleSignIn = () => {
+  var provider = new firebase.auth.OAuthProvider("apple.com");
+
+  return signInWithProvider(provider);
+};
+
+const FacebookSignIn = () => {
+  var provider = new firebase.auth.FacebookAuthProvider();
+
+  return signInWithProvider(provider);
+};
+
+const TwitterSignIn = () => {
+  var provider = new firebase.auth.TwitterAuthProvider();
+
+  return signInWithProvider(provider);
+};
+
 export const useAuth = () => {
   const auth = firebase.auth();
 
@@ -10,8 +56,8 @@ export const useAuth = () => {
       password,
       provider,
     }: {
-      email: string;
-      password: string;
+      email?: string;
+      password?: string;
       provider?: string;
     }) => {
       console.log("signIn", { email, password, provider });
@@ -28,17 +74,16 @@ export const useAuth = () => {
             return { error };
           });
       } else if (provider) {
-        return;
-        // switch (provider) {
-        //   case "apple":
-        //     return AppleSignIn();
-        //   case "facebook":
-        //     return FacebookSignIn();
-        //   case "twitter":
-        //     return TwitterSignIn();
-        //   default:
-        //     return;
-        // }
+        switch (provider) {
+          case AUTH_PROVIDERS.apple:
+            return AppleSignIn();
+          case AUTH_PROVIDERS.facebook:
+            return FacebookSignIn();
+          case AUTH_PROVIDERS.twitter:
+            return TwitterSignIn();
+          default:
+            return;
+        }
       }
     },
     signOut: () => auth.signOut(),
@@ -53,4 +98,10 @@ export const useAuth = () => {
         });
     },
   };
+};
+
+export const AUTH_PROVIDERS = {
+  apple: "apple",
+  facebook: "facebook",
+  twitter: "twitter",
 };

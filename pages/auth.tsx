@@ -4,7 +4,9 @@ import { useAuthUser, withAuthUser, AuthAction } from "next-firebase-auth";
 import { useAuth } from "firebaseHelpers/useAuth";
 import { useForm } from "react-hook-form";
 import { initAuth } from "firebaseHelpers/init";
-import LogoutButton from "components/logoutButton";
+import FacebookLoginButton from "components/Buttons/facebookLoginButton";
+import TwitterLoginButton from "components/Buttons/twitterLoginButton";
+import AppleLoginButton from "components/Buttons/appleLoginButton";
 
 initAuth();
 
@@ -87,7 +89,9 @@ const SignIn = () => {
           Already have an account?
         </a>
 
-        <LogoutButton />
+        <FacebookLoginButton />
+        <TwitterLoginButton />
+        <AppleLoginButton />
       </div>
     </>
   );

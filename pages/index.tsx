@@ -2,7 +2,7 @@
 import React from "react";
 import { useAuthUser, withAuthUser, AuthAction } from "next-firebase-auth";
 import styles from "../styles/Home.module.css";
-import LogoutButton from "components/logoutButton";
+import LogoutButton from "components/Buttons/logoutButton";
 
 const Home = () => {
   const AuthUser = useAuthUser();
