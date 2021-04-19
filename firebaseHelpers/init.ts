@@ -11,6 +11,13 @@ if (!firebase.apps.length) {
 }
 
 const initAuth = () => {
+  console.log("env vars: ", {
+    a: process.env.FIREBASE_PROJECT_ID,
+    b: process.env.FIREBASE_ADMIN_CLIENT_EMAIL,
+    c: process.env.FIREBASE_PRIVATE_KEY,
+    d: process.env.FIREBASE_DATABASE_URL,
+    e: process.env.FIREBASE_WEB_API_KEY,
+  });
   init({
     authPageURL: "/auth",
     appPageURL: "/",
