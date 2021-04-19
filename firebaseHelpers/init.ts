@@ -32,7 +32,7 @@ const initAuth = () => {
       // projectId: process.env.FIREBASE_PROJECT_ID,
     },
     cookies: {
-      name: "ExampleAppName", // required
+      name: "Repod", // required
       // Keys are required unless you set `signed` to `false`.
       // The keys cannot be accessible on the client side.
       keys: [
