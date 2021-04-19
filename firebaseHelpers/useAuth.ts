@@ -8,9 +8,9 @@ const signInWithProvider = (provider) => {
     .then((result) => {
       console.log("signInWithProvider", provider, result);
       // This gives you a Facebook Access Token. You can use it to access the Facebook API.
-      var token = result.credential?.accessToken;
+      // var token = result.credential.accessToken;
 
-      console.log("signInWithProvider token", token);
+      // console.log("signInWithProvider token", token);
       // The signed-in user info.
       var user = result.user;
       console.log("signInWithProvider user", user);
