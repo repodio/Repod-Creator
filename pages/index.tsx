@@ -1,12 +1,23 @@
 // ./pages/demo
 import React from "react";
-import { useAuthUser, withAuthUser, AuthAction } from "next-firebase-auth";
+import {
+  useAuthUser,
+  withAuthUser,
+  AuthAction,
+  withAuthUserTokenSSR,
+} from "next-firebase-auth";
 import styles from "../styles/Home.module.css";
 import LogoutButton from "components/Buttons/logoutButton";
+import { getUser } from "utils/repodAPI";
 
-const Home = () => {
+interface HomeProps {
+  profile: UserItem;
+  children: JSX.Element[] | JSX.Element;
+}
+
+const Home = ({ profile }: HomeProps) => {
   const AuthUser = useAuthUser();
-  console.log("Home", AuthUser);
+  console.log("Home", AuthUser, profile);
   return (
     <>
       <div className={styles.logoContainer}>
@@ -22,6 +33,19 @@ const Home = () => {
     </>
   );
 };
+
+export const getServerSideProps = withAuthUserTokenSSR({
+  whenAuthed: AuthAction.RENDER,
+})(async ({ AuthUser }) => {
+  const { id: userId, getIdToken } = AuthUser;
+  const profile = await getUser({ userId }, getIdToken);
+
+  return {
+    props: {
+      profile,
+    },
+  };
+});
 
 export default withAuthUser({
   whenUnauthedBeforeInit: AuthAction.RETURN_NULL,
