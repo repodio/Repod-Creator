@@ -25,8 +25,7 @@ const verifyToken = async (token, ctx) => {
   }).then((res) => res.json());
 };
 
-const getHeaders = async (getIdToken: () => void) => {
-  const idToken = await getIdToken();
+const getHeaders = async (idToken) => {
   return {
     Authorization: `Bearer ${idToken}`,
     "Content-Type": "application/json",
@@ -74,24 +73,37 @@ const getHeaders = async (getIdToken: () => void) => {
 //   ).then((data) => data.json());
 // };
 
-const getUser = async ({ userId }, getIdToken) => {
-  console.log(`${API_DOMAIN}/v1/user?userId=${userId}`);
+const getUser = async ({ userId }, idToken): Promise<UserItem> => {
+  console.log("what", `${API_DOMAIN}/v1/user?userId=${userId}`);
   const user = await fetch(`${API_DOMAIN}/v1/user?userId=${userId}`, {
-    headers: await getHeaders(getIdToken),
+    headers: await getHeaders(idToken),
   })
     .then((data) => data.json())
     .then(({ data }) => {
       return data;
     });
-  console.log("user", user);
-  console.log("Headers", await getHeaders(getIdToken));
 
   if (!user) {
     console.log("getUser: response data got nothing");
-    return [];
+    return null;
   }
 
   return user;
+};
+
+const claimShow = async (
+  { showId, type }: { showId: string; type: string },
+  idToken
+): Promise<void> => {
+  console.log("what", `${API_DOMAIN}/v1/claim-show/${showId}`);
+
+  const response = await fetch(`${API_DOMAIN}/v1/claim-show/${showId}`, {
+    method: "POST",
+    headers: await getHeaders(idToken),
+    body: JSON.stringify({ type }),
+  }).then((data) => data.json());
+
+  console.log("response", response);
 };
 
 export {
@@ -99,4 +111,5 @@ export {
   // getShow,
   getUser,
   // search,
+  claimShow,
 };
