@@ -6,10 +6,10 @@ import {
   AuthAction,
   withAuthUserTokenSSR,
 } from "next-firebase-auth";
-import styles from "../styles/Home.module.css";
 import LogoutButton from "components/Buttons/logoutButton";
 import { getUser } from "utils/repodAPI";
 import ClaimButton from "components/Buttons/claimButton";
+import { RepodLogo } from "components/Header";
 
 interface HomeProps {
   profile: UserItem;
@@ -22,18 +22,16 @@ const Home = ({ profile, idToken }: HomeProps) => {
   console.log("Home", profile);
   return (
     <>
-      <div className={styles.logoContainer}>
-        <img src="/repod-logo.svg" alt="Repod Logo" className={styles.logo} />
-        <h1 className={styles.repodTitle}>Repod for Creators</h1>
+      <div className="">
+        <RepodLogo />
+        <div>
+          <p>Your email is {AuthUser.email ? AuthUser.email : "unknown"}.</p>
+        </div>
+
+        <LogoutButton />
+
+        <ClaimButton idToken={idToken} />
       </div>
-
-      <div>
-        <p>Your email is {AuthUser.email ? AuthUser.email : "unknown"}.</p>
-      </div>
-
-      <LogoutButton />
-
-      <ClaimButton idToken={idToken} />
     </>
   );
 };

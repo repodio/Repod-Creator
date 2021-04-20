@@ -7,6 +7,7 @@ import { initAuth } from "firebaseHelpers/init";
 import FacebookLoginButton from "components/Buttons/facebookLoginButton";
 import TwitterLoginButton from "components/Buttons/twitterLoginButton";
 import AppleLoginButton from "components/Buttons/appleLoginButton";
+import { RepodLogo } from "components/Header";
 
 initAuth();
 
@@ -36,8 +37,9 @@ const SignIn = () => {
   };
 
   return (
-    <>
-      <div>
+    <div className="bg-green-500">
+      <div className="bg-red-500">
+        <RepodLogo />
         <h1>Sign In</h1>
 
         <form className="mb-6" onSubmit={handleSubmit(onSubmit)}>
@@ -93,7 +95,8 @@ const SignIn = () => {
         <TwitterLoginButton />
         <AppleLoginButton />
       </div>
-    </>
+      <div className="bg-blue-500"></div>
+    </div>
   );
 };
 

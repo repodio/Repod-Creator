@@ -1,5 +1,4 @@
 import React from "react";
-import { useAuthUser } from "next-firebase-auth";
 import { claimShow } from "utils/repodAPI";
 
 const ClaimButton = ({ idToken }) => {
