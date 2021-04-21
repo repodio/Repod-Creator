@@ -66,11 +66,9 @@ export const useAuth = () => {
         return auth
           .signInWithEmailAndPassword(email, password)
           .then((response) => {
-            console.log("response.user", response.user);
             return response.user;
           })
           .catch((error) => {
-            console.log("error", error);
             return { error };
           });
       } else if (provider) {

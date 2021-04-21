@@ -1,5 +1,5 @@
 // ./pages/demo
-import React from "react";
+import React, { useState } from "react";
 import { useAuthUser, withAuthUser, AuthAction } from "next-firebase-auth";
 import { useAuth } from "firebaseHelpers/useAuth";
 import { useForm } from "react-hook-form";
@@ -21,7 +21,13 @@ type Inputs = {
   password: string;
 };
 
+const AUTH_ERROR_CODES = {
+  "auth/user-not-found": "Couldn't find an account by this email/password",
+};
+
 const SignIn = () => {
+  const [isSignUpMode, toggleSignUpMode] = useState(true);
+  const [authError, setAuthError] = useState(null);
   const AuthUser = useAuthUser();
   console.log("SignIn", AuthUser);
   const { signIn } = useAuth();
@@ -31,11 +37,18 @@ const SignIn = () => {
     handleSubmit,
     formState: { errors },
   } = useForm<Inputs>();
-  const onSubmit = ({ email, password }) => {
-    signIn({
+  const onSubmit = async ({ email, password }) => {
+    const response = await signIn({
       email,
       password,
     });
+    console.log("sign in response", response);
+    if (response.error) {
+      const errorMessage =
+        AUTH_ERROR_CODES[response.error.code] ||
+        "Something went wrong. Try again later";
+      setAuthError(errorMessage);
+    }
   };
 
   return (
@@ -73,6 +86,7 @@ const SignIn = () => {
               error={Boolean(errors.password)}
               placeholder="p@s$w0rd"
             />
+            {authError ? <p className="mb-4 text-danger">{authError}</p> : null}
             <Button.Medium
               type="submit"
               className="bg-repod-tint text-repod-text-alternative"
