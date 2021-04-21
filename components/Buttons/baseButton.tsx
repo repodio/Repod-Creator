@@ -1,15 +1,34 @@
 import React from "react";
 import { useAuth, AUTH_PROVIDERS } from "firebaseHelpers/useAuth";
 
-const AppleLoginButton = ({ onClick, children }) => {
+const BaseButton = ({ children, styles, className, ...rest }) => {
   return (
     <button
-      className="w-full text-lg px-6 h-12 border-2 rounded-md border-repod-text-primary text-repod-text-primary"
-      onClick={onClick}
+      className={`w-full rounded-md bg-repod-tint text-repod-text-primary font-sans tracking-wider ${styles.classNames} ${className}`}
+      {...rest}
     >
       {children}
     </button>
   );
 };
 
-export default AppleLoginButton;
+const getSize = (size: string) => {
+  switch (size) {
+    case "Medium":
+      return {
+        classNames: `px-4 py-2 text-lg`,
+      };
+    case "Tiny":
+      return {
+        classNames: `px-6 py-2 text-sm`,
+      };
+  }
+};
+
+export const Medium = (props) => (
+  <BaseButton {...props} styles={getSize("Medium")} />
+);
+
+export const Tiny = (props) => (
+  <BaseButton {...props} styles={getSize("Tiny")} />
+);

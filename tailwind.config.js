@@ -16,11 +16,14 @@ module.exports = {
     },
     extend: {
       colors: {
-        "repod-green": "#40E1A9",
+        "repod-tint": "#40E1A9",
         "repod-canvas": "#FFFFFF",
         "repod-canvas-secondary": "#D8D8D8",
         "repod-text-primary": "#222B45",
         "repod-text-secondary": "#8F9BB3",
+        "repod-text-alternative": "#FFFFFF",
+        facebook: "#4267B2",
+        twitter: "#1DA1F2",
       },
     },
   },

@@ -12,9 +12,14 @@ const TwitterLoginButton = () => {
 
   return (
     <button
-      className="block bg-teal hover:bg-teal-dark text-white uppercase text-lg mx-auto p-4 rounded"
+      className={`w-full rounded-md bg-twitter text-repod-text-alternative font-sans tracking-wider flex flex-row px-4 py-2 text-lg justify-center items-center relative mb-2`}
       onClick={onClick}
     >
+      <img
+        className="w-6 absolute left-4"
+        src="/icons/twitter-logo.png"
+        alt="Continue with Twitter"
+      />
       Continue with Twitter
     </button>
   );

@@ -10,11 +10,11 @@ const FormInput = ({
   placeholder,
 }: {
   label: string;
-  registerInput: string;
+  registerInput: {};
   defaultValue?: string;
   name: string;
   type: string;
-  error: string;
+  error: boolean;
   placeholder: string;
 }) => {
   return (

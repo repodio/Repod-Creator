@@ -4,11 +4,14 @@ import { useAuthUser, withAuthUser, AuthAction } from "next-firebase-auth";
 import { useAuth } from "firebaseHelpers/useAuth";
 import { useForm } from "react-hook-form";
 import { initAuth } from "firebaseHelpers/init";
-import FacebookLoginButton from "components/Buttons/facebookLoginButton";
-import TwitterLoginButton from "components/Buttons/twitterLoginButton";
-import AppleLoginButton from "components/Buttons/appleLoginButton";
 import { RepodLogo } from "components/Header";
 import { FormInput } from "components/Inputs";
+
+import {
+  Button,
+  FacebookLoginButton,
+  TwitterLoginButton,
+} from "components/Buttons";
 
 initAuth();
 
@@ -52,7 +55,7 @@ const SignIn = () => {
               registerInput={register("name", { required: true })}
               name="name"
               type="name"
-              error={errors.name}
+              error={Boolean(errors.name)}
               placeholder="Stephen Dubner"
             />{" "}
             <FormInput
@@ -61,7 +64,7 @@ const SignIn = () => {
               defaultValue={TEMP_EMAIL}
               name="email"
               type="email"
-              error={errors.email}
+              error={Boolean(errors.email)}
               placeholder="stephen@example.com"
             />
             <FormInput
@@ -70,15 +73,15 @@ const SignIn = () => {
               defaultValue={TEMP_PASSWORD}
               name="password"
               type="password"
-              error={errors.password}
+              error={Boolean(errors.password)}
               placeholder="p@s$w0rd"
             />
-            <button
-              className="block bg-teal hover:bg-teal-dark text-white uppercase text-lg mx-auto p-4 rounded"
+            <Button.Medium
               type="submit"
+              className="bg-repod-tint text-repod-text-alternative"
             >
               Log In
-            </button>
+            </Button.Medium>
           </form>
           <a
             className="block w-full text-center no-underline text-sm text-grey-dark hover:text-grey-darker"
@@ -89,7 +92,6 @@ const SignIn = () => {
 
           <FacebookLoginButton />
           <TwitterLoginButton />
-          <AppleLoginButton />
         </div>
       </div>
       <div className="bg-blue-500"></div>
