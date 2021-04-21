@@ -6,26 +6,15 @@ import { get } from "lodash/fp";
 const signInWithProvider = async (provider) => {
   try {
     const response = await firebase.auth().signInWithPopup(provider);
-    console.log("signInWithProvider", provider, response);
-    // This gives you a Facebook Access Token. You can use it to access the Facebook API.
-    // var token = response.credential.accessToken;
-
-    // console.log("signInWithProvider token", token);
-    // The signed-in user info.
-    var user = response.user;
+    const user = response.user;
 
     const providerEmail = get('providerData["0"].email')(user) || user.email;
     const providerTwitterId = get('providerData["0"].uid')(user) || null;
     const providerDisplayName =
       get('providerData["0"].displayName')(user) || user.displayName;
-    console.log("provider data", {
-      providerEmail,
-      providerTwitterId,
-      providerDisplayName,
-    });
 
     const idToken = await (user && user.getIdToken && user.getIdToken());
-    console.log("idToken", idToken);
+
     await setUser(
       {
         email: providerEmail,
@@ -74,8 +63,6 @@ export const useAuth = () => {
       password?: string;
       provider?: string;
     }) => {
-      console.log("signIn", { email, password, provider });
-
       if (email && password) {
         return auth
           .signInWithEmailAndPassword(email, password)
@@ -99,7 +86,17 @@ export const useAuth = () => {
       }
     },
     signOut: () => auth.signOut(),
-    signUp: async ({ email, password, name, provider }) => {
+    signUp: async ({
+      email,
+      password,
+      name,
+      provider,
+    }: {
+      email?: string;
+      password?: string;
+      name?: string;
+      provider?: string;
+    }) => {
       try {
         if (email && password) {
           const response = await auth.createUserWithEmailAndPassword(
@@ -110,7 +107,6 @@ export const useAuth = () => {
           const user = auth.currentUser;
 
           const idToken = await (user && user.getIdToken && user.getIdToken());
-          console.log("idToken", idToken);
           await setUser(
             {
               email,
