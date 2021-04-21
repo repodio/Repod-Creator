@@ -2,6 +2,15 @@ module.exports = {
   purge: [],
   darkMode: false, // or 'media' or 'class'
   theme: {
+    fontSize: {
+      xs: ["12px", "16px"],
+      sm: ["13px", "24px"],
+      base: ["15px", "24px"],
+      lg: ["18px", "28px"],
+      xl: ["22px", "32px"],
+      "2xl": ["26px", "32px"],
+      "3xl": ["30px", "40px"],
+    },
     fontFamily: {
       sans: ["CircularStd"],
     },

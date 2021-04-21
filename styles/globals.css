@@ -72,7 +72,7 @@
 @layer base {
   h1 {
     @apply font-sans;
-    @apply font-bold;
+    @apply font-semibold;
   }
   p {
     @apply font-sans;

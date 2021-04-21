@@ -8,6 +8,7 @@ import FacebookLoginButton from "components/Buttons/facebookLoginButton";
 import TwitterLoginButton from "components/Buttons/twitterLoginButton";
 import AppleLoginButton from "components/Buttons/appleLoginButton";
 import { RepodLogo } from "components/Header";
+import { FormInput } from "components/Inputs";
 
 initAuth();
 
@@ -15,6 +16,7 @@ const TEMP_EMAIL = "nick17@example.com";
 const TEMP_PASSWORD = "password";
 
 type Inputs = {
+  name: string;
   email: string;
   password: string;
 };
@@ -37,63 +39,58 @@ const SignIn = () => {
   };
 
   return (
-    <div className="bg-green-500">
-      <div className="bg-red-500">
+    <div className="flex flex-row bg-green-500">
+      <div className="flex flex-col flex-0 bg-repod-canvas">
         <RepodLogo />
-        <h1>Sign In</h1>
 
-        <form className="mb-6" onSubmit={handleSubmit(onSubmit)}>
-          <div className="flex flex-col mb-4">
-            <label
-              className="mb-2 uppercase font-bold text-lg text-grey-darkest"
-              htmlFor="email"
-            >
-              Email
-            </label>
-            <input
-              className="border py-2 px-3 text-grey-darkest"
-              type="email"
-              name="email"
-              id="email"
+        <div className="flex flex-col h-full w-96 mx-16 justify-center items-start">
+          <h1 className="text-3xl">Sign In</h1>
+
+          <form className="mb-6 w-full" onSubmit={handleSubmit(onSubmit)}>
+            <FormInput
+              label="Display Name"
+              registerInput={register("name", { required: true })}
+              name="name"
+              type="name"
+              error={errors.name}
+              placeholder="Stephen Dubner"
+            />{" "}
+            <FormInput
+              label="Email"
+              registerInput={register("email", { required: true })}
               defaultValue={TEMP_EMAIL}
-              {...register("email", { required: true })}
+              name="email"
+              type="email"
+              error={errors.email}
+              placeholder="stephen@example.com"
             />
-            {errors.email && <span>Valid Email is required</span>}
-          </div>
-          <div className="flex flex-col mb-6">
-            <label
-              className="mb-2 uppercase font-bold text-lg text-grey-darkest"
-              htmlFor="password"
-            >
-              Password
-            </label>
-            <input
-              className="border py-2 px-3 text-grey-darkest"
-              type="password"
-              name="password"
-              id="password"
+            <FormInput
+              label="Password"
+              registerInput={register("password", { required: true })}
               defaultValue={TEMP_PASSWORD}
-              {...register("password", { required: true })}
+              name="password"
+              type="password"
+              error={errors.password}
+              placeholder="p@s$w0rd"
             />
-            {errors.password && <span>Valid Password is required</span>}
-          </div>
-          <button
-            className="block bg-teal hover:bg-teal-dark text-white uppercase text-lg mx-auto p-4 rounded"
-            type="submit"
+            <button
+              className="block bg-teal hover:bg-teal-dark text-white uppercase text-lg mx-auto p-4 rounded"
+              type="submit"
+            >
+              Log In
+            </button>
+          </form>
+          <a
+            className="block w-full text-center no-underline text-sm text-grey-dark hover:text-grey-darker"
+            href="/login"
           >
-            Log In
-          </button>
-        </form>
-        <a
-          className="block w-full text-center no-underline text-sm text-grey-dark hover:text-grey-darker"
-          href="/login"
-        >
-          Already have an account?
-        </a>
+            Already have an account?
+          </a>
 
-        <FacebookLoginButton />
-        <TwitterLoginButton />
-        <AppleLoginButton />
+          <FacebookLoginButton />
+          <TwitterLoginButton />
+          <AppleLoginButton />
+        </div>
       </div>
       <div className="bg-blue-500"></div>
     </div>
