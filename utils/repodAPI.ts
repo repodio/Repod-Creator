@@ -71,8 +71,13 @@ const getHeaders = async (idToken) => {
 // };
 
 const setUser = async (
-  { userId, email, displayName, twitterId },
-  idToken
+  {
+    userId,
+    email,
+    displayName,
+    twitterId,
+  }: { userId: string; email: string; displayName: string; twitterId?: string },
+  idToken: string
 ): Promise<void> => {
   const cleanUserObj = pickBy((item) => item !== undefined && item !== null)({
     userId,
@@ -81,7 +86,7 @@ const setUser = async (
     twitterId,
   });
 
-  console.log("what", `${API_DOMAIN}/v1/user`, cleanUserObj);
+  console.log("cleanUserObj", cleanUserObj);
 
   const response = await fetch(`${API_DOMAIN}/v1/user`, {
     method: "PUT",
@@ -129,6 +134,7 @@ export {
   // getEpisode,
   // getShow,
   getUser,
+  setUser,
   // search,
   claimShow,
 };

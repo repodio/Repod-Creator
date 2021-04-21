@@ -1,32 +1,46 @@
 import firebase from "./init";
 import "firebase/auth";
+import { setUser } from "utils/repodAPI";
+import { get } from "lodash/fp";
 
-const signInWithProvider = (provider) => {
-  return firebase
-    .auth()
-    .signInWithPopup(provider)
-    .then((result) => {
-      console.log("signInWithProvider", provider, result);
-      // This gives you a Facebook Access Token. You can use it to access the Facebook API.
-      // var token = result.credential.accessToken;
+const signInWithProvider = async (provider) => {
+  try {
+    const response = await firebase.auth().signInWithPopup(provider);
+    console.log("signInWithProvider", provider, response);
+    // This gives you a Facebook Access Token. You can use it to access the Facebook API.
+    // var token = response.credential.accessToken;
 
-      // console.log("signInWithProvider token", token);
-      // The signed-in user info.
-      var user = result.user;
-      console.log("signInWithProvider user", user);
-      // ...
-    })
-    .catch(function (error) {
-      console.log("signInWithProvider error", error);
-      // Handle Errors here.
-      var errorCode = error.code;
-      var errorMessage = error.message;
-      // The email of the user's account used.
-      var email = error.email;
-      // The firebase.auth.AuthCredential type that was used.
-      var credential = error.credential;
-      // ...
+    // console.log("signInWithProvider token", token);
+    // The signed-in user info.
+    var user = response.user;
+
+    const providerEmail = get('providerData["0"].email')(user) || user.email;
+    const providerTwitterId = get('providerData["0"].uid')(user) || null;
+    const providerDisplayName =
+      get('providerData["0"].displayName')(user) || user.displayName;
+    console.log("provider data", {
+      providerEmail,
+      providerTwitterId,
+      providerDisplayName,
     });
+
+    const idToken = await (user && user.getIdToken && user.getIdToken());
+    console.log("idToken", idToken);
+    await setUser(
+      {
+        email: providerEmail,
+        displayName: providerDisplayName,
+        userId: user.uid,
+        twitterId: providerTwitterId,
+      },
+      idToken
+    );
+    console.log("signInWithProvider user", user);
+    return response;
+  } catch (error) {
+    console.log("signInWithProvider error", error);
+    return { error };
+  }
 };
 
 const AppleSignIn = () => {
@@ -85,17 +99,44 @@ export const useAuth = () => {
       }
     },
     signOut: () => auth.signOut(),
-    signUp: ({ email, password }) => {
-      return auth
-        .createUserWithEmailAndPassword(email, password)
-        .then((response) => {
-          console.log(response);
+    signUp: async ({ email, password, name, provider }) => {
+      try {
+        if (email && password) {
+          const response = await auth.createUserWithEmailAndPassword(
+            email,
+            password
+          );
+
+          const user = auth.currentUser;
+
+          const idToken = await (user && user.getIdToken && user.getIdToken());
+          console.log("idToken", idToken);
+          await setUser(
+            {
+              email,
+              displayName: name,
+              userId: user.uid,
+            },
+            idToken
+          );
+
           return response;
-        })
-        .catch((error) => {
-          console.log("error", error);
-          return { error };
-        });
+        } else if (provider) {
+          switch (provider) {
+            case AUTH_PROVIDERS.apple:
+              return AppleSignIn();
+            case AUTH_PROVIDERS.facebook:
+              return FacebookSignIn();
+            case AUTH_PROVIDERS.twitter:
+              return TwitterSignIn();
+            default:
+              return;
+          }
+        }
+      } catch (error) {
+        console.log("error", error);
+        return { error };
+      }
     },
   };
 };

@@ -1,6 +1,6 @@
 // ./pages/demo
 import React, { useState } from "react";
-import { useAuthUser, withAuthUser, AuthAction } from "next-firebase-auth";
+import { withAuthUser, AuthAction } from "next-firebase-auth";
 import { useAuth } from "firebaseHelpers/useAuth";
 import { useForm } from "react-hook-form";
 import { initAuth } from "firebaseHelpers/init";
@@ -35,12 +35,13 @@ const SignUp = ({ handleToggleSignupMode, authError, setAuthError }) => {
     handleSubmit,
     formState: { errors },
   } = useForm<Inputs>();
-  const onSubmit = async ({ email, password }) => {
+  const onSubmit = async ({ email, password, name }) => {
     const response = await signUp({
       email,
       password,
+      name,
     });
-    console.log("sign up response", response);
+
     if (response && response.error) {
       const errorMessage =
         AUTH_ERROR_CODES[response.error.code] ||
