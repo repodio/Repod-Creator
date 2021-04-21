@@ -14,14 +14,24 @@ module.exports = {
     fontFamily: {
       sans: ["CircularStd"],
     },
+    minWidth: {
+      "1/2": "50%",
+      full: "100%",
+    },
+
     extend: {
       colors: {
-        "repod-tint": "#40E1A9",
+        "repod-tint": "#14D08E",
+        "repod-tint2": "#F75B7B",
         "repod-canvas": "#FFFFFF",
         "repod-canvas-secondary": "#D8D8D8",
         "repod-text-primary": "#222B45",
         "repod-text-secondary": "#8F9BB3",
         "repod-text-alternative": "#FFFFFF",
+        danger: "#FF5F5F",
+        warning: "#FFAA00",
+        info: "#0095FF",
+        success: "#14D08E",
         facebook: "#4267B2",
         twitter: "#1DA1F2",
       },

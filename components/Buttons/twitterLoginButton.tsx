@@ -12,7 +12,7 @@ const TwitterLoginButton = () => {
 
   return (
     <button
-      className={`w-full rounded-md bg-twitter text-repod-text-alternative font-sans tracking-wider flex flex-row px-4 py-2 text-lg justify-center items-center relative mb-2`}
+      className={`w-full rounded-md bg-twitter text-repod-text-alternative font-sans tracking-wider flex flex-row px-4 py-2 text-lg justify-center items-center relative mb-2 hover:opacity-50 transition`}
       onClick={onClick}
     >
       <img

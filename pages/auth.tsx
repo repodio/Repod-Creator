@@ -15,9 +15,6 @@ import {
 
 initAuth();
 
-const TEMP_EMAIL = "nick17@example.com";
-const TEMP_PASSWORD = "password";
-
 type Inputs = {
   name: string;
   email: string;
@@ -43,13 +40,15 @@ const SignIn = () => {
 
   return (
     <div className="flex flex-row bg-green-500">
-      <div className="flex flex-col flex-0 bg-repod-canvas">
-        <RepodLogo />
+      <div className="flex flex-col flex-0 bg-repod-canvas min-w-1/2 items-center">
+        <div className="self-start ">
+          <RepodLogo />
+        </div>
 
         <div className="flex flex-col h-full w-96 mx-16 justify-center items-start">
-          <h1 className="text-3xl">Sign In</h1>
+          <h1 className="text-3xl mb-4">Sign Up</h1>
 
-          <form className="mb-6 w-full" onSubmit={handleSubmit(onSubmit)}>
+          <form className=" w-full" onSubmit={handleSubmit(onSubmit)}>
             <FormInput
               label="Display Name"
               registerInput={register("name", { required: true })}
@@ -61,7 +60,6 @@ const SignIn = () => {
             <FormInput
               label="Email"
               registerInput={register("email", { required: true })}
-              defaultValue={TEMP_EMAIL}
               name="email"
               type="email"
               error={Boolean(errors.email)}
@@ -70,7 +68,6 @@ const SignIn = () => {
             <FormInput
               label="Password"
               registerInput={register("password", { required: true })}
-              defaultValue={TEMP_PASSWORD}
               name="password"
               type="password"
               error={Boolean(errors.password)}
@@ -83,15 +80,19 @@ const SignIn = () => {
               Log In
             </Button.Medium>
           </form>
-          <a
-            className="block w-full text-center no-underline text-sm text-grey-dark hover:text-grey-darker"
-            href="/login"
-          >
-            Already have an account?
-          </a>
-
+          <p className="w-full text-center text-sm text-repod-text-primary my-4">
+            - OR -
+          </p>
           <FacebookLoginButton />
           <TwitterLoginButton />
+
+          <a
+            className="flex w-full text-center no-underline text-md text-repod-text-primary hover:opacity-50 transition mt-2"
+            href="/login"
+          >
+            Already have an account?{" "}
+            <p className="ml-1 text-repod-tint font-bold">Log in</p>
+          </a>
         </div>
       </div>
       <div className="bg-blue-500"></div>

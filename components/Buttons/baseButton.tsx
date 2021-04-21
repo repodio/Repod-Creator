@@ -4,7 +4,7 @@ import { useAuth, AUTH_PROVIDERS } from "firebaseHelpers/useAuth";
 const BaseButton = ({ children, styles, className, ...rest }) => {
   return (
     <button
-      className={`w-full rounded-md bg-repod-tint text-repod-text-primary font-sans tracking-wider ${styles.classNames} ${className}`}
+      className={`w-full rounded-md bg-repod-tint text-repod-text-primary font-sans tracking-wider hover:opacity-50 transition${styles.classNames} ${className}`}
       {...rest}
     >
       {children}
