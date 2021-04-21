@@ -30,7 +30,7 @@ const Home = ({ profile, idToken }: HomeProps) => {
 
         <LogoutButton />
 
-        <ClaimButton idToken={idToken} />
+        {/* <ClaimButton idToken={idToken} /> */}
       </div>
     </>
   );

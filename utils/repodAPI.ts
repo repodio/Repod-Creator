@@ -1,7 +1,4 @@
-// import { auth } from "../firebase/client";
-// import nookies, { parseCookies } from "nookies";
-import { useAuthUser } from "next-firebase-auth";
-
+import { pickBy } from "lodash/fp";
 const API_DOMAIN = process.env.REPOD_API_URL;
 
 const dev = process.env.NODE_ENV === "development";
@@ -72,6 +69,28 @@ const getHeaders = async (idToken) => {
 //     `${API_DOMAIN}/v1/search?type=${type}&size=${size}&queryString=${query}`
 //   ).then((data) => data.json());
 // };
+
+const setUser = async (
+  { userId, email, displayName, twitterId },
+  idToken
+): Promise<void> => {
+  const cleanUserObj = pickBy((item) => item !== undefined && item !== null)({
+    userId,
+    email,
+    displayName,
+    twitterId,
+  });
+
+  console.log("what", `${API_DOMAIN}/v1/user`, cleanUserObj);
+
+  const response = await fetch(`${API_DOMAIN}/v1/user`, {
+    method: "PUT",
+    headers: await getHeaders(idToken),
+    body: JSON.stringify(cleanUserObj),
+  }).then((data) => data.json());
+
+  console.log("response", response);
+};
 
 const getUser = async ({ userId }, idToken): Promise<UserItem> => {
   console.log("what", `${API_DOMAIN}/v1/user?userId=${userId}`);

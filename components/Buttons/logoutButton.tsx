@@ -6,7 +6,7 @@ const LogoutButton = () => {
 
   return (
     <button
-      className="block bg-teal hover:bg-teal-dark text-white uppercase text-lg mx-auto p-4 rounded"
+      className="block bg-teal hover:bg-teal-dark text-repod-tint uppercase text-lg mx-auto p-4 rounded"
       onClick={signOut}
     >
       Log Out
