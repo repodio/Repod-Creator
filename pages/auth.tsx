@@ -181,13 +181,13 @@ const Auth = () => {
     toggleSignUpMode(!inSignUpMode);
   };
   return (
-    <div className="flex flex-row bg-green-500">
+    <div className="flex flex-row bg-repod-canvas-auth-bg">
       <div className="flex flex-col flex-0 bg-repod-canvas min-w-1/2 items-center">
         <div className="self-start ">
           <RepodLogo />
         </div>
 
-        <div className="flex flex-col h-full w-96 mx-16  items-start mt-24">
+        <div className="flex flex-col h-full w-96 mx-16  items-start justify-center">
           {inSignUpMode ? (
             <SignUp
               handleToggleSignupMode={handleToggleSignupMode}
@@ -203,7 +203,17 @@ const Auth = () => {
           )}
         </div>
       </div>
-      <div className="bg-blue-500"></div>
+      <div className="flex flex-col flex-0 bg-auth-background bg-cover bg-center w-full items-center justify-center">
+        <div className="flex flex-col w-96 items-start justify-center">
+          <p className="text-repod-text-primary text-6xl font-bold mb-6">
+            Be where your listeners are
+          </p>
+          <p className="text-repod-text-primary text-lg">
+            Claim your podcast on the platform with an existing listener
+            community.
+          </p>
+        </div>
+      </div>
     </div>
   );
 };

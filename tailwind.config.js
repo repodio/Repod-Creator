@@ -10,6 +10,9 @@ module.exports = {
       xl: ["22px", "32px"],
       "2xl": ["26px", "32px"],
       "3xl": ["30px", "40px"],
+      "4xl": ["32px", "40px"],
+      "5xl": ["36px", "48px"],
+      "6xl": ["48px", "58px"],
     },
     fontFamily: {
       sans: ["CircularStd"],
@@ -25,6 +28,7 @@ module.exports = {
         "repod-tint2": "#F75B7B",
         "repod-canvas": "#FFFFFF",
         "repod-canvas-secondary": "#D8D8D8",
+        "repod-canvas-auth-bg": "#D9FFD9",
         "repod-text-primary": "#222B45",
         "repod-text-secondary": "#8F9BB3",
         "repod-text-alternative": "#FFFFFF",
@@ -35,6 +39,9 @@ module.exports = {
         facebook: "#4267B2",
         twitter: "#1DA1F2",
       },
+      backgroundImage: (theme) => ({
+        "auth-background": "url('/signInBackground.png')",
+      }),
     },
   },
   variants: {

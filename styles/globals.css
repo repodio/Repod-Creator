@@ -105,6 +105,20 @@ a {
   box-sizing: border-box;
 }
 
+/* .auth-screen-image-bg {
+    height: 100vh;
+  
+    background-image: url(https://www.indiewire.com/wp-content/uploads/2017/06/the-best-podcasts-of-2017-so-far.jpg?w=2000);
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+  
+    mask-image: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/3/sun.svg);
+    mask-size: 100vmin;
+    mask-repeat: no-repeat;
+    mask-position: center;
+} */
+
 input:-webkit-autofill,
 input:-webkit-autofill:hover, 
 input:-webkit-autofill:focus, 
