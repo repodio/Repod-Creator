@@ -10,6 +10,7 @@ import LogoutButton from "components/Buttons/logoutButton";
 import { getUser } from "utils/repodAPI";
 import ClaimButton from "components/Buttons/claimButton";
 import { RepodLogo } from "components/Header";
+import { ProfileDropdown } from "components/Dropdown";
 
 interface HomeProps {
   profile: UserItem;
@@ -27,7 +28,7 @@ const Home = ({ profile, idToken }: HomeProps) => {
         <div>
           <p>Your email is {AuthUser.email ? AuthUser.email : "unknown"}.</p>
         </div>
-
+        <ProfileDropdown />
         <LogoutButton />
 
         {/* <ClaimButton idToken={idToken} /> */}

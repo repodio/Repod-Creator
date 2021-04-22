@@ -2,6 +2,8 @@ import firebase from "./init";
 import "firebase/auth";
 import { setUser } from "utils/repodAPI";
 import { get } from "lodash/fp";
+import { useDispatch } from "react-redux";
+import { login } from "modules/Auth";
 
 const signInWithProvider = async (provider) => {
   try {
@@ -51,10 +53,11 @@ const TwitterSignIn = () => {
 };
 
 export const useAuth = () => {
+  const dispatch = useDispatch();
   const auth = firebase.auth();
 
   return {
-    signIn: ({
+    signIn: async ({
       email,
       password,
       provider,
@@ -63,15 +66,20 @@ export const useAuth = () => {
       password?: string;
       provider?: string;
     }) => {
+      console.log("signIn");
       if (email && password) {
-        return auth
-          .signInWithEmailAndPassword(email, password)
-          .then((response) => {
-            return response.user;
-          })
-          .catch((error) => {
-            return { error };
-          });
+        try {
+          const response = await auth.signInWithEmailAndPassword(
+            email,
+            password
+          );
+          const userId = response.user && response.user.uid;
+          dispatch(login(userId));
+
+          return response.user;
+        } catch (error) {
+          return { error };
+        }
       } else if (provider) {
         switch (provider) {
           case AUTH_PROVIDERS.apple:
