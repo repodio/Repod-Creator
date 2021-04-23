@@ -4,39 +4,40 @@ import switchcase from "utils/switchcase";
 // Initial State
 const INITIAL_STATE: {
   byId: {
-    [key: string]: ShowItem;
+    [key: string]: UserItem;
   };
 } = {
   byId: {},
 };
 
 // Selectors
-const baseSelector = (state) => state.shows;
-const getShowsById = createSelector(baseSelector, (shows) => shows.byId);
+const baseSelector = (state) => state.profile;
+
+const getProfilesById = createSelector(baseSelector, (profile) => profile.byId);
 
 export const selectors = {
-  getShowsById,
+  getProfilesById,
 };
 
 // Actions
-const UPSERT_SHOWS = "repod/Shows/UPSERT_SHOWS";
+const UPSERT_PROFILES = "repod/Profile/UPSERT_PROFILES";
 
 // Action Creators
-export const upsertShows = (shows: {
-  [key: string]: ShowItem;
+export const upsertProfiles = (profilesById: {
+  [key: string]: UserItem;
 }): ActionCreator => ({
-  type: UPSERT_SHOWS,
-  shows,
+  type: UPSERT_PROFILES,
+  profilesById,
 });
 
 // Reducer
 export default (state = INITIAL_STATE, action) =>
   switchcase({
-    [UPSERT_SHOWS]: () => ({
+    [UPSERT_PROFILES]: () => ({
       ...state,
       byId: {
         ...state.byId,
-        ...action.shows,
+        ...action.profilesById,
       },
     }),
     LOGOUT: () => ({

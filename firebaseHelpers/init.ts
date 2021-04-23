@@ -11,6 +11,7 @@ if (!firebase.apps.length) {
 }
 
 const initAuth = () => {
+  console.log("ENVIRONEMNT", process.env.NODE_ENV);
   init({
     authPageURL: "/auth",
     appPageURL: "/",
@@ -44,7 +45,7 @@ const initAuth = () => {
       overwrite: true,
       path: "/",
       sameSite: "strict",
-      secure: true, // set this to false in local (non-HTTPS) development
+      secure: process.env.NODE_ENV === "development" ? false : true, // set this to false in local (non-HTTPS) development
       signed: true,
     },
   });

@@ -86,6 +86,8 @@ interface UserItem {
   following?: boolean;
   isAuthedUser?: boolean;
   karma?: number;
+
+  claimedShows?: string[];
 }
 
 interface ClipItem {

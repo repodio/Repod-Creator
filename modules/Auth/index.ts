@@ -1,5 +1,7 @@
 import { createSelector } from "reselect";
 import switchcase from "utils/switchcase";
+import { getUser } from "utils/repodAPI";
+import { upsertProfiles, selectors as profileSelectors } from "modules/Profile";
 
 // Initial State
 const INITIAL_STATE: {
@@ -11,14 +13,19 @@ const INITIAL_STATE: {
 
 const baseSelector = (state) => state.auth;
 const getUserId = createSelector(baseSelector, (s) => s.userId);
+const getAuthedUser = createSelector(
+  getUserId,
+  profileSelectors.getProfilesById,
+  (userId, profilesById) => profilesById[userId]
+);
 
 export const selectors = {
   getUserId,
+  getAuthedUser,
 };
 
 // Actions
 const LOG_IN_SUCCESS = "repod/Auth/LOG_IN_SUCCESS";
-export const LOGOUT = "repod/Auth/LOGOUT";
 
 // Action Creators
 const loginSuccess = (userId: string): ActionCreator => ({
@@ -27,13 +34,22 @@ const loginSuccess = (userId: string): ActionCreator => ({
 });
 
 export const logout = (): ActionCreator => ({
-  type: LOGOUT,
+  type: "LOGOUT",
 });
 
 // Thunk
 export const login = (userId: string) => async (dispatch) => {
   try {
-    console.log("thunk login", userId);
+    const profile = await getUser({ userId });
+    console.log("login profile?", profile);
+    if (profile) {
+      console.log("upsert??");
+      dispatch(
+        upsertProfiles({
+          [userId]: profile,
+        })
+      );
+    }
 
     dispatch(loginSuccess(userId));
   } catch (error) {
@@ -48,7 +64,7 @@ export default (state = INITIAL_STATE, action) =>
       ...state,
       userId: action.userId,
     }),
-    [LOGOUT]: () => ({
+    LOGOUT: () => ({
       ...INITIAL_STATE,
     }),
   })(state)(action.type);

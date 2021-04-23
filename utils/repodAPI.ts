@@ -1,4 +1,6 @@
 import { pickBy } from "lodash/fp";
+import { getIdToken } from "firebaseHelpers/getIdToken";
+
 const API_DOMAIN = process.env.REPOD_API_URL;
 
 const dev = process.env.NODE_ENV === "development";
@@ -22,7 +24,9 @@ const verifyToken = async (token, ctx) => {
   }).then((res) => res.json());
 };
 
-const getHeaders = async (idToken) => {
+const getHeaders = async (serverIdToken?: string) => {
+  const idToken = serverIdToken || (await getIdToken());
+  console.log("getHeaders getIdToken", serverIdToken, idToken, typeof window);
   return {
     Authorization: `Bearer ${idToken}`,
     "Content-Type": "application/json",
@@ -70,15 +74,17 @@ const getHeaders = async (idToken) => {
 //   ).then((data) => data.json());
 // };
 
-const setUser = async (
-  {
-    userId,
-    email,
-    displayName,
-    twitterId,
-  }: { userId: string; email: string; displayName: string; twitterId?: string },
-  idToken: string
-): Promise<void> => {
+const setUser = async ({
+  userId,
+  email,
+  displayName,
+  twitterId,
+}: {
+  userId: string;
+  email: string;
+  displayName: string;
+  twitterId?: string;
+}): Promise<void> => {
   const cleanUserObj = pickBy((item) => item !== undefined && item !== null)({
     userId,
     email,
@@ -90,15 +96,16 @@ const setUser = async (
 
   const response = await fetch(`${API_DOMAIN}/v1/user`, {
     method: "PUT",
-    headers: await getHeaders(idToken),
+    headers: await getHeaders(),
     body: JSON.stringify(cleanUserObj),
   }).then((data) => data.json());
 
   console.log("response", response);
 };
 
-const getUser = async ({ userId }, idToken): Promise<UserItem> => {
-  console.log("what", `${API_DOMAIN}/v1/user?userId=${userId}`);
+const getUser = async ({ userId }, idToken?: string): Promise<UserItem> => {
+  console.log("Url", `${API_DOMAIN}/v1/user?userId=${userId}`);
+
   const user = await fetch(`${API_DOMAIN}/v1/user?userId=${userId}`, {
     headers: await getHeaders(idToken),
   })
@@ -115,15 +122,18 @@ const getUser = async ({ userId }, idToken): Promise<UserItem> => {
   return user;
 };
 
-const claimShow = async (
-  { showId, type }: { showId: string; type: string },
-  idToken
-): Promise<void> => {
+const claimShow = async ({
+  showId,
+  type,
+}: {
+  showId: string;
+  type: string;
+}): Promise<void> => {
   console.log("what", `${API_DOMAIN}/v1/claim-show/${showId}`);
 
   const response = await fetch(`${API_DOMAIN}/v1/claim-show/${showId}`, {
     method: "POST",
-    headers: await getHeaders(idToken),
+    headers: await getHeaders(),
     body: JSON.stringify({ type }),
   }).then((data) => data.json());
 

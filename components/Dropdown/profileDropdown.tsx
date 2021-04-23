@@ -4,20 +4,16 @@ import { useAuth } from "firebaseHelpers/useAuth";
 import { selectors as authSelectors } from "modules/Auth";
 
 const ProfileDropdown = () => {
-  const userId = useSelector((state) => authSelectors.getUserId(state));
+  const profile = useSelector((state) => authSelectors.getAuthedUser(state));
 
   const { signOut } = useAuth();
   const dispatch = useDispatch();
 
-  const increment = () =>
-    dispatch({
-      type: "INCREMENT",
-    });
-  return (
-    <button className="" onClick={increment}>
-      userId: {userId}
-    </button>
-  );
+  if (!profile) {
+    return null;
+  }
+
+  return <button className="">{profile.displayName}</button>;
 };
 
 export default ProfileDropdown;

@@ -3,7 +3,8 @@ import "firebase/auth";
 import { setUser } from "utils/repodAPI";
 import { get } from "lodash/fp";
 import { useDispatch } from "react-redux";
-import { login } from "modules/Auth";
+import { login, logout } from "modules/Auth";
+import { getIdToken } from "firebaseHelpers/getIdToken";
 
 const signInWithProvider = async (provider) => {
   try {
@@ -17,15 +18,12 @@ const signInWithProvider = async (provider) => {
 
     const idToken = await (user && user.getIdToken && user.getIdToken());
 
-    await setUser(
-      {
-        email: providerEmail,
-        displayName: providerDisplayName,
-        userId: user.uid,
-        twitterId: providerTwitterId,
-      },
-      idToken
-    );
+    await setUser({
+      email: providerEmail,
+      displayName: providerDisplayName,
+      userId: user.uid,
+      twitterId: providerTwitterId,
+    });
     console.log("signInWithProvider user", user);
     return response;
   } catch (error) {
@@ -55,7 +53,7 @@ const TwitterSignIn = () => {
 export const useAuth = () => {
   const dispatch = useDispatch();
   const auth = firebase.auth();
-
+  console.log("useAuth called");
   return {
     signIn: async ({
       email,
@@ -74,6 +72,7 @@ export const useAuth = () => {
             password
           );
           const userId = response.user && response.user.uid;
+
           dispatch(login(userId));
 
           return response.user;
@@ -93,7 +92,11 @@ export const useAuth = () => {
         }
       }
     },
-    signOut: () => auth.signOut(),
+    signOut: () => {
+      console.log("signing out");
+      dispatch(logout());
+      auth.signOut();
+    },
     signUp: async ({
       email,
       password,
