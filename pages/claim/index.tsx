@@ -144,8 +144,6 @@ const ClaimSearchPodcast = ({ onShowSelect }: ClaimSearchPodcastProps) => {
 };
 
 const ClaimSendEmail = ({ show, email }: ClaimSendEmailProps) => {
-  const [fakeFollowed, setFakeFollowed] = useState(false);
-
   return (
     <>
       <div className="w-full flex-row flex relative justify-start items-center">
@@ -188,12 +186,9 @@ const ClaimSendEmail = ({ show, email }: ClaimSendEmailProps) => {
               </div>
 
               <Button.Tiny
-                onClick={() => setFakeFollowed(!fakeFollowed)}
-                className={`bg-repod-tint text-repod-text-alternative border-2 border-repod-tint ${
-                  fakeFollowed ? "bg-repod-canvas text-repod-tint" : ""
-                }`}
+                className={`bg-repod-tint text-repod-text-alternative border-2 border-repod-tint`}
               >
-                {fakeFollowed ? "Following" : "Follow"}
+                Follow
               </Button.Tiny>
             </div>
           </div>
@@ -233,30 +228,30 @@ const ClaimSendEmail = ({ show, email }: ClaimSendEmailProps) => {
 };
 
 const Claim = ({}: ClaimProps) => {
-  // const [show, setShow] = useState(null);
-  const [show, setShow] = useState({
-    artworkUrl:
-      "https://cdn-images-1.listennotes.com/podcasts/the-daily-the-new-york-times-0bgHpCl6yr2-xp7nhsmSkX2.1400x1400.jpg",
-    author: "The New York Times",
-    categoryIds: ["216", "99", "93"],
-    date: "2017-01-17T21:19:48.124Z",
-    description:
-      "This is what the news should sound like. The biggest stories of our time, told by the best journalists in the world. Hosted by Michael Barbaro. Twenty minutes a day, five days a week, ready by 6 a.m.",
-    descriptionHTML:
-      "This is what the news should sound like. The biggest stories of our time, told by the best journalists in the world. Hosted by Michael Barbaro. Twenty minutes a day, five days a week, ready by 6 a.m.",
-    explicit: false,
-    latestPubDate: 1619430600000,
-    rss: "http://rss.art19.com/the-daily",
-    showId: "JV8hBhpvwq2WfnUyzF2b",
-    subscribed: true,
-    thumbnail:
-      "https://cdn-images-1.listennotes.com/podcasts/the-daily-the-new-york-times-nstHXBk1g8m-xp7nhsmSkX2.300x300.jpg",
-    title: "The Daily",
-    totalEpisodes: 1203,
-    totalSubscriptions: 81,
-    website:
-      "https://www.nytimes.com/the-daily?utm_source=listennotes.com&utm_campaign=Listen+Notes&utm_medium=website",
-  });
+  const [show, setShow] = useState(null);
+  // const [show, setShow] = useState({
+  //   artworkUrl:
+  //     "https://cdn-images-1.listennotes.com/podcasts/the-daily-the-new-york-times-0bgHpCl6yr2-xp7nhsmSkX2.1400x1400.jpg",
+  //   author: "The New York Times",
+  //   categoryIds: ["216", "99", "93"],
+  //   date: "2017-01-17T21:19:48.124Z",
+  //   description:
+  //     "This is what the news should sound like. The biggest stories of our time, told by the best journalists in the world. Hosted by Michael Barbaro. Twenty minutes a day, five days a week, ready by 6 a.m.",
+  //   descriptionHTML:
+  //     "This is what the news should sound like. The biggest stories of our time, told by the best journalists in the world. Hosted by Michael Barbaro. Twenty minutes a day, five days a week, ready by 6 a.m.",
+  //   explicit: false,
+  //   latestPubDate: 1619430600000,
+  //   rss: "http://rss.art19.com/the-daily",
+  //   showId: "JV8hBhpvwq2WfnUyzF2b",
+  //   subscribed: true,
+  //   thumbnail:
+  //     "https://cdn-images-1.listennotes.com/podcasts/the-daily-the-new-york-times-nstHXBk1g8m-xp7nhsmSkX2.300x300.jpg",
+  //   title: "The Daily",
+  //   totalEpisodes: 1203,
+  //   totalSubscriptions: 81,
+  //   website:
+  //     "https://www.nytimes.com/the-daily?utm_source=listennotes.com&utm_campaign=Listen+Notes&utm_medium=website",
+  // });
 
   return (
     <>
