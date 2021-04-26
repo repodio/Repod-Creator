@@ -1,38 +1,292 @@
-import React from "react";
-import {
-  useAuthUser,
-  withAuthUser,
-  AuthAction,
-  withAuthUserTokenSSR,
-} from "next-firebase-auth";
-import LogoutButton from "components/Buttons/logoutButton";
-import { getUser } from "utils/repodAPI";
-import ClaimButton from "components/Buttons/claimButton";
+import React, { useState, useEffect, useCallback } from "react";
+import { withAuthUser, AuthAction } from "next-firebase-auth";
 import { RepodLogo } from "components/Header";
 import { ProfileDropdown } from "components/Dropdown";
-import { wrapper } from "reduxConfig/store";
-import { connect } from "react-redux";
+import { Search } from "react-feather";
+import { search } from "utils/repodAPI";
+import { useDebounce } from "utils/hooks";
+import { Button } from "components/Buttons";
 
 interface ClaimProps {
-  profile: UserItem;
   children: JSX.Element[] | JSX.Element;
 }
 
-const Claim = ({ profile }: ClaimProps) => {
-  const AuthUser = useAuthUser();
-  console.log("Claim", profile);
+interface ClaimSearchPodcastProps {
+  onShowSelect: (item: ShowItem) => void;
+}
+
+interface ClaimSendEmailProps {
+  show: ShowItem;
+  email: string;
+}
+
+const PLACEHOLDER_COPY = "Search for your podcast here";
+const REPOD_SUPPORT_EMAIL = "claim@repod.io";
+
+const ClaimSearchPodcast = ({ onShowSelect }: ClaimSearchPodcastProps) => {
+  const [value, setValue] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+  const [noResults, setNoResults] = useState(false);
+  const [isSearching, setIsSearching] = useState(false);
+  const debouncedSearchTerm: string = useDebounce(value, 400);
+
+  const onChangeText = useCallback(
+    (event) => {
+      setValue(event.target.value);
+    },
+    [setValue]
+  );
+
+  useEffect(
+    () => {
+      if (debouncedSearchTerm) {
+        setNoResults(false);
+
+        const searchingTimeout = setTimeout(() => {
+          setIsSearching(true);
+        }, 150);
+
+        search({
+          query: debouncedSearchTerm,
+          type: "shows",
+          includeRSS: true,
+        }).then((searchResponse) => {
+          console.log("searchResponse", searchResponse);
+          const { items } = searchResponse;
+          clearTimeout(searchingTimeout);
+
+          if (!items.length) {
+            setNoResults(true);
+          }
+
+          setSearchResults(items.slice(0, 5));
+          setIsSearching(false);
+        });
+      } else {
+        setSearchResults([]);
+      }
+    },
+    [debouncedSearchTerm] // Only call effect if debounced search term changes
+  );
+
+  return (
+    <div className="flex flex-col justify-center items-center max-w-xl w-full">
+      <div className="w-full flex relative justify-start items-center">
+        <Search
+          className="ml-2 absolute stroke-current text-repod-text-secondary "
+          size={24}
+        />
+
+        <input
+          className={`w-full text-lg pl-10 pr-6 h-12 border-2 rounded border-repod-text-secondary text-repod-text-primary focus:border-info `}
+          type="search"
+          value={value}
+          placeholder={PLACEHOLDER_COPY}
+          onChange={onChangeText}
+        />
+      </div>
+      {isSearching || noResults || searchResults.length ? (
+        <div
+          className="p-2 mt-2 border-2 rounded border-repod-text-secondary w-full text-left "
+          style={{ top: 52 }}
+        >
+          <ul>
+            {noResults && (
+              <li className="text-repod-text-secondary my-2 text-center">
+                {value.length < 3
+                  ? "Try adding a longer search term"
+                  : "No Shows Found."}
+              </li>
+            )}
+
+            {isSearching && (
+              <li className="text-repod-text-secondary my-2">Searching ...</li>
+            )}
+
+            {!isSearching && !!searchResults.length && (
+              <li className="text-repod-text-secondary my-2">
+                Select Your Podcast Below
+              </li>
+            )}
+
+            {!isSearching &&
+              searchResults.map((item, i) => {
+                return (
+                  <li key={i}>
+                    <button
+                      onClick={() => onShowSelect(item)}
+                      className="block rounded-lg p-4 mb-2 bg-repod-card"
+                    >
+                      <div className="flex overflow-hidden w-full">
+                        <img
+                          className="w-12 mr-4 rounded"
+                          src={item.artworkUrl}
+                          alt={`${item.title} artwork`}
+                        />
+                        <div className="flex flex-col flex-1 overflow-hidden">
+                          <p className="text-lg text-repod-text-primary text-left">
+                            {item.title}
+                          </p>
+                          <p className="text-sm text-repod-text-secondary text-left">
+                            {item.author}
+                          </p>
+                        </div>
+                      </div>
+                    </button>
+                  </li>
+                );
+              })}
+          </ul>
+        </div>
+      ) : null}
+    </div>
+  );
+};
+
+const ClaimSendEmail = ({ show, email }: ClaimSendEmailProps) => {
+  const [fakeFollowed, setFakeFollowed] = useState(false);
 
   return (
     <>
-      <div className="">
-        <div className="flex justify-between align-center">
+      <div className="w-full flex-row flex relative justify-start items-center">
+        <div className="relative">
+          <img
+            style={{ maxWidth: 412 }}
+            className=""
+            src="/claim-mock-phone.png"
+            alt={`${show.title} app mock up`}
+          />
+          <div
+            className="absolute flex flex-row"
+            style={{
+              top: 98,
+              left: 80,
+            }}
+          >
+            <img
+              style={{ width: 84, height: 84 }}
+              className="w-12 mr-4 rounded"
+              src={show.artworkUrl}
+              alt={`${show.title} artwork`}
+            />
+            <div className="flex flex-col justify-between">
+              <div className="flex flex-col">
+                <p
+                  style={{ maxWidth: 150 }}
+                  className="text-lg font-bold truncate"
+                >
+                  {show.title}
+                </p>
+                <div className="flex flex-row justify-start items-center">
+                  <img
+                    style={{ width: 9, height: 8 }}
+                    src="/icons/claimed-icon.svg"
+                    alt="claim icon"
+                  />
+                  <p className="text-sm text-info ml-1">Claimed</p>
+                </div>
+              </div>
+
+              <Button.Tiny
+                onClick={() => setFakeFollowed(!fakeFollowed)}
+                className={`bg-repod-tint text-repod-text-alternative border-2 border-repod-tint ${
+                  fakeFollowed ? "bg-repod-canvas text-repod-tint" : ""
+                }`}
+              >
+                {fakeFollowed ? "Following" : "Follow"}
+              </Button.Tiny>
+            </div>
+          </div>
+        </div>
+        <div style={{ maxWidth: 412 }}>
+          <p className="text-md text-repod-text-primary mb-4">
+            To claim <p className="inline font-bold">{show.title}</p>, we’ll
+            sent an email to the{" "}
+            <p className="inline font-bold">{"<itunes:email>"}</p> address
+            listed on your podcast feed (
+            <p className="inline font-bold">{email}</p>). Tap the button below
+            to send the email and continue your registration.
+          </p>
+          <Button.Medium
+            type="submit"
+            className="bg-repod-tint text-repod-text-alternative"
+          >
+            Send Email Code
+          </Button.Medium>
+          <p className="text-sm text-repod-text-primary font-bold  my-4 text-center">
+            - OR -
+          </p>
+          <p className="text-md text-repod-text-primary">
+            If you don’t have access to this email or would like to claim your
+            podcast manually, just shoot us an email at
+          </p>
+          <a
+            className="text-md text-repod-tint"
+            href={`mailto:${REPOD_SUPPORT_EMAIL}`}
+          >
+            {REPOD_SUPPORT_EMAIL}
+          </a>
+        </div>
+      </div>
+    </>
+  );
+};
+
+const Claim = ({}: ClaimProps) => {
+  // const [show, setShow] = useState(null);
+  const [show, setShow] = useState({
+    artworkUrl:
+      "https://cdn-images-1.listennotes.com/podcasts/the-daily-the-new-york-times-0bgHpCl6yr2-xp7nhsmSkX2.1400x1400.jpg",
+    author: "The New York Times",
+    categoryIds: ["216", "99", "93"],
+    date: "2017-01-17T21:19:48.124Z",
+    description:
+      "This is what the news should sound like. The biggest stories of our time, told by the best journalists in the world. Hosted by Michael Barbaro. Twenty minutes a day, five days a week, ready by 6 a.m.",
+    descriptionHTML:
+      "This is what the news should sound like. The biggest stories of our time, told by the best journalists in the world. Hosted by Michael Barbaro. Twenty minutes a day, five days a week, ready by 6 a.m.",
+    explicit: false,
+    latestPubDate: 1619430600000,
+    rss: "http://rss.art19.com/the-daily",
+    showId: "JV8hBhpvwq2WfnUyzF2b",
+    subscribed: true,
+    thumbnail:
+      "https://cdn-images-1.listennotes.com/podcasts/the-daily-the-new-york-times-nstHXBk1g8m-xp7nhsmSkX2.300x300.jpg",
+    title: "The Daily",
+    totalEpisodes: 1203,
+    totalSubscriptions: 81,
+    website:
+      "https://www.nytimes.com/the-daily?utm_source=listennotes.com&utm_campaign=Listen+Notes&utm_medium=website",
+  });
+
+  return (
+    <>
+      <div className="flex flex-col items-center w-full">
+        <div className="flex justify-between items-center w-full">
           <RepodLogo />
           <ProfileDropdown />
         </div>
-        <div>
-          <p>Claim {AuthUser.email ? AuthUser.email : "unknown"}.</p>
+        <div className="flex flex-col justify-center items-center">
+          <div className="flex flex-col justify-center items-center max-w-xl">
+            <img
+              style={{ width: 72, height: 90 }}
+              className=""
+              src="/icons/claim-podcast-icon.svg"
+              alt={`Claim podcast icon`}
+            />
+            <h1 className="text-5xl text-repod-text-primary my-4 text-center">
+              Claim your podcast on Repod
+            </h1>
+            <p className="text-lg text-repod-text-secondary mb-8 text-center">
+              Start engaging and growing your listener audience on Repod by
+              first claiming your podcast
+            </p>
+          </div>
+          {!show ? (
+            <ClaimSearchPodcast onShowSelect={setShow} />
+          ) : (
+            <ClaimSendEmail show={show} email={"test@gmail.com"} />
+          )}
         </div>
-        <LogoutButton />
 
         {/* <ClaimButton idToken={idToken} /> */}
       </div>

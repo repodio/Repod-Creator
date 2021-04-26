@@ -68,11 +68,28 @@ const getHeaders = async (serverIdToken?: string) => {
 //   return episode;
 // };
 
-// const search = async ({ query, size = 5, type }) => {
-//   return await fetch(
-//     `${API_DOMAIN}/v1/search?type=${type}&size=${size}&queryString=${query}`
-//   ).then((data) => data.json());
-// };
+const search = async ({
+  query,
+  size = 5,
+  type,
+  includeRSS = false,
+}: {
+  query: string;
+  size?: number;
+  type: string;
+  includeRSS?: boolean;
+}) => {
+  const response = await fetch(
+    `${API_DOMAIN}/v1/search?type=${type}&size=${size}&queryString=${query}&includeRSS=${
+      includeRSS ? 1 : 0
+    }`,
+    {
+      method: "GET",
+      headers: await getHeaders(),
+    }
+  );
+  return response.json();
+};
 
 const setUser = async ({
   userId,
@@ -145,6 +162,6 @@ export {
   // getShow,
   getUser,
   setUser,
-  // search,
+  search,
   claimShow,
 };
