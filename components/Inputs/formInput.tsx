@@ -8,6 +8,7 @@ const FormInput = ({
   type,
   error,
   placeholder,
+  maxLength = 0,
 }: {
   label: string;
   registerInput: {};
@@ -16,6 +17,7 @@ const FormInput = ({
   type: string;
   error: boolean;
   placeholder: string;
+  maxLength?: number;
 }) => {
   return (
     <div className="w-full py-4 relative">
@@ -37,6 +39,7 @@ const FormInput = ({
         defaultValue={defaultValue}
         placeholder={placeholder}
         {...registerInput}
+        maxLength={maxLength}
       />
     </div>
   );

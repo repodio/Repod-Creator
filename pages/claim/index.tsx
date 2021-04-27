@@ -3,9 +3,13 @@ import { withAuthUser, AuthAction } from "next-firebase-auth";
 import { RepodLogo } from "components/Header";
 import { ProfileDropdown } from "components/Dropdown";
 import { Search } from "react-feather";
-import { search } from "utils/repodAPI";
+import { search, sendVerificationCodeEmail } from "utils/repodAPI";
 import { useDebounce } from "utils/hooks";
 import { Button } from "components/Buttons";
+import { claimShow } from "utils/repodAPI";
+import { useForm } from "react-hook-form";
+import { FormInput } from "components/Inputs";
+import { useRouter } from "next/router";
 
 interface ClaimProps {
   children: JSX.Element[] | JSX.Element;
@@ -21,8 +25,12 @@ interface ClaimSendEmailProps {
 }
 
 const PLACEHOLDER_COPY = "Search for your podcast here";
-const REPOD_SUPPORT_EMAIL = "claim@repod.io";
-
+const REPOD_SUPPORT_EMAIL = "podcasters@repod.io";
+const ERRORS_LOOKUP = {
+  "wrong-verify-code": "The code you entered did not match.",
+  "no-verify-code": "The code you entered did not match.",
+  default: "Something went wrong.",
+};
 const ClaimSearchPodcast = ({ onShowSelect }: ClaimSearchPodcastProps) => {
   const [value, setValue] = useState("");
   const [searchResults, setSearchResults] = useState([]);
@@ -143,10 +151,70 @@ const ClaimSearchPodcast = ({ onShowSelect }: ClaimSearchPodcastProps) => {
   );
 };
 
+type Inputs = {
+  code: string;
+};
+
 const ClaimSendEmail = ({ show, email }: ClaimSendEmailProps) => {
+  const [emailSent, setEmailSent] = useState<boolean>(false);
+  const [error, setError] = useState<string>(null);
+  const [disabled, setDisabled] = useState<boolean>(true);
+  const router = useRouter();
+  const {
+    register,
+    watch,
+    formState: { errors },
+  } = useForm<Inputs>();
+  const { code } = watch();
+
+  useEffect(() => {
+    console.log("code", code, code && code.length >= 6);
+    if (code && code.length === 6) {
+      setDisabled(false);
+    } else {
+      setDisabled(true);
+    }
+  }, [code, setDisabled]);
+
+  const handleSendEmail = async () => {
+    sendVerificationCodeEmail({
+      showId: show.showId,
+    })
+      .then((response) => {
+        console.log("sendVerificationCodeEmail response", response);
+        setEmailSent(true);
+      })
+      .catch((error) => {
+        console.log("sendVerificationCodeEmail error", error);
+        setError(ERRORS_LOOKUP.default);
+      });
+  };
+
+  const handleClaimShow = () => {
+    console.log("handleClaimShow pressed");
+    claimShow({
+      showId: "00RuGljF1Xvz2Aod9l1l",
+      type: "host",
+      verifyCode: code,
+    })
+      .then((response) => {
+        console.log("handleClaimShow response", response);
+
+        if (response && response.success === true) {
+          router.replace("/console");
+        } else {
+          setError(ERRORS_LOOKUP[response && response.code]);
+        }
+      })
+      .catch((error) => {
+        console.log("handleClaimShow error", error);
+        setError(ERRORS_LOOKUP.default);
+      });
+  };
+
   return (
     <>
-      <div className="w-full flex-row flex relative justify-start items-center">
+      <div className="w-full flex-row flex relative justify-start items-start">
         <div className="relative">
           <img
             style={{ maxWidth: 412 }}
@@ -193,35 +261,79 @@ const ClaimSendEmail = ({ show, email }: ClaimSendEmailProps) => {
             </div>
           </div>
         </div>
-        <div style={{ maxWidth: 412 }}>
-          <p className="text-md text-repod-text-primary mb-4">
-            To claim <p className="inline font-bold">{show.title}</p>, we’ll
-            sent an email to the{" "}
-            <p className="inline font-bold">{"<itunes:email>"}</p> address
-            listed on your podcast feed (
-            <p className="inline font-bold">{email}</p>). Tap the button below
-            to send the email and continue your registration.
-          </p>
-          <Button.Medium
-            type="submit"
-            className="bg-repod-tint text-repod-text-alternative"
-          >
-            Send Email Code
-          </Button.Medium>
-          <p className="text-sm text-repod-text-primary font-bold  my-4 text-center">
-            - OR -
-          </p>
-          <p className="text-md text-repod-text-primary">
-            If you don’t have access to this email or would like to claim your
-            podcast manually, just shoot us an email at
-          </p>
-          <a
-            className="text-md text-repod-tint"
-            href={`mailto:${REPOD_SUPPORT_EMAIL}`}
-          >
-            {REPOD_SUPPORT_EMAIL}
-          </a>
-        </div>
+        {emailSent ? (
+          <div className="flex flex-col mt-6" style={{ maxWidth: 412 }}>
+            <p className="text-md text-repod-text-primary mb-4">
+              We sent you a 6 digit code. Paste it below to claim your podcast.
+              The code will expire in{" "}
+              <p className="inline font-bold">{"1 hour!"}</p>
+            </p>
+            <div className="flex flex-row my-2">
+              <FormInput
+                label="6 Digit Code"
+                registerInput={register("code", {
+                  required: true,
+                  maxLength: 6,
+                  minLength: 6,
+                  valueAsNumber: false,
+                })}
+                name="code"
+                type="code"
+                error={Boolean(errors.code)}
+                placeholder="123456"
+                maxLength={6}
+              />
+
+              <Button.Medium
+                disabled={disabled}
+                onClick={handleClaimShow}
+                className="bg-repod-tint text-repod-text-alternative my-4 ml-8"
+              >
+                Submit
+              </Button.Medium>
+            </div>
+            {error ? <p className="text-md text-danger my-4">{error}</p> : null}
+
+            <a className="text-lg text-repod-text-primary font-bold">
+              Resend the code?
+            </a>
+            <a className="text-lg text-repod-text-primary font-bold">
+              Need Help? Visit our FAQ
+            </a>
+          </div>
+        ) : (
+          <div className="flex flex-col mt-6" style={{ maxWidth: 412 }}>
+            {error ? <p className="text-md text-danger my-4">{error}</p> : null}
+
+            <p className="text-md text-repod-text-primary mb-4">
+              To claim <p className="inline font-bold">{show.title}</p>, we’ll
+              sent an email to the{" "}
+              <p className="inline font-bold">{"<itunes:email>"}</p> address
+              listed on your podcast feed (
+              <p className="inline font-bold">{email}</p>). Tap the button below
+              to send the email and continue your registration.
+            </p>
+            <Button.Medium
+              onClick={handleSendEmail}
+              className="bg-repod-tint text-repod-text-alternative"
+            >
+              Send Email Code
+            </Button.Medium>
+            <p className="text-sm text-repod-text-primary font-bold  my-4 text-center">
+              - OR -
+            </p>
+            <p className="text-md text-repod-text-primary">
+              If you don’t have access to this email or would like to claim your
+              podcast manually, just shoot us an email at
+            </p>
+            <a
+              className="text-md text-repod-tint"
+              href={`mailto:${REPOD_SUPPORT_EMAIL}`}
+            >
+              {REPOD_SUPPORT_EMAIL}
+            </a>
+          </div>
+        )}
       </div>
     </>
   );
@@ -282,8 +394,6 @@ const Claim = ({}: ClaimProps) => {
             <ClaimSendEmail show={show} email={"test@gmail.com"} />
           )}
         </div>
-
-        {/* <ClaimButton idToken={idToken} /> */}
       </div>
     </>
   );

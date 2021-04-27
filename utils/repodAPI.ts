@@ -7,6 +7,12 @@ const dev = process.env.NODE_ENV === "development";
 
 const protocol = dev ? "http://" : "https://";
 
+const ROUTES = {
+  search: "search",
+  user: "user",
+  claimShow: "claim-show",
+};
+
 const verifyToken = async (token, ctx) => {
   let host;
 
@@ -80,7 +86,9 @@ const search = async ({
   includeRSS?: boolean;
 }) => {
   const response = await fetch(
-    `${API_DOMAIN}/v1/search?type=${type}&size=${size}&queryString=${query}&includeRSS=${
+    `${API_DOMAIN}/v1/${
+      ROUTES.search
+    }?type=${type}&size=${size}&queryString=${query}&includeRSS=${
       includeRSS ? 1 : 0
     }`,
     {
@@ -111,7 +119,7 @@ const setUser = async ({
 
   console.log("cleanUserObj", cleanUserObj);
 
-  const response = await fetch(`${API_DOMAIN}/v1/user`, {
+  const response = await fetch(`${API_DOMAIN}/v1/${ROUTES.user}`, {
     method: "PUT",
     headers: await getHeaders(),
     body: JSON.stringify(cleanUserObj),
@@ -121,9 +129,9 @@ const setUser = async ({
 };
 
 const getUser = async ({ userId }, idToken?: string): Promise<UserItem> => {
-  console.log("Url", `${API_DOMAIN}/v1/user?userId=${userId}`);
+  console.log("Url", `${API_DOMAIN}/v1/${ROUTES.user}?userId=${userId}`);
 
-  const user = await fetch(`${API_DOMAIN}/v1/user?userId=${userId}`, {
+  const user = await fetch(`${API_DOMAIN}/v1/${ROUTES.user}?userId=${userId}`, {
     headers: await getHeaders(idToken),
   })
     .then((data) => data.json())
@@ -142,17 +150,45 @@ const getUser = async ({ userId }, idToken?: string): Promise<UserItem> => {
 const claimShow = async ({
   showId,
   type,
+  verifyCode,
 }: {
   showId: string;
   type: string;
-}): Promise<void> => {
-  console.log("what", `${API_DOMAIN}/v1/claim-show/${showId}`);
+  verifyCode: string;
+}): Promise<{
+  message?: string;
+  code?: string;
+  success: boolean;
+}> => {
+  console.log("what", `${API_DOMAIN}/v1/${ROUTES.claimShow}/${showId}`);
 
-  const response = await fetch(`${API_DOMAIN}/v1/claim-show/${showId}`, {
-    method: "POST",
-    headers: await getHeaders(),
-    body: JSON.stringify({ type }),
-  }).then((data) => data.json());
+  const response = await fetch(
+    `${API_DOMAIN}/v1/${ROUTES.claimShow}/${showId}`,
+    {
+      method: "POST",
+      headers: await getHeaders(),
+      body: JSON.stringify({ type, verifyCode }),
+    }
+  ).then((data) => data.json());
+  console.log("response", response);
+
+  return response;
+};
+
+const sendVerificationCodeEmail = async ({
+  showId,
+}: {
+  showId: string;
+}): Promise<void> => {
+  console.log("what", `${API_DOMAIN}/v1/${ROUTES.claimShow}/${showId}`);
+
+  const response = await fetch(
+    `${API_DOMAIN}/v1/${ROUTES.claimShow}/${showId}/verify`,
+    {
+      method: "GET",
+      headers: await getHeaders(),
+    }
+  ).then((data) => data.json());
 
   console.log("response", response);
 };
@@ -164,4 +200,5 @@ export {
   setUser,
   search,
   claimShow,
+  sendVerificationCodeEmail,
 };

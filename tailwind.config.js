@@ -32,6 +32,8 @@ module.exports = {
         "repod-text-primary": "#222B45",
         "repod-text-secondary": "#8F9BB3",
         "repod-text-alternative": "#FFFFFF",
+        "repod-text-disabled": "#8F9BB3",
+        "repod-disabled-bg": "rgba(143, 155, 179, 0.24)",
         danger: "#FF5F5F",
         warning: "#FFAA00",
         info: "#0095FF",
