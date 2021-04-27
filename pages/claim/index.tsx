@@ -123,7 +123,7 @@ const ClaimSearchPodcast = ({ onShowSelect }: ClaimSearchPodcastProps) => {
                   <li key={i}>
                     <button
                       onClick={() => onShowSelect(item)}
-                      className="block rounded-lg p-4 mb-2 bg-repod-card"
+                      className="block rounded-lg p-4 mb-2 w-full hover:bg-repod-canvas-secondary"
                     >
                       <div className="flex overflow-hidden w-full">
                         <img
@@ -201,7 +201,7 @@ const ClaimSendEmail = ({ show, email }: ClaimSendEmailProps) => {
         console.log("handleClaimShow response", response);
 
         if (response && response.success === true) {
-          router.replace("/console");
+          router.replace(`/console/${show.showId}`);
         } else {
           setError(ERRORS_LOOKUP[response && response.code]);
         }
@@ -294,9 +294,6 @@ const ClaimSendEmail = ({ show, email }: ClaimSendEmailProps) => {
             </div>
             {error ? <p className="text-md text-danger my-4">{error}</p> : null}
 
-            <a className="text-lg text-repod-text-primary font-bold">
-              Resend the code?
-            </a>
             <a className="text-lg text-repod-text-primary font-bold">
               Need Help? Visit our FAQ
             </a>
