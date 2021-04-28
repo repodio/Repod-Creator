@@ -338,36 +338,13 @@ const ClaimSendEmail = ({ show, email }: ClaimSendEmailProps) => {
 
 const Claim = ({}: ClaimProps) => {
   const [show, setShow] = useState(null);
-  // const [show, setShow] = useState({
-  //   artworkUrl:
-  //     "https://cdn-images-1.listennotes.com/podcasts/the-daily-the-new-york-times-0bgHpCl6yr2-xp7nhsmSkX2.1400x1400.jpg",
-  //   author: "The New York Times",
-  //   categoryIds: ["216", "99", "93"],
-  //   date: "2017-01-17T21:19:48.124Z",
-  //   description:
-  //     "This is what the news should sound like. The biggest stories of our time, told by the best journalists in the world. Hosted by Michael Barbaro. Twenty minutes a day, five days a week, ready by 6 a.m.",
-  //   descriptionHTML:
-  //     "This is what the news should sound like. The biggest stories of our time, told by the best journalists in the world. Hosted by Michael Barbaro. Twenty minutes a day, five days a week, ready by 6 a.m.",
-  //   explicit: false,
-  //   latestPubDate: 1619430600000,
-  //   rss: "http://rss.art19.com/the-daily",
-  //   showId: "JV8hBhpvwq2WfnUyzF2b",
-  //   subscribed: true,
-  //   thumbnail:
-  //     "https://cdn-images-1.listennotes.com/podcasts/the-daily-the-new-york-times-nstHXBk1g8m-xp7nhsmSkX2.300x300.jpg",
-  //   title: "The Daily",
-  //   totalEpisodes: 1203,
-  //   totalSubscriptions: 81,
-  //   website:
-  //     "https://www.nytimes.com/the-daily?utm_source=listennotes.com&utm_campaign=Listen+Notes&utm_medium=website",
-  // });
 
   return (
     <>
       <div className="flex flex-col items-center w-full">
         <div className="flex justify-between items-center w-full">
           <RepodLogo />
-          <ProfileDropdown />
+          <ProfileDropdown lightMode={true} />
         </div>
         <div className="flex flex-col justify-center items-center">
           <div className="flex flex-col justify-center items-center max-w-xl">
@@ -395,8 +372,6 @@ const Claim = ({}: ClaimProps) => {
     </>
   );
 };
-
-// export default Claim;
 
 export default withAuthUser({
   whenUnauthedBeforeInit: AuthAction.RETURN_NULL,

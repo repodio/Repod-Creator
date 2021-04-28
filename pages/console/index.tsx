@@ -1,6 +1,15 @@
-// ./pages/demo
 import React from "react";
-import { useAuthUser, withAuthUser, AuthAction } from "next-firebase-auth";
+import {
+  useAuthUser,
+  withAuthUser,
+  AuthAction,
+  withAuthUserTokenSSR,
+} from "next-firebase-auth";
+import { getClaimedShows } from "utils/repodAPI";
+import { wrapper } from "reduxConfig/store";
+import { convertArrayToObject } from "utils/normalizing";
+import { upsertShows } from "modules/Shows";
+import { useStore } from "react-redux";
 
 interface ConsoleProps {
   profile: UserItem;
@@ -9,8 +18,9 @@ interface ConsoleProps {
 }
 
 const Console = ({ profile }: ConsoleProps) => {
+  const store = useStore();
+  console.log("Console store.getState", store.getState());
   const AuthUser = useAuthUser();
-  console.log("Console", profile);
 
   return (
     <>
@@ -21,7 +31,91 @@ const Console = ({ profile }: ConsoleProps) => {
   );
 };
 
-// export default Console;
+export const getServerSideProps = withAuthUserTokenSSR({
+  whenAuthed: AuthAction.RENDER,
+})(
+  wrapper.getServerSideProps(async (ctx) => {
+    const { AuthUser, store } = ctx;
+    const { id: userId, getIdToken } = AuthUser;
+    // console.log("getServerSideProps store", store);
+    // console.log("getServerSideProps AuthUser", AuthUser);
+
+    const idToken = await getIdToken();
+    const claimedShows = await getClaimedShows(idToken);
+
+    const normalizedShows = convertArrayToObject(claimedShows, "showId");
+
+    await store.dispatch(upsertShows(normalizedShows));
+
+    if (claimedShows && claimedShows.length) {
+      console.log(
+        "re-routing to ",
+        `/console/${claimedShows[0] && claimedShows[0].showId}`
+      );
+      const { res } = ctx;
+      res.setHeader(
+        "location",
+        `/console/${claimedShows[0] && claimedShows[0].showId}`
+      );
+      res.statusCode = 302;
+      res.end();
+      return {
+        props: {
+          claimedShows,
+        },
+      };
+    } else {
+      console.log("re-routing to ", `/claim`);
+
+      const { res } = ctx;
+      res.setHeader("location", "/claim");
+      res.statusCode = 302;
+      res.end();
+      return {
+        props: {},
+      };
+    }
+  })
+);
+
+// export const getServerSideProps = withAuthUserTokenSSR({
+//   whenAuthed: AuthAction.RENDER,
+// })(async (ctx) => {
+//   const { AuthUser } = ctx;
+//   const { id: userId, getIdToken } = AuthUser;
+
+//   const idToken = await getIdToken();
+//   const claimedShows = await getClaimedShows(idToken);
+//   console.log("claimedShows", claimedShows.length);
+//   if (claimedShows && claimedShows.length) {
+//     console.log(
+//       "re-routing to ",
+//       `/console/${claimedShows[0] && claimedShows[0].showId}`
+//     );
+//     const { res } = ctx;
+//     res.setHeader(
+//       "location",
+//       `/console/${claimedShows[0] && claimedShows[0].showId}`
+//     );
+//     res.statusCode = 302;
+//     res.end();
+//     return {
+//       props: {
+//         claimedShows,
+//       },
+//     };
+//   } else {
+//     console.log("re-routing to ", `/claim`);
+
+//     const { res } = ctx;
+//     res.setHeader("location", "/claim");
+//     res.statusCode = 302;
+//     res.end();
+//     return {
+//       props: {},
+//     };
+//   }
+// });
 
 export default withAuthUser({
   whenUnauthedBeforeInit: AuthAction.RETURN_NULL,

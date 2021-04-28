@@ -5,7 +5,7 @@ initAuth();
 
 const handler = async (req, res) => {
   try {
-    console.log("Login Handler called");
+    console.log("Login Handler called", typeof window);
     await setAuthCookies(req, res);
   } catch (e) {
     return res.status(500).json({ error: "Unexpected error." });

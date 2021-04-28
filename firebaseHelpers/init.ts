@@ -11,7 +11,6 @@ if (!firebase.apps.length) {
 }
 
 const initAuth = () => {
-  console.log("ENVIRONEMNT", process.env.NODE_ENV);
   init({
     authPageURL: "/auth",
     appPageURL: "/",

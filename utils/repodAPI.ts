@@ -11,6 +11,7 @@ const ROUTES = {
   search: "search",
   user: "user",
   claimShow: "claim-show",
+  claimShows: "claim-shows",
 };
 
 const verifyToken = async (token, ctx) => {
@@ -32,7 +33,7 @@ const verifyToken = async (token, ctx) => {
 
 const getHeaders = async (serverIdToken?: string) => {
   const idToken = serverIdToken || (await getIdToken());
-  console.log("getHeaders getIdToken", serverIdToken, idToken, typeof window);
+
   return {
     Authorization: `Bearer ${idToken}`,
     "Content-Type": "application/json",
@@ -40,22 +41,22 @@ const getHeaders = async (serverIdToken?: string) => {
   };
 };
 
-// const getShow = async ({ showId, type = "new" }, token) => {
-//   const show = await fetch(`${API_DOMAIN}/v1/show/${showId}?type=${type}`, {
-//     headers: getHeaders(token),
-//   })
-//     .then((data) => data.json())
-//     .then(({ data }) => {
-//       return data;
-//     });
+const getClaimedShows = async (token?: string) => {
+  const shows = await fetch(`${API_DOMAIN}/v1/${ROUTES.claimShows}`, {
+    method: "GET",
+    headers: await getHeaders(token),
+  })
+    .then((data) => data.json())
+    .then(({ data }) => {
+      return data;
+    });
 
-//   if (!show) {
-//     console.log("getShow: response data got nothing");
-//     return Promise.resolve();
-//   }
+  if (!shows) {
+    console.log("getShow: response data got nothing");
+  }
 
-//   return show;
-// };
+  return shows;
+};
 
 // const getEpisode = async ({ episodeId }, token) => {
 //   const episode = await fetch(`${API_DOMAIN}/v1/episode/${episodeId}`, {
@@ -195,7 +196,7 @@ const sendVerificationCodeEmail = async ({
 
 export {
   // getEpisode,
-  // getShow,
+  getClaimedShows,
   getUser,
   setUser,
   search,

@@ -1,4 +1,3 @@
-// ./pages/demo
 import React, { useState } from "react";
 import { withAuthUser, AuthAction } from "next-firebase-auth";
 import { useAuth } from "firebaseHelpers/useAuth";

@@ -8,9 +8,8 @@ import { wrapper } from "reduxConfig/store";
 initAuth();
 
 function MyApp({ Component, pageProps }) {
-  // const { store, persistor } = useStore(pageProps.initialReduxState);
   const store = useStore();
-  console.log("app");
+
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={store.__persistor}>

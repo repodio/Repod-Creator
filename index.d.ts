@@ -28,6 +28,16 @@ interface ShowItem {
   extra?: ShowItemExtra;
 }
 
+interface ClaimedShowItems extends ShowItem {
+  featuredEpisodeId: string;
+  users: {
+    [key: string]: {
+      role: ClaimedShowRole;
+      type: ClaimedShowType;
+    };
+  };
+}
+
 interface EpisodeItem {
   artworkUrl: string;
   author: string;

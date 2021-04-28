@@ -1,28 +1,34 @@
-// ./pages/demo
 import React from "react";
 import { useAuthUser, withAuthUser, AuthAction } from "next-firebase-auth";
+import { ConsoleSideDrawer } from "components/Navigation";
+import { useStore } from "react-redux";
 
 interface ConsoleProps {
-  profile: UserItem;
+  claimedShows: ClaimedShowItems[];
   children: JSX.Element[] | JSX.Element;
   showId: string;
 }
 
-const Console = ({ profile, showId }: ConsoleProps) => {
+const Console = ({ showId }: ConsoleProps) => {
   const AuthUser = useAuthUser();
-  console.log("Console", profile);
+  const store = useStore();
+  console.log(
+    "Console[showId] store.getState",
+    JSON.stringify(store.getState())
+  );
 
   return (
     <>
-      <div>
-        <p>Console {AuthUser.email ? AuthUser.email : "unknown"}.</p>
-        <p>showId {showId}.</p>
+      <div className="flex flex-row w-full h-full">
+        <ConsoleSideDrawer />
+        <div className="flex flex-col flex-1 bg-blue-200">
+          <p>Console {AuthUser.email ? AuthUser.email : "unknown"}.</p>
+          <p>showId {showId}.</p>
+        </div>
       </div>
     </>
   );
 };
-
-// export default Console;
 
 export default withAuthUser({
   whenUnauthedBeforeInit: AuthAction.RETURN_NULL,

@@ -4,7 +4,7 @@ import { useAuth } from "firebaseHelpers/useAuth";
 import { selectors as authSelectors } from "modules/Auth";
 import { Menu, Transition } from "@headlessui/react";
 
-const ProfileDropdown = () => {
+const ProfileDropdown = ({ lightMode = true }: { lightMode: boolean }) => {
   const profile = useSelector((state) => authSelectors.getAuthedUser(state));
 
   const { signOut } = useAuth();
@@ -19,6 +19,10 @@ const ProfileDropdown = () => {
     );
   }
 
+  const color = lightMode
+    ? "text-repod-text-primary"
+    : "text-repod-text-alternative";
+
   return (
     <div>
       <Menu as="div" className="relative inline-block text-left">
@@ -31,7 +35,7 @@ const ProfileDropdown = () => {
                   src={profile.avatarUrl}
                   alt="Repod Logo"
                 />
-                <p>{profile.displayName}</p>
+                <p className={`text-md ${color}`}>{profile.displayName}</p>
               </Menu.Button>
             </div>
             <Transition

@@ -28,7 +28,7 @@ export const selectors = {
 const LOG_IN_SUCCESS = "repod/Auth/LOG_IN_SUCCESS";
 
 // Action Creators
-const loginSuccess = (userId: string): ActionCreator => ({
+export const loginSuccess = (userId: string): ActionCreator => ({
   type: LOG_IN_SUCCESS,
   userId,
 });
@@ -41,9 +41,7 @@ export const logout = (): ActionCreator => ({
 export const login = (userId: string) => async (dispatch) => {
   try {
     const profile = await getUser({ userId });
-    console.log("login profile?", profile);
     if (profile) {
-      console.log("upsert??");
       dispatch(
         upsertProfiles({
           [userId]: profile,

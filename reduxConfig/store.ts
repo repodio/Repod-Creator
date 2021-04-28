@@ -12,8 +12,6 @@ import { createWrapper, HYDRATE } from "next-redux-wrapper";
 
 import rootReducer from "./rootReducer";
 
-let store;
-
 const reducers = combineReducers(rootReducer);
 
 const middlewareCollection = [thunk];
@@ -25,11 +23,50 @@ const hydratedReducer = (state: any, action: AnyAction) => {
   switch (action.type) {
     case HYDRATE:
       // Attention! This will overwrite client state! Real apps should use proper reconciliation.
-      return { ...state, ...action.payload };
+
+      // console.log("hydratedReducer state", state);
+      // console.log("hydratedReducer action.payload", action);
+      // return { ...state, ...action.payload };
+
+      const nextState = {
+        ...state, // use previous state
+        ...action.payload, // apply delta from hydration
+      };
+      console.log("hydratedReducer 1", nextState);
+      if (state.auth) {
+        nextState.auth = state.auth; // preserve counter value on client side navigation
+      }
+      if (state.shows) {
+        nextState.shows = state.shows; // preserve counter value on client side navigation
+      }
+      if (state.profile) {
+        nextState.profile = state.profile; // preserve counter value on client side navigation
+      }
+      console.log("hydratedReducer 2", nextState);
+
+      return nextState;
+
     default:
       return reducers(state, action);
   }
 };
+
+// const hydratedReducer = (state: any, action: AnyAction) => {
+//   switch (action.type) {
+//     case HYDRATE:
+//       const nextState = {
+//         ...state, // use previous state
+//         ...action.payload, // apply delta from hydration
+//       };
+
+//       if (state.shows) nextState.shows = state.shows;
+//       if (state.auth) nextState.auth = state.auth;
+//       if (state.profile) nextState.profile = state.profile;
+//       return nextState;
+//     default:
+//       return reducers(state, action);
+//   }
+// };
 
 const makeConfiguredStore = (reducer) =>
   createStore(
