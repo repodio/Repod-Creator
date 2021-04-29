@@ -29,7 +29,7 @@ module.exports = {
         "repod-canvas": "#FFFFFF",
         "repod-canvas-secondary": "#D8D8D8",
         "repod-canvas-auth-bg": "#D9FFD9",
-        "repod-canvas-drawer-bg": "#111827",
+        "repod-canvas-dark": "#111827",
         "repod-text-primary": "#222B45",
         "repod-text-secondary": "#8F9BB3",
         "repod-text-alternative": "#FFFFFF",

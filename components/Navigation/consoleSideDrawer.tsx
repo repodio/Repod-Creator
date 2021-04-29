@@ -9,7 +9,7 @@ import { ProfileDropdown } from "components/Dropdown";
 
 const ConsoleSideDrawer = () => {
   return (
-    <div style={{ minWidth: 340 }} className="bg-repod-canvas-drawer-bg h-full">
+    <div style={{ minWidth: 340 }} className="bg-repod-canvas-dark h-full">
       <div className="w-full h-32 bg-red-500 m-4"></div>
       <div className="w-full flex flex-col">
         <Link href="#dashboard">

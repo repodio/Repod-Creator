@@ -9,23 +9,31 @@ const INITIAL_STATE: {
   byId: {
     [key: string]: ShowItem;
   };
+  claimedShowIds: string[];
 } = {
   byId: {},
+  claimedShowIds: [],
 };
 
 // Selectors
 const baseSelector = (state) => state.shows;
 const getShowsById = createSelector(baseSelector, (shows) => shows.byId);
+const getClaimedShowIds = createSelector(
+  baseSelector,
+  (shows) => shows.claimedShowIds || []
+);
 const getShowById = (showId) =>
   createSelector(baseSelector, (shows) => shows.byId[showId]);
 
 export const selectors = {
   getShowsById,
   getShowById,
+  getClaimedShowIds,
 };
 
 // Actions
 const UPSERT_SHOWS = "repod/Shows/UPSERT_SHOWS";
+const UPDATE_CLAIMED_SHOWS = "repod/Shows/UPDATE_CLAIMED_SHOWS";
 
 // Action Creators
 export const upsertShows = (shows: {
@@ -35,8 +43,13 @@ export const upsertShows = (shows: {
   shows,
 });
 
+const updateClaimedShowsList = (claimedShowIds: string[]): ActionCreator => ({
+  type: UPDATE_CLAIMED_SHOWS,
+  claimedShowIds,
+});
+
 // Thunks
-export const fetchClaimedShows = ({ idToken }) => async (
+export const fetchClaimedShows = (idToken?: string) => async (
   dispatch
 ): Promise<ClaimedShowItems[]> => {
   try {
@@ -44,6 +57,12 @@ export const fetchClaimedShows = ({ idToken }) => async (
     const normalizedShows = convertArrayToObject(claimedShows, "showId");
     console.log("fetchClaimedShows normalizedShows", normalizedShows);
     dispatch(upsertShows(normalizedShows));
+    console.log(
+      "fetchClaimedShows Object.keys(normalizedShows)",
+      JSON.stringify(Object.keys(normalizedShows))
+    );
+
+    dispatch(updateClaimedShowsList(Object.keys(normalizedShows)));
 
     return claimedShows;
   } catch (error) {
@@ -60,6 +79,10 @@ export default (state = INITIAL_STATE, action) =>
         ...state.byId,
         ...action.shows,
       },
+    }),
+    [UPDATE_CLAIMED_SHOWS]: () => ({
+      ...state,
+      claimedShowIds: action.claimedShowIds,
     }),
     LOGOUT: () => ({
       ...INITIAL_STATE,

@@ -13,7 +13,7 @@ const INITIAL_STATE: {
 
 const baseSelector = (state) => state.auth;
 const getUserId = createSelector(baseSelector, (s) => s.userId);
-const getAuthedUser = createSelector(
+const getAuthedProfile = createSelector(
   getUserId,
   profileSelectors.getProfilesById,
   (userId, profilesById) => profilesById[userId]
@@ -21,7 +21,7 @@ const getAuthedUser = createSelector(
 
 export const selectors = {
   getUserId,
-  getAuthedUser,
+  getAuthedProfile,
 };
 
 // Actions
@@ -38,13 +38,14 @@ export const logout = (): ActionCreator => ({
 });
 
 // Thunk
-export const login = ({
-  userId,
-  idToken,
-}: {
-  userId: string;
-  idToken: string;
-}) => async (dispatch) => {
+export const login = (
+  {
+    userId,
+  }: {
+    userId: string;
+  },
+  idToken?: string
+) => async (dispatch) => {
   try {
     const profile = await getUser({ userId }, idToken);
     if (profile) {

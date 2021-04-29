@@ -1,81 +1,57 @@
-import {
-  useAuthUser,
-  withAuthUser,
-  AuthAction,
-  withAuthUserTokenSSR,
-} from "next-firebase-auth";
-import { getUser } from "utils/repodAPI";
-import { wrapper } from "reduxConfig/store";
+import React, { useEffect } from "react";
+import { useAuthUser, withAuthUser, AuthAction } from "next-firebase-auth";
 import { login } from "modules/Auth";
-import { fetchClaimedShows } from "modules/Shows";
+import { fetchClaimedShows, selectors as showsSelectors } from "modules/Shows";
+import { selectors as authSelectors } from "modules/Auth";
+import { useSelector, useDispatch } from "react-redux";
+import { useRouter } from "next/router";
+import Loader from "react-loader-spinner";
 
-// export const getServerSideProps = withAuthUserTokenSSR({
-//   whenAuthed: AuthAction.RENDER,
-// })(async (ctx) => {
-//   // console.log("ctx", ctx);
-//   const { AuthUser } = ctx;
-//   const { id: userId, getIdToken } = AuthUser;
+const Home = () => {
+  const AuthUser = useAuthUser();
+  const router = useRouter();
+  const dispatch = useDispatch();
+  const storedClaimedShowsIds = useSelector(showsSelectors.getClaimedShowIds);
+  const storedProfile = useSelector(authSelectors.getAuthedProfile);
 
-//   const idToken = await getIdToken();
-//   const profile = await getUser({ userId }, idToken);
-//   console.log(
-//     "profile && profile.claimedShows && profile.claimedShows.length",
-//     profile && profile.claimedShows && profile.claimedShows.length
-//   );
-//   if (profile && profile.claimedShows && profile.claimedShows.length) {
-//     const { res } = ctx;
-//     // res.setHeader("location", `/console/${profile.claimedShows[0]}`);
-//     res.setHeader("location", `/console`);
-//     res.statusCode = 302;
-//     res.end();
-//     return {
-//       props: {},
-//     };
-//   } else {
-//     const { res } = ctx;
-//     res.setHeader("location", "/claim");
-//     res.statusCode = 302;
-//     res.end();
-//     return {
-//       props: {},
-//     };
-//   }
-// });
+  useEffect(() => {
+    (async () => {
+      if (!storedProfile) {
+        const profile = await dispatch(login({ userId: AuthUser.id }));
+        if (!profile) {
+          console.error("Home couldnt find user", AuthUser.id);
+          router.replace(`/auth`);
+        }
+      }
+      if (!storedClaimedShowsIds.length) {
+        const claimedShows = await dispatch(fetchClaimedShows());
+        console.error("Home claimedShows", claimedShows);
 
-export const getServerSideProps = withAuthUserTokenSSR({
-  whenAuthed: AuthAction.RENDER,
-})(
-  wrapper.getServerSideProps(async (ctx) => {
-    // console.log("ctx", ctx);
-    const { AuthUser, store } = ctx;
-    const { id, getIdToken } = AuthUser;
-    const userId: string = id;
-    const idToken = await getIdToken();
-    const profile = await store.dispatch(login({ userId, idToken }));
-    const claimedShows = await store.dispatch(fetchClaimedShows({ idToken }));
+        if (!claimedShows.length) {
+          router.replace(`/claim`);
+        } else {
+          router.replace(`/console/${claimedShows[0]}`);
+        }
+      } else {
+        if (!storedClaimedShowsIds.length) {
+          router.replace(`/claim`);
+        } else {
+          router.replace(`/console/${storedClaimedShowsIds[0]}`);
+        }
+      }
+    })();
+  }, []);
 
-    if (profile && profile.claimedShows && profile.claimedShows.length) {
-      const { res } = ctx;
-      // res.setHeader("location", `/console/${profile.claimedShows[0]}`);
-      res.setHeader("location", `/console`);
-      res.statusCode = 302;
-      res.end();
-      return {
-        props: {},
-      };
-    } else {
-      const { res } = ctx;
-      res.setHeader("location", "/claim");
-      res.statusCode = 302;
-      res.end();
-      return {
-        props: {},
-      };
-    }
-  })
-);
+  return (
+    <>
+      <div className="w-full h-full bg-repod-canvas-dark flex flex-col justify-center items-center">
+        <Loader type="Audio" color="#FFFFFF" height={48} width={48} />
+      </div>
+    </>
+  );
+};
 
 export default withAuthUser({
   whenUnauthedBeforeInit: AuthAction.RETURN_NULL,
   whenUnauthedAfterInit: AuthAction.REDIRECT_TO_LOGIN,
-})(null);
+})(Home);

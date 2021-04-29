@@ -5,7 +5,7 @@ import { selectors as authSelectors } from "modules/Auth";
 import { Menu, Transition } from "@headlessui/react";
 
 const ProfileDropdown = ({ lightMode = true }: { lightMode: boolean }) => {
-  const profile = useSelector(authSelectors.getAuthedUser);
+  const profile = useSelector(authSelectors.getAuthedProfile);
 
   const { signOut } = useAuth();
   const dispatch = useDispatch();
