@@ -41,7 +41,7 @@ const getHeaders = async (serverIdToken?: string) => {
   };
 };
 
-const getClaimedShows = async (token?: string) => {
+const fetchClaimedShowsAPI = async (token?: string) => {
   const shows = await fetch(`${API_DOMAIN}/v1/${ROUTES.claimShows}`, {
     method: "GET",
     headers: await getHeaders(token),
@@ -196,7 +196,7 @@ const sendVerificationCodeEmail = async ({
 
 export {
   // getEpisode,
-  getClaimedShows,
+  fetchClaimedShowsAPI,
   getUser,
   setUser,
   search,

@@ -2,16 +2,19 @@ import { createSelector } from "reselect";
 import switchcase from "utils/switchcase";
 import { getUser } from "utils/repodAPI";
 import { upsertProfiles, selectors as profileSelectors } from "modules/Profile";
+import { RootState } from "reduxConfig/store";
+
+export type StateType = {
+  userId: string | null;
+};
 
 // Initial State
-const INITIAL_STATE: {
-  userId: string | null;
-} = {
+const INITIAL_STATE: StateType = {
   /* user id for the logged in user */
   userId: null,
 };
 
-const baseSelector = (state) => state.auth;
+const baseSelector = (state: RootState) => state.auth;
 const getUserId = createSelector(baseSelector, (s) => s.userId);
 const getAuthedProfile = createSelector(
   getUserId,

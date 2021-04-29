@@ -11,7 +11,6 @@ const Home = () => {
   const AuthUser = useAuthUser();
   const router = useRouter();
   const dispatch = useDispatch();
-  const storedClaimedShowsIds = useSelector(showsSelectors.getClaimedShowIds);
   const storedProfile = useSelector(authSelectors.getAuthedProfile);
 
   useEffect(() => {
@@ -23,21 +22,13 @@ const Home = () => {
           router.replace(`/auth`);
         }
       }
-      if (!storedClaimedShowsIds.length) {
-        const claimedShows = await dispatch(fetchClaimedShows());
-        console.error("Home claimedShows", claimedShows);
+      const claimedShows = await dispatch(fetchClaimedShows());
+      console.log("Home claimedShows", claimedShows);
 
-        if (!claimedShows.length) {
-          router.replace(`/claim`);
-        } else {
-          router.replace(`/console/${claimedShows[0]}`);
-        }
+      if (!claimedShows.length) {
+        router.replace(`/claim`);
       } else {
-        if (!storedClaimedShowsIds.length) {
-          router.replace(`/claim`);
-        } else {
-          router.replace(`/console/${storedClaimedShowsIds[0]}`);
-        }
+        router.replace(`/console/${claimedShows[0].showId}`);
       }
     })();
   }, []);

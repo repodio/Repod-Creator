@@ -1,3 +1,4 @@
 import ConsoleSideDrawer from "./consoleSideDrawer";
+import ShowSelector from "./showSelector";
 
-export { ConsoleSideDrawer };
+export { ConsoleSideDrawer, ShowSelector };

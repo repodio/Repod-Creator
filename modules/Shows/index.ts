@@ -1,22 +1,26 @@
 import { createSelector } from "reselect";
 import switchcase from "utils/switchcase";
-import { getClaimedShows } from "utils/repodAPI";
+import { fetchClaimedShowsAPI } from "utils/repodAPI";
 import { convertArrayToObject } from "utils/normalizing";
 import { ThunkDispatch } from "redux-thunk";
+import { flow, pick, values } from "lodash/fp";
+import { RootState } from "reduxConfig/store";
 
-// Initial State
-const INITIAL_STATE: {
+export type StateType = {
   byId: {
     [key: string]: ShowItem;
   };
   claimedShowIds: string[];
-} = {
+};
+
+// Initial State
+const INITIAL_STATE: StateType = {
   byId: {},
   claimedShowIds: [],
 };
 
 // Selectors
-const baseSelector = (state) => state.shows;
+const baseSelector = (state: RootState) => state.shows;
 const getShowsById = createSelector(baseSelector, (shows) => shows.byId);
 const getClaimedShowIds = createSelector(
   baseSelector,
@@ -25,10 +29,18 @@ const getClaimedShowIds = createSelector(
 const getShowById = (showId) =>
   createSelector(baseSelector, (shows) => shows.byId[showId]);
 
+const getClaimedShows = createSelector(
+  getClaimedShowIds,
+  getShowsById,
+  (claimedShowIds, allShowsById): ShowItem[] =>
+    flow(pick(claimedShowIds), values)(allShowsById)
+);
+
 export const selectors = {
   getShowsById,
   getShowById,
   getClaimedShowIds,
+  getClaimedShows,
 };
 
 // Actions
@@ -53,7 +65,7 @@ export const fetchClaimedShows = (idToken?: string) => async (
   dispatch
 ): Promise<ClaimedShowItems[]> => {
   try {
-    const claimedShows = await getClaimedShows(idToken);
+    const claimedShows = await fetchClaimedShowsAPI(idToken);
     const normalizedShows = convertArrayToObject(claimedShows, "showId");
     console.log("fetchClaimedShows normalizedShows", normalizedShows);
     dispatch(upsertShows(normalizedShows));

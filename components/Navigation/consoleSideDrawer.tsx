@@ -1,16 +1,13 @@
-import { Fragment, useEffect, useRef, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { useAuth } from "firebaseHelpers/useAuth";
-import { selectors as authSelectors } from "modules/Auth";
-import { Menu, Transition } from "@headlessui/react";
+import React from "react";
 import Link from "next/link";
 import { BarChart2, Settings, ChevronLeft } from "react-feather";
 import { ProfileDropdown } from "components/Dropdown";
+import { ShowSelector } from "components/Navigation";
 
-const ConsoleSideDrawer = () => {
+const ConsoleSideDrawer = ({ show }: { show: ShowItem }) => {
   return (
     <div style={{ minWidth: 340 }} className="bg-repod-canvas-dark h-full">
-      <div className="w-full h-32 bg-red-500 m-4"></div>
+      <ShowSelector show={show} />
       <div className="w-full flex flex-col">
         <Link href="#dashboard">
           <div className="rounded-md p-2 w-full m-4 flex flex-row cursor hover:bg-white-200">

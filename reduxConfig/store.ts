@@ -1,8 +1,8 @@
 import thunk from "redux-thunk";
 import logger from "redux-logger";
-import shows from "modules/Shows";
-import auth from "modules/Auth";
-import profile from "modules/Profile";
+import shows, { StateType as ShowsStateType } from "modules/Shows";
+import auth, { StateType as AuthStateType } from "modules/Auth";
+import profile, { StateType as ProfileStateType } from "modules/Profile";
 
 import { createStore, applyMiddleware, combineReducers } from "redux";
 import { createWrapper } from "next-redux-wrapper";
@@ -10,6 +10,12 @@ import { createWrapper } from "next-redux-wrapper";
 const middlewareCollection = [thunk];
 
 middlewareCollection.push(logger);
+
+export type RootState = {
+  profile: ProfileStateType;
+  auth: AuthStateType;
+  shows: ShowsStateType;
+};
 
 const combinedReducer = combineReducers({
   shows,

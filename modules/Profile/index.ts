@@ -1,17 +1,20 @@
 import { createSelector } from "reselect";
 import switchcase from "utils/switchcase";
+import { RootState } from "reduxConfig/store";
 
-// Initial State
-const INITIAL_STATE: {
+export type StateType = {
   byId: {
     [key: string]: UserItem;
   };
-} = {
+};
+
+// Initial State
+const INITIAL_STATE: StateType = {
   byId: {},
 };
 
 // Selectors
-const baseSelector = (state) => state.profile;
+const baseSelector = (state: RootState) => state.profile;
 
 const getProfilesById = createSelector(baseSelector, (profile) => profile.byId);
 
