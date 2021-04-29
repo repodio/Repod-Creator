@@ -21,7 +21,7 @@ const Console = ({ showId }: ConsoleProps) => {
     <>
       <div className="flex flex-row w-full h-full">
         <ConsoleSideDrawer />
-        <div className="flex flex-col flex-1 bg-blue-200">
+        <div className="flex flex-col flex-1 bg-repod-canvas">
           <p>Console {AuthUser.email ? AuthUser.email : "unknown"}.</p>
           <p>showId {showId}.</p>
         </div>
