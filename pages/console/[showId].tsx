@@ -1,7 +1,9 @@
 import React from "react";
 import { useAuthUser, withAuthUser, AuthAction } from "next-firebase-auth";
 import { ConsoleSideDrawer } from "components/Navigation";
-import { useStore } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { selectors as showsSelectors } from "modules/Shows";
+import { useRouter } from "next/router";
 
 interface ConsoleProps {
   claimedShows: ClaimedShowItems[];
@@ -9,21 +11,35 @@ interface ConsoleProps {
   showId: string;
 }
 
-const Console = ({ showId }: ConsoleProps) => {
-  const AuthUser = useAuthUser();
-  const store = useStore();
-  console.log(
-    "Console[showId] store.getState",
-    JSON.stringify(store.getState())
-  );
+const Console = () => {
+  const router = useRouter();
+  const { showId } = router.query;
+
+  const shows = useSelector((state) => state.shows.byId);
+  const counter = useSelector((state) => state.counter.counter);
+  const show = useSelector(showsSelectors.getShowById(showId));
+
+  console.log("shows", shows);
+  const dispatch = useDispatch();
 
   return (
     <>
       <div className="flex flex-row w-full h-full">
         <ConsoleSideDrawer />
         <div className="flex flex-col flex-1 bg-repod-canvas">
-          <p>Console {AuthUser.email ? AuthUser.email : "unknown"}.</p>
           <p>showId {showId}.</p>
+          <p>counter {counter}.</p>
+          <p>shows {JSON.stringify(show)}.</p>
+          <button
+            onClick={() =>
+              dispatch({
+                type: "FOO",
+                payload: counter + 1,
+              })
+            }
+          >
+            Increment
+          </button>
         </div>
       </div>
     </>

@@ -5,10 +5,8 @@ import {
   AuthAction,
   withAuthUserTokenSSR,
 } from "next-firebase-auth";
-import { getClaimedShows } from "utils/repodAPI";
 import { wrapper } from "reduxConfig/store";
-import { convertArrayToObject } from "utils/normalizing";
-import { upsertShows } from "modules/Shows";
+import { upsertShows, fetchClaimedShows } from "modules/Shows";
 import { useStore } from "react-redux";
 
 interface ConsoleProps {
@@ -19,7 +17,6 @@ interface ConsoleProps {
 
 const Console = ({ profile }: ConsoleProps) => {
   const store = useStore();
-  console.log("Console store.getState", store.getState());
   const AuthUser = useAuthUser();
 
   return (
@@ -41,12 +38,10 @@ export const getServerSideProps = withAuthUserTokenSSR({
     // console.log("getServerSideProps AuthUser", AuthUser);
 
     const idToken = await getIdToken();
-    const claimedShows = await getClaimedShows(idToken);
 
-    const normalizedShows = convertArrayToObject(claimedShows, "showId");
+    const claimedShows = await store.dispatch(fetchClaimedShows({ idToken }));
 
-    await store.dispatch(upsertShows(normalizedShows));
-
+    console.log("claimedShows", claimedShows);
     if (claimedShows && claimedShows.length) {
       console.log(
         "re-routing to ",
@@ -60,9 +55,7 @@ export const getServerSideProps = withAuthUserTokenSSR({
       res.statusCode = 302;
       res.end();
       return {
-        props: {
-          claimedShows,
-        },
+        props: {},
       };
     } else {
       console.log("re-routing to ", `/claim`);

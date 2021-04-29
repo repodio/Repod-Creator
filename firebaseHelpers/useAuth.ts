@@ -73,7 +73,7 @@ export const useAuth = () => {
           );
           const userId = response.user && response.user.uid;
 
-          dispatch(login(userId));
+          dispatch(login({ userId }));
 
           return response.user;
         } catch (error) {

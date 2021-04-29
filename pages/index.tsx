@@ -6,8 +6,8 @@ import {
 } from "next-firebase-auth";
 import { getUser } from "utils/repodAPI";
 import { wrapper } from "reduxConfig/store";
-import { loginSuccess } from "modules/Auth";
-import { upsertProfiles } from "modules/Profile";
+import { login } from "modules/Auth";
+import { fetchClaimedShows } from "modules/Shows";
 
 // export const getServerSideProps = withAuthUserTokenSSR({
 //   whenAuthed: AuthAction.RENDER,
@@ -51,14 +51,8 @@ export const getServerSideProps = withAuthUserTokenSSR({
     const { id, getIdToken } = AuthUser;
     const userId: string = id;
     const idToken = await getIdToken();
-    const profile = await getUser({ userId }, idToken);
-
-    await store.dispatch(loginSuccess(userId));
-    await store.dispatch(
-      upsertProfiles({
-        [userId]: profile,
-      })
-    );
+    const profile = await store.dispatch(login({ userId, idToken }));
+    const claimedShows = await store.dispatch(fetchClaimedShows({ idToken }));
 
     if (profile && profile.claimedShows && profile.claimedShows.length) {
       const { res } = ctx;

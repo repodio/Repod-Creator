@@ -38,9 +38,15 @@ export const logout = (): ActionCreator => ({
 });
 
 // Thunk
-export const login = (userId: string) => async (dispatch) => {
+export const login = ({
+  userId,
+  idToken,
+}: {
+  userId: string;
+  idToken: string;
+}) => async (dispatch) => {
   try {
-    const profile = await getUser({ userId });
+    const profile = await getUser({ userId }, idToken);
     if (profile) {
       dispatch(
         upsertProfiles({
@@ -50,6 +56,8 @@ export const login = (userId: string) => async (dispatch) => {
     }
 
     dispatch(loginSuccess(userId));
+
+    return profile;
   } catch (error) {
     console.warn("[THUNK ERROR]: login", error);
   }
