@@ -16,11 +16,9 @@ const Console = () => {
   const { showId } = router.query;
 
   const shows = useSelector((state) => state.shows.byId);
-  const counter = useSelector((state) => state.counter.counter);
   const show = useSelector(showsSelectors.getShowById(showId));
 
   console.log("shows", shows);
-  const dispatch = useDispatch();
 
   return (
     <>
@@ -28,18 +26,7 @@ const Console = () => {
         <ConsoleSideDrawer />
         <div className="flex flex-col flex-1 bg-repod-canvas">
           <p>showId {showId}.</p>
-          <p>counter {counter}.</p>
           <p>shows {JSON.stringify(show)}.</p>
-          <button
-            onClick={() =>
-              dispatch({
-                type: "FOO",
-                payload: counter + 1,
-              })
-            }
-          >
-            Increment
-          </button>
         </div>
       </div>
     </>
