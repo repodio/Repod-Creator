@@ -5,7 +5,7 @@ import { fetchClaimedShows, selectors as showsSelectors } from "modules/Shows";
 import { selectors as authSelectors } from "modules/Auth";
 import { useSelector, useDispatch } from "react-redux";
 import { useRouter } from "next/router";
-import Loader from "react-loader-spinner";
+import { LoadingScreen } from "components/Loading";
 
 const Home = () => {
   const AuthUser = useAuthUser();
@@ -28,18 +28,12 @@ const Home = () => {
       if (!claimedShows.length) {
         router.replace(`/claim`);
       } else {
-        router.replace(`/console/${claimedShows[0].showId}`);
+        router.replace(`/console/${claimedShows[0]}`);
       }
     })();
   }, []);
 
-  return (
-    <>
-      <div className="w-full h-full bg-repod-canvas-dark flex flex-col justify-center items-center">
-        <Loader type="Audio" color="#FFFFFF" height={48} width={48} />
-      </div>
-    </>
-  );
+  return <LoadingScreen />;
 };
 
 export default withAuthUser({

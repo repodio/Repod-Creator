@@ -3,12 +3,12 @@ import { useSelector, useDispatch } from "react-redux";
 import { useAuth } from "firebaseHelpers/useAuth";
 import { selectors as authSelectors } from "modules/Auth";
 import { Menu, Transition } from "@headlessui/react";
+import { MoreHorizontal } from "react-feather";
 
 const ProfileDropdown = ({ lightMode = true }: { lightMode: boolean }) => {
   const profile = useSelector(authSelectors.getAuthedProfile);
 
   const { signOut } = useAuth();
-  const dispatch = useDispatch();
 
   if (!profile) {
     console.error("ProfileDropdown error, need to upsert user record");
@@ -25,17 +25,25 @@ const ProfileDropdown = ({ lightMode = true }: { lightMode: boolean }) => {
 
   return (
     <div>
-      <Menu as="div" className="relative inline-block text-left">
+      <Menu as="div" className="relative text-left">
         {({ open }) => (
           <>
             <div>
-              <Menu.Button className="inline-flex justify-center items-center w-full px-4 py-2 text-lg text-repod-text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
-                <img
-                  className="w-10 mr-4"
-                  src={profile.avatarUrl}
-                  alt="Repod Logo"
-                />
-                <p className={`text-md ${color}`}>{profile.displayName}</p>
+              <Menu.Button className="inline-flex justify-between items-center w-full px-4 py-2 text-lg text-repod-text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
+                <div className="flex flex-row justify-center items-center">
+                  <img
+                    className="w-10 mr-4"
+                    src={profile.avatarUrl}
+                    alt="Repod Logo"
+                  />
+                  <p className={`text-md ${color}`}>{profile.displayName}</p>
+                </div>
+                <div>
+                  <MoreHorizontal
+                    className="stroke-current text-repod-text-alternative"
+                    size={24}
+                  />
+                </div>
               </Menu.Button>
             </div>
             <Transition

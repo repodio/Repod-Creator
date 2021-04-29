@@ -2,9 +2,11 @@ import { createSelector } from "reselect";
 import switchcase from "utils/switchcase";
 import { fetchClaimedShowsAPI } from "utils/repodAPI";
 import { convertArrayToObject } from "utils/normalizing";
-import { ThunkDispatch } from "redux-thunk";
 import { flow, pick, values } from "lodash/fp";
 import { RootState } from "reduxConfig/store";
+
+import { Action, ActionCreator } from "redux";
+import { ThunkResult, AsyncDispatch } from "reduxConfig/redux";
 
 export type StateType = {
   byId: {
@@ -48,35 +50,38 @@ const UPSERT_SHOWS = "repod/Shows/UPSERT_SHOWS";
 const UPDATE_CLAIMED_SHOWS = "repod/Shows/UPDATE_CLAIMED_SHOWS";
 
 // Action Creators
-export const upsertShows = (shows: {
+export const upsertShows: ActionCreator<Action> = (shows: {
   [key: string]: ShowItem;
-}): ActionCreator => ({
+}) => ({
   type: UPSERT_SHOWS,
   shows,
 });
 
-const updateClaimedShowsList = (claimedShowIds: string[]): ActionCreator => ({
+const updateClaimedShowsList: ActionCreator<Action> = (
+  claimedShowIds: string[]
+) => ({
   type: UPDATE_CLAIMED_SHOWS,
   claimedShowIds,
 });
 
 // Thunks
-export const fetchClaimedShows = (idToken?: string) => async (
-  dispatch
-): Promise<ClaimedShowItems[]> => {
+export const fetchClaimedShows = (
+  idToken?: string
+): ThunkResult<Promise<string[]>> => async (dispatch: AsyncDispatch) => {
   try {
     const claimedShows = await fetchClaimedShowsAPI(idToken);
     const normalizedShows = convertArrayToObject(claimedShows, "showId");
-    console.log("fetchClaimedShows normalizedShows", normalizedShows);
+    console.log("fetchClaimedShows upsertShows", normalizedShows);
     dispatch(upsertShows(normalizedShows));
+
     console.log(
-      "fetchClaimedShows Object.keys(normalizedShows)",
-      JSON.stringify(Object.keys(normalizedShows))
+      "fetchClaimedShows updateClaimedShowsList",
+      Object.keys(normalizedShows)
     );
 
     dispatch(updateClaimedShowsList(Object.keys(normalizedShows)));
 
-    return claimedShows;
+    return Object.keys(normalizedShows);
   } catch (error) {
     console.warn("[THUNK ERROR]: login", error);
   }

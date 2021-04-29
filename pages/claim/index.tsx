@@ -201,7 +201,7 @@ const ClaimSendEmail = ({ show, email }: ClaimSendEmailProps) => {
         console.log("handleClaimShow response", response);
 
         if (response && response.success === true) {
-          router.replace(`/console`);
+          router.replace(`/console/${show.showId}`);
         } else {
           setError(ERRORS_LOOKUP[response && response.code]);
         }

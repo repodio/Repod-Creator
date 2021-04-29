@@ -4,7 +4,6 @@ import { createPopper } from "@popperjs/core";
 import { selectors as showsSelectors } from "modules/Shows";
 import { useSelector, useDispatch } from "react-redux";
 import { map } from "lodash/fp";
-import Link from "next/link";
 
 const ShowSelector = ({ show }: { show: ShowItem }) => {
   const [dropdownPopoverShow, setDropdownPopoverShow] = useState(false);
@@ -81,7 +80,7 @@ const ShowSelector = ({ show }: { show: ShowItem }) => {
         <a
           href="/claim"
           className={
-            "text-lg py-2 px-4 block w-full whitespace-nowrap bg-transparent "
+            "rounded bg-repod-canvas hover:bg-repod-canvas-secondary text-lg py-2 px-4 block w-full whitespace-nowrap bg-transparent "
           }
         >
           Claim Another Show
