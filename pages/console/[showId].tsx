@@ -7,8 +7,11 @@ import { LoadingScreen } from "components/Loading";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
 import Link from "next/link";
-import { Button } from "components/Buttons";
-import { ShowStat } from "components/Console";
+import {
+  ConsoleOverview,
+  ConsoleFollowers,
+  ConsoleEpisodes,
+} from "components/Console";
 
 const NavigationLink = ({
   destination = "",
@@ -57,6 +60,10 @@ const Dashboard = () => {
     return <LoadingScreen />;
   }
   console.log("route", router);
+  const splitLink = router.asPath.split("#");
+  const viewFollowers = splitLink[1] && splitLink[1] === "followers";
+  const viewEpisodes = splitLink[1] && splitLink[1] === "episodes";
+  const viewOverview = !viewFollowers && !viewEpisodes;
   return (
     <>
       <div className="">
@@ -64,51 +71,28 @@ const Dashboard = () => {
           Dashboard
         </h1>
         <div className="flex flex-row ml-4">
-          <NavigationLink label="Overview" isSelected={true} destination={""} />
+          <NavigationLink
+            label="Overview"
+            isSelected={viewOverview}
+            destination={`/console/${showId}`}
+          />
           <NavigationLink
             label="Followers"
-            isSelected={false}
-            destination={"#followers"}
+            isSelected={viewFollowers}
+            destination={`/console/${showId}#followers`}
           />
           <NavigationLink
             label="Episodes"
-            isSelected={false}
-            destination={"#episodes"}
+            isSelected={viewEpisodes}
+            destination={`/console/${showId}#episodes`}
           />
         </div>
         <div className="h-0 border border-solid border-t-0 border-repod-border-light" />
       </div>
       <div className="pt-6 px-8">
-        <div className="flex flex-row">
-          <img
-            style={{ width: 120, height: 120 }}
-            className="rounded "
-            src={show.artworkUrl}
-            alt="show artwork"
-          />
-          <div className="w-full flex flex-col pl-8 justify-center items-start">
-            <p className="text-xl font-bold text-repod-text-primary font-bold truncate">
-              {show.title}
-            </p>
-            <p className="mb-4 text-sm text-repod-text-secondary font-bold truncate">
-              by {show.author}
-            </p>
-            <Button.Tiny
-              style={{ minWidth: 170, maxWidth: 170 }}
-              className={`bg-info text-repod-text-alternative flex-0`}
-            >
-              Set Featured Episode
-            </Button.Tiny>
-          </div>
-        </div>
-        <div className="flex flex-row my-12">
-          <ShowStat type={ShowStat.TYPES.starts} />
-          <ShowStat type={ShowStat.TYPES.streams} />
-          <ShowStat type={ShowStat.TYPES.listeners} />
-          <ShowStat type={ShowStat.TYPES.followers} />
-        </div>
-        {/* <p>showIdString {showIdString}.</p>
-        <p>shows {JSON.stringify(show)}.</p> */}
+        {viewOverview ? <ConsoleOverview /> : null}
+        {viewFollowers ? <ConsoleFollowers /> : null}
+        {viewEpisodes ? <ConsoleEpisodes /> : null}
       </div>
     </>
   );
