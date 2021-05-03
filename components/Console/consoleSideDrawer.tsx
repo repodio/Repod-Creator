@@ -2,7 +2,7 @@ import React from "react";
 import Link from "next/link";
 import { BarChart2, Settings, ChevronLeft } from "react-feather";
 import { ProfileDropdown } from "components/Dropdown";
-import { ShowSelector } from "components/Navigation";
+import { ShowSelector } from "components/Console";
 import { useRouter } from "next/router";
 import { useSelector } from "react-redux";
 import { selectors as showsSelectors } from "modules/Shows";

@@ -1,5 +1,5 @@
 import Head from "next/head";
-import { ConsoleSideDrawer } from "components/Navigation";
+import { ConsoleSideDrawer } from "components/Console";
 
 const ConsoleLayout = ({ children }) => {
   console.log("ConsoleLayout Rerender");
