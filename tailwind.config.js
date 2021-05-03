@@ -43,6 +43,8 @@ module.exports = {
         success: "#14D08E",
         facebook: "#4267B2",
         twitter: "#1DA1F2",
+
+        "white-100": "rgba(255, 255, 255, 0.1)",
       },
       backgroundImage: (theme) => ({
         "auth-background": "url('/signInBackground.png')",

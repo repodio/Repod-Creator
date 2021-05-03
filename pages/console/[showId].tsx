@@ -9,7 +9,7 @@ import { AsyncDispatch } from "reduxConfig/redux";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
 
-const Console = () => {
+const Dashboard = () => {
   const router = useRouter();
   const { showId } = router.query;
   const show = useSelector(showsSelectors.getShowById(showId));
@@ -18,7 +18,7 @@ const Console = () => {
   useEffect(() => {
     (async () => {
       const claimedShows = await dispatch(fetchClaimedShows());
-      console.log("Console claimedShows", claimedShows);
+      console.log("Dashboard claimedShows", claimedShows);
 
       if (!claimedShows.length || !claimedShows.includes(showId)) {
         router.replace(`/console`);
@@ -46,4 +46,4 @@ const Console = () => {
 export default withAuthUser({
   whenUnauthedBeforeInit: AuthAction.RETURN_NULL,
   whenUnauthedAfterInit: AuthAction.REDIRECT_TO_LOGIN,
-})(Console);
+})(Dashboard);

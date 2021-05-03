@@ -10,29 +10,35 @@ const ConsoleSideDrawer = ({ show }: { show: ShowItem }) => {
       style={{ minWidth: 340 }}
       className="bg-repod-canvas-dark h-full flex flex-col"
     >
-      <div className="my-8">
+      <div className="my-4">
         <ShowSelector show={show} />
       </div>
       <div className="h-0 border border-solid border-t-0 border-repod-border-dark" />
       <div className="w-full flex flex-col mt-12 flex-1">
-        <Link href="#dashboard">
-          <div className="rounded-md p-2 w-full m-4 flex flex-row cursor hover:bg-white-200">
+        <a
+          href="#dashboard"
+          className="rounded-md mx-4 my-2 bg-repod-canvas-dark hover:bg-white-100"
+        >
+          <div className="w-full p-4 flex flex-row">
             <BarChart2
               className="mr-2 stroke-current text-repod-text-alternative "
               size={24}
             />
-            <a className="text-repod-text-alternative ">Dashboard</a>
+            <p className="text-repod-text-alternative ">Dashboard</p>
           </div>
-        </Link>
-        <Link href="#settings">
-          <div className="rounded-md p-2 w-full m-4 flex flex-row cursor hover:bg-white-200">
+        </a>
+        <a
+          href="#settings"
+          className="rounded-md mx-4 my-2  bg-repod-canvas-dark hover:bg-white-100"
+        >
+          <div className="w-full p-4 flex flex-row">
             <Settings
               className="mr-2 stroke-current text-repod-text-alternative "
               size={24}
             />
-            <a className="text-repod-text-alternative ">Settings</a>
+            <p className="text-repod-text-alternative ">Settings</p>
           </div>
-        </Link>
+        </a>
       </div>
       <div>
         <div className="py-4">
