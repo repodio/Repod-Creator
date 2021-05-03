@@ -2,7 +2,7 @@ import React, { createRef, useState } from "react";
 import { ChevronDown } from "react-feather";
 import { createPopper } from "@popperjs/core";
 import { selectors as showsSelectors } from "modules/Shows";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { map } from "lodash/fp";
 
 const ShowSelector = ({ show }: { show: ShowItem }) => {
