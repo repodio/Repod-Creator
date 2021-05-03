@@ -58,7 +58,7 @@ const Dashboard = () => {
   return (
     <>
       <div className="">
-        <h1 className="my-4 ml-8 text-xl font-bold text-repod-text-primary font-bold truncate">
+        <h1 className="mt-4 mb-8 ml-8 text-xl font-bold text-repod-text-primary font-bold truncate">
           Dashboard
         </h1>
         <div className="flex flex-row ml-4">

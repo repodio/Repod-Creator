@@ -4,6 +4,7 @@ import { createPopper } from "@popperjs/core";
 import { selectors as showsSelectors } from "modules/Shows";
 import { useSelector } from "react-redux";
 import { map } from "lodash/fp";
+import { Loader } from "components/Loading";
 
 const ShowSelector = ({ show }: { show: ShowItem }) => {
   const [dropdownPopoverShow, setDropdownPopoverShow] = useState(false);
@@ -22,7 +23,11 @@ const ShowSelector = ({ show }: { show: ShowItem }) => {
   };
 
   if (!show) {
-    return null;
+    return (
+      <div className="m-8 opacity-50">
+        <Loader />
+      </div>
+    );
   }
   return (
     <div className="relative m-4 ">
