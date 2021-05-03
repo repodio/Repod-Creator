@@ -32,8 +32,7 @@ const Dashboard = () => {
 
   return (
     <>
-      <p>showId {showId}.</p>
-      <p>shows {JSON.stringify(show)}.</p>
+      <p>settings</p>
     </>
   );
 };
