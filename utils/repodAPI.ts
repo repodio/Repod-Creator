@@ -52,10 +52,30 @@ const fetchClaimedShowsAPI = async (token?: string) => {
     });
 
   if (!shows) {
-    console.log("getShow: response data got nothing");
+    console.log("fetchClaimedShowsAPI: response data got nothing");
   }
 
   return shows;
+};
+
+const fetchShowData = async (
+  { showId }: { showId: string },
+  token?: string
+) => {
+  const data = await fetch(`${API_DOMAIN}/v1/${ROUTES.claimShow}/${showId}`, {
+    method: "GET",
+    headers: await getHeaders(token),
+  })
+    .then((data) => data.json())
+    .then(({ data }) => {
+      return data;
+    });
+  console.log("fetchShowData data", data);
+  if (!data) {
+    console.log("fetchShowData: response data got nothing");
+  }
+
+  return data;
 };
 
 // const getEpisode = async ({ episodeId }, token) => {
@@ -202,4 +222,5 @@ export {
   search,
   claimShow,
   sendVerificationCodeEmail,
+  fetchShowData,
 };

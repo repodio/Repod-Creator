@@ -26,6 +26,8 @@ interface ShowItem {
   categoryIds?: string[];
   explicit: boolean;
   extra?: ShowItemExtra;
+  totalStreams?: number;
+  uniqueListeners?: number;
 }
 
 interface ClaimedShowItems extends ShowItem {

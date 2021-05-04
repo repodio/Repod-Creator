@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { withAuthUser, AuthAction } from "next-firebase-auth";
 import { useSelector, useDispatch } from "react-redux";
-import { selectors as showsSelectors, fetchClaimedShows } from "modules/Shows";
+import { selectors as showsSelectors, fetchShowStats } from "modules/Shows";
 import { useRouter } from "next/router";
 import { LoadingScreen } from "components/Loading";
 import { ThunkDispatch } from "redux-thunk";
@@ -43,16 +43,13 @@ const Dashboard = () => {
 
   const show = useSelector(showsSelectors.getShowById(showIdString));
   const dispatch = useDispatch<ThunkDispatch<{}, undefined, Action>>();
-  const route = router.pathname.replace("/console/[showId]", "");
 
   useEffect(() => {
     (async () => {
-      const claimedShows = await dispatch(fetchClaimedShows());
-      console.log("Dashboard claimedShows", claimedShows);
-
-      if (!claimedShows.length || !claimedShows.includes(showIdString)) {
-        router.replace(`/console`);
+      if (!show) {
+        router.replace(`/`);
       }
+      await dispatch(fetchShowStats(showId));
     })();
   }, []);
 

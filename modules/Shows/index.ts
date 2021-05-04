@@ -1,6 +1,6 @@
 import { createSelector } from "reselect";
 import switchcase from "utils/switchcase";
-import { fetchClaimedShowsAPI } from "utils/repodAPI";
+import { fetchClaimedShowsAPI, fetchShowData } from "utils/repodAPI";
 import { convertArrayToObject } from "utils/normalizing";
 import { flow, pick, values } from "lodash/fp";
 import { RootState } from "reduxConfig/store";
@@ -47,6 +47,7 @@ export const selectors = {
 
 // Actions
 const UPSERT_SHOWS = "repod/Shows/UPSERT_SHOWS";
+const UPSERT_SHOW_STATS = "repod/Shows/UPSERT_SHOW_STATS";
 const UPDATE_CLAIMED_SHOWS = "repod/Shows/UPDATE_CLAIMED_SHOWS";
 
 // Action Creators
@@ -55,6 +56,23 @@ export const upsertShows: ActionCreator<Action> = (shows: {
 }) => ({
   type: UPSERT_SHOWS,
   shows,
+});
+
+const upsertShowStats: ActionCreator<Action> = ({
+  showId,
+  showStats,
+}: {
+  showId: string;
+  showStats: {
+    totalSubscriptions: number;
+    uniqueListeners: number;
+    streams: number;
+    dailyListenData: { key: string; data: number }[];
+  };
+}) => ({
+  type: UPSERT_SHOW_STATS,
+  showId,
+  showStats,
 });
 
 const updateClaimedShowsList: ActionCreator<Action> = (
@@ -71,17 +89,23 @@ export const fetchClaimedShows = (
   try {
     const claimedShows = await fetchClaimedShowsAPI(idToken);
     const normalizedShows = convertArrayToObject(claimedShows, "showId");
-    console.log("fetchClaimedShows upsertShows", normalizedShows);
     dispatch(upsertShows(normalizedShows));
-
-    console.log(
-      "fetchClaimedShows updateClaimedShowsList",
-      Object.keys(normalizedShows)
-    );
 
     dispatch(updateClaimedShowsList(Object.keys(normalizedShows)));
 
     return Object.keys(normalizedShows);
+  } catch (error) {
+    console.warn("[THUNK ERROR]: login", error);
+  }
+};
+
+export const fetchShowStats = (showId): ThunkResult<Promise<void>> => async (
+  dispatch: AsyncDispatch
+) => {
+  try {
+    const showStats = await fetchShowData({ showId });
+    console.log("fetchShowStats showStats", showStats);
+    dispatch(upsertShowStats({ showId, showStats }));
   } catch (error) {
     console.warn("[THUNK ERROR]: login", error);
   }
@@ -95,6 +119,16 @@ export default (state = INITIAL_STATE, action) =>
       byId: {
         ...state.byId,
         ...action.shows,
+      },
+    }),
+    [UPSERT_SHOW_STATS]: () => ({
+      ...state,
+      byId: {
+        ...state.byId,
+        [action.showId]: {
+          ...(state.byId[action.showId] || {}),
+          ...action.showStats,
+        },
       },
     }),
     [UPDATE_CLAIMED_SHOWS]: () => ({

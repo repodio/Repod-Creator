@@ -40,10 +40,15 @@ const ConsoleOverview = () => {
         </div>
       </div>
       <div className="flex flex-row my-12">
-        <ShowStat type={ShowStat.TYPES.starts} />
-        <ShowStat type={ShowStat.TYPES.streams} />
-        <ShowStat type={ShowStat.TYPES.listeners} />
-        <ShowStat type={ShowStat.TYPES.followers} />
+        <ShowStat type={ShowStat.TYPES.streams} value={show.totalStreams} />
+        <ShowStat
+          type={ShowStat.TYPES.listeners}
+          value={show.uniqueListeners}
+        />
+        <ShowStat
+          type={ShowStat.TYPES.followers}
+          value={show.totalSubscriptions}
+        />
       </div>
     </>
   );
