@@ -66,8 +66,8 @@ const upsertShowStats: ActionCreator<Action> = ({
   showStats: {
     totalSubscriptions: number;
     uniqueListeners: number;
-    streams: number;
-    dailyListenData: { key: string; data: number }[];
+    totalStreams: number;
+    monthlyListenData: { x: string; y: number }[];
   };
 }) => ({
   type: UPSERT_SHOW_STATS,

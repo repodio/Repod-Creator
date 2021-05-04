@@ -4,6 +4,8 @@ import { useSelector } from "react-redux";
 import { useRouter } from "next/router";
 import { ShowStat } from ".";
 import { Button } from "components/Buttons";
+import { Chart } from "components/Chart";
+import { ResponsiveLine } from "@nivo/line";
 
 const ConsoleOverview = () => {
   const router = useRouter();
@@ -15,6 +17,11 @@ const ConsoleOverview = () => {
   if (!show) {
     return null;
   }
+
+  console.log("data", {
+    id: "streams",
+    data: show.monthlyListenData,
+  });
   return (
     <>
       <div className="flex flex-row">
@@ -48,6 +55,19 @@ const ConsoleOverview = () => {
         <ShowStat
           type={ShowStat.TYPES.followers}
           value={show.totalSubscriptions}
+        />
+      </div>
+      <div className="flex flex-col my-12 h-96">
+        <p className="text-md font-semibold text-repod-text-primary">
+          Daily Streams
+        </p>
+        <Chart
+          data={[
+            {
+              id: "streams",
+              data: show.monthlyListenData,
+            },
+          ]}
         />
       </div>
     </>

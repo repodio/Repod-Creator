@@ -28,6 +28,7 @@ interface ShowItem {
   extra?: ShowItemExtra;
   totalStreams?: number;
   uniqueListeners?: number;
+  monthlyListenData?: { x: string; y: number }[];
 }
 
 interface ClaimedShowItems extends ShowItem {
