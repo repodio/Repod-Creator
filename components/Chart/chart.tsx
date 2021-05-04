@@ -5,7 +5,7 @@ import { linearGradientDef } from "@nivo/core";
 const ChartComponent = ({ data }) => (
   <ResponsiveLine
     data={data}
-    margin={{ top: 50, right: 110, bottom: 50, left: 60 }}
+    margin={{ top: 24, right: 24, bottom: 24, left: 24 }}
     xScale={{ type: "point" }}
     yScale={{
       type: "linear",
@@ -15,16 +15,17 @@ const ChartComponent = ({ data }) => (
       reverse: false,
     }}
     yFormat=" >-.0f"
-    curve="basis"
+    curve="monotoneX"
     axisTop={null}
     axisRight={null}
-    axisBottom={null}
     axisLeft={{
-      orient: "left",
-      tickSize: 4,
-      tickPadding: 4,
+      tickSize: 0,
+      tickPadding: 8,
       tickRotation: 0,
+      tickValues: 3,
     }}
+    axisBottom={null}
+    gridYValues={3}
     enableGridX={false}
     colors={{ scheme: "category10" }}
     defs={[
@@ -43,8 +44,22 @@ const ChartComponent = ({ data }) => (
     pointLabelYOffset={-12}
     enableArea={true}
     areaOpacity={0.8}
-    useMesh={true}
+    useMesh={false}
     legends={[]}
+    enableSlices="x"
+    crosshairType="bottom"
+    sliceTooltip={({ slice }) => {
+      console.log("sliceTooltip ", slice);
+      const data = slice.points[0] && slice.points[0].data;
+      return (
+        <div className="flex flex-col justify-start items-start bg-repod-canvas rounded-md shadow-md  p-4">
+          <p className="text-md text-repod-text-primary">{data.xFormatted}</p>
+          <p className="text-md font-bold text-repod-text-primary">
+            {data.yFormatted} Streams
+          </p>
+        </div>
+      );
+    }}
   />
 );
 
