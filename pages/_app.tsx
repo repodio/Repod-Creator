@@ -12,15 +12,20 @@ function MyApp({ Component, pageProps }) {
   const store: any = useStore();
   const router = useRouter();
   console.log("_app router", router.pathname, router.query);
+
   return (
     <Provider store={store}>
       <PersistGate
         persistor={store.__persistor}
         // loading={null}
       >
-        <ConsoleLayout>
+        {router.pathname.startsWith("/console/") ? (
+          <ConsoleLayout>
+            <Component {...pageProps} />
+          </ConsoleLayout>
+        ) : (
           <Component {...pageProps} />
-        </ConsoleLayout>
+        )}
       </PersistGate>
     </Provider>
   );
