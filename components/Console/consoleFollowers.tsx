@@ -3,7 +3,6 @@ import { Info } from "react-feather";
 import { createPopper } from "@popperjs/core";
 import { selectors as showsSelectors } from "modules/Shows";
 import { useSelector } from "react-redux";
-import { map } from "lodash/fp";
 import { Loader } from "components/Loading";
 
 const ConsoleFollowers = () => {

@@ -49,7 +49,6 @@ const ChartComponent = ({ data }) => (
     enableSlices="x"
     crosshairType="bottom"
     sliceTooltip={({ slice }) => {
-      console.log("sliceTooltip ", slice);
       const data = slice.points[0] && slice.points[0].data;
       return (
         <div className="flex flex-col justify-start items-start bg-repod-canvas rounded-md shadow-md  p-4">

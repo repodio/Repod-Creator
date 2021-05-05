@@ -1,10 +1,4 @@
-import React, { createRef, useState } from "react";
-import { Info } from "react-feather";
-import { createPopper } from "@popperjs/core";
-import { selectors as showsSelectors } from "modules/Shows";
-import { useSelector } from "react-redux";
-import { map } from "lodash/fp";
-import { Loader } from "components/Loading";
+import React from "react";
 
 const ConsoleEpisodes = () => {
   // const shows = useSelector(showsSelectors.getClaimedShows);

@@ -118,6 +118,8 @@ const ClaimSearchPodcast = ({ onShowSelect }: ClaimSearchPodcastProps) => {
             )}
 
             {!isSearching &&
+              searchResults &&
+              searchResults.length &&
               searchResults.map((item, i) => {
                 return (
                   <li key={i}>

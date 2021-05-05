@@ -18,10 +18,6 @@ const ConsoleOverview = () => {
     return null;
   }
 
-  console.log("data", {
-    id: "streams",
-    data: show.monthlyListenData,
-  });
   return (
     <>
       <div className="flex flex-row">
@@ -57,19 +53,21 @@ const ConsoleOverview = () => {
           value={show.totalSubscriptions}
         />
       </div>
-      <div className="flex flex-col my-12 h-96">
-        <p className="text-md font-semibold text-repod-text-primary">
-          Daily Streams
-        </p>
-        <Chart
-          data={[
-            {
-              id: "streams",
-              data: show.monthlyListenData,
-            },
-          ]}
-        />
-      </div>
+      {show.monthlyListenData ? (
+        <div className="flex flex-col my-12 h-96">
+          <p className="text-md font-semibold text-repod-text-primary">
+            Daily Streams
+          </p>
+          <Chart
+            data={[
+              {
+                id: "streams",
+                data: show.monthlyListenData,
+              },
+            ]}
+          />
+        </div>
+      ) : null}
     </>
   );
 };
