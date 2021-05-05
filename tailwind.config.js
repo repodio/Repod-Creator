@@ -21,7 +21,6 @@ module.exports = {
       "1/2": "50%",
       full: "100%",
     },
-
     extend: {
       colors: {
         "repod-tint": "#14D08E",

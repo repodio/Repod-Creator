@@ -117,15 +117,11 @@ export const useAuth = () => {
 
           const user = auth.currentUser;
 
-          const idToken = await (user && user.getIdToken && user.getIdToken());
-          await setUser(
-            {
-              email,
-              displayName: name,
-              userId: user.uid,
-            },
-            idToken
-          );
+          await setUser({
+            email,
+            displayName: name,
+            userId: user.uid,
+          });
 
           return response;
         } else if (provider) {

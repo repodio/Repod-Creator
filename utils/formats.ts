@@ -1,3 +1,54 @@
+import moment from "moment";
+
+const unixDay = 86400;
+const unixYTD = moment().startOf("year").unix();
+const hourOfSeconds = 3600;
+const tenHoursInSeconds = 36000;
+
+moment.locale("en", {
+  calendar: {
+    lastDay: "[Yesterday], hh:mm A",
+    sameDay: "[Today], hh:mm A",
+    nextDay: "[Tomorrow], hh:mm A",
+    sameElse: "L",
+  },
+  relativeTime: {
+    future: "in %s",
+    past: "%s",
+    s: "1s",
+    ss: "%ss",
+    m: "1m",
+    mm: "%dm",
+    h: "1h",
+    hh: "%dh",
+    d: "1d",
+    dd: "%dd",
+    M: "1mo",
+    MM: "%dmo",
+    y: "1y",
+    yy: "%dY",
+  },
+});
+
+export const fromNow = (incomingDate) => {
+  if (!incomingDate) {
+    return null;
+  }
+  // Today:                      1d
+  // Today - 6 day:              6d
+  // Today - 6+ day until EOY:   02 May
+  // Any previous year:          02 May 19
+
+  const momentIncoming = moment(incomingDate);
+  const momentNow = moment(Date.now());
+
+  if (momentNow.diff(momentIncoming, "days") < 1) {
+    return `${momentIncoming.calendar()}`;
+  } else {
+    return momentIncoming.format("Do MMM, YYYY");
+  }
+};
+
 export const formatIntegers = (num, fixed = 1) => {
   if (num === null) {
     return null;

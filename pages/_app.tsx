@@ -11,7 +11,6 @@ initAuth();
 function MyApp({ Component, pageProps }) {
   const store: any = useStore();
   const router = useRouter();
-  console.log("_app router", router.pathname, router.query);
 
   return (
     <Provider store={store}>

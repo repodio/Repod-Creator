@@ -5,7 +5,9 @@ import { useRouter } from "next/router";
 import { ShowStat } from ".";
 import { Button } from "components/Buttons";
 import { Chart } from "components/Chart";
-import { ResponsiveLine } from "@nivo/line";
+import { Table } from "components/Table";
+import Link from "next/link";
+import { ArrowRight } from "react-feather";
 
 const ConsoleOverview = () => {
   const router = useRouter();
@@ -53,9 +55,9 @@ const ConsoleOverview = () => {
           value={show.totalSubscriptions}
         />
       </div>
-      {show.monthlyListenData ? (
+      {show.monthlyListenData && show.monthlyListenData.length ? (
         <div className="flex flex-col my-12 h-96">
-          <p className="text-md font-semibold text-repod-text-primary">
+          <p className="text-lg font-semibold text-repod-text-primary">
             Daily Streams
           </p>
           <Chart
@@ -68,6 +70,23 @@ const ConsoleOverview = () => {
           />
         </div>
       ) : null}
+      <div className="flex flex-row justify-between items-center">
+        <p className="text-lg font-semibold text-repod-text-primary">
+          Recent Followers
+        </p>
+        <Link href={`/console/${showId}#followers`}>
+          <a
+            className={` text-md font-semibold text-repod-tint flex flex-row items-center`}
+          >
+            View All
+            <ArrowRight
+              className="ml-2 stroke-current text-repod-text-secondary"
+              size={20}
+            />
+          </a>
+        </Link>
+      </div>
+      <Table />
     </>
   );
 };

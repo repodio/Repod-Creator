@@ -32,7 +32,7 @@ const ProfileDropdown = ({ lightMode = true }: { lightMode: boolean }) => {
               <Menu.Button className="inline-flex justify-between items-center w-full px-4 py-2 text-lg text-repod-text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
                 <div className="flex flex-row justify-center items-center">
                   <img
-                    className="w-10 mr-4"
+                    className="w-10 mr-4 rounded-full"
                     src={profile.avatarUrl}
                     alt="Repod Logo"
                   />

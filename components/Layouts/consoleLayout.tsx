@@ -13,7 +13,7 @@ const ConsoleLayout = ({ children }) => {
 
       <div className="flex flex-row w-full h-full">
         <ConsoleSideDrawer />
-        <div className="flex flex-col flex-grow bg-repod-canvas overflow-hidden">
+        <div className="flex flex-col flex-grow bg-repod-canvas overflow-x-hidden pb-16">
           {children}
         </div>
       </div>
