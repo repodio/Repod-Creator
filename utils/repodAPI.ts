@@ -70,7 +70,7 @@ const fetchShowData = async (
     .then(({ data }) => {
       return data;
     });
-  console.log("fetchShowData data", data);
+
   if (!data) {
     console.log("fetchShowData: response data got nothing");
   }
@@ -137,20 +137,14 @@ const setUser = async ({
     twitterId,
   });
 
-  console.log("cleanUserObj", cleanUserObj);
-
   const response = await fetch(`${API_DOMAIN}/v1/${ROUTES.user}`, {
     method: "PUT",
     headers: await getHeaders(),
     body: JSON.stringify(cleanUserObj),
   }).then((data) => data.json());
-
-  console.log("response", response);
 };
 
 const getUser = async ({ userId }, idToken?: string): Promise<UserItem> => {
-  console.log("Url", `${API_DOMAIN}/v1/${ROUTES.user}?userId=${userId}`);
-
   const user = await fetch(`${API_DOMAIN}/v1/${ROUTES.user}?userId=${userId}`, {
     headers: await getHeaders(idToken),
   })
@@ -180,8 +174,6 @@ const claimShow = async ({
   code?: string;
   success: boolean;
 }> => {
-  console.log("what", `${API_DOMAIN}/v1/${ROUTES.claimShow}/${showId}`);
-
   const response = await fetch(
     `${API_DOMAIN}/v1/${ROUTES.claimShow}/${showId}`,
     {
@@ -190,7 +182,6 @@ const claimShow = async ({
       body: JSON.stringify({ type, verifyCode }),
     }
   ).then((data) => data.json());
-  console.log("response", response);
 
   return response;
 };
@@ -200,8 +191,6 @@ const sendVerificationCodeEmail = async ({
 }: {
   showId: string;
 }): Promise<void> => {
-  console.log("what", `${API_DOMAIN}/v1/${ROUTES.claimShow}/${showId}`);
-
   const response = await fetch(
     `${API_DOMAIN}/v1/${ROUTES.claimShow}/${showId}/verify`,
     {
@@ -209,8 +198,27 @@ const sendVerificationCodeEmail = async ({
       headers: await getHeaders(),
     }
   ).then((data) => data.json());
+};
 
-  console.log("response", response);
+const setFeaturedEpisodeId = async ({
+  showId,
+  episodeId,
+}: {
+  showId: string;
+  episodeId: string;
+}): Promise<{
+  success: boolean;
+}> => {
+  const response = await fetch(
+    `${API_DOMAIN}/v1/${ROUTES.claimShow}/${showId}/featuredepisode`,
+    {
+      method: "POST",
+      headers: await getHeaders(),
+      body: JSON.stringify({ episodeId }),
+    }
+  ).then((data) => data.json());
+
+  return response;
 };
 
 export {
@@ -222,4 +230,5 @@ export {
   claimShow,
   sendVerificationCodeEmail,
   fetchShowData,
+  setFeaturedEpisodeId,
 };

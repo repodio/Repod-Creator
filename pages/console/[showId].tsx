@@ -57,6 +57,9 @@ const Dashboard = () => {
             by {show.author}
           </p>
           <Button.Tiny
+            onClick={() => {
+              router.replace(`/console/${showId}/featuredepisode`);
+            }}
             style={{ minWidth: 170, maxWidth: 170 }}
             className={`bg-info text-repod-text-alternative flex-0`}
           >

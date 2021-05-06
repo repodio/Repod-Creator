@@ -4,6 +4,7 @@ import {
   fetchClaimedShowsAPI,
   fetchShowData,
   getEpisodes,
+  setFeaturedEpisodeId,
 } from "utils/repodAPI";
 import { convertArrayToObject } from "utils/normalizing";
 import { flow, pick, values } from "lodash/fp";
@@ -54,6 +55,7 @@ const UPSERT_SHOWS = "repod/Shows/UPSERT_SHOWS";
 const UPSERT_SHOW_STATS = "repod/Shows/UPSERT_SHOW_STATS";
 const UPDATE_CLAIMED_SHOWS = "repod/Shows/UPDATE_CLAIMED_SHOWS";
 const UPDATE_EPISODES = "repod/Shows/UPDATE_EPISODES";
+const UPDATE_FEATURED_EPISODE_ID = "repod/Shows/UPDATE_FEATURED_EPISODE_ID";
 
 // Action Creators
 export const upsertShows: ActionCreator<Action> = (shows: {
@@ -85,6 +87,18 @@ const updateClaimedShowsList: ActionCreator<Action> = (
 ) => ({
   type: UPDATE_CLAIMED_SHOWS,
   claimedShowIds,
+});
+
+const updateFeaturedEpisodeId: ActionCreator<Action> = ({
+  showId,
+  episodeId,
+}: {
+  showId: string;
+  episodeId: string;
+}) => ({
+  type: UPDATE_FEATURED_EPISODE_ID,
+  showId,
+  episodeId,
 });
 
 export const updateEpisodes: ActionCreator<Action> = ({
@@ -165,6 +179,24 @@ export const fetchShowEpisodes = (showId): ThunkResult<Promise<void>> => async (
   }
 };
 
+export const handleFeaturedEpisodeSet = ({
+  showId,
+  episodeId,
+}: {
+  showId: string;
+  episodeId: string;
+}): ThunkResult<Promise<void>> => async (dispatch: AsyncDispatch) => {
+  try {
+    await setFeaturedEpisodeId({ showId, episodeId });
+
+    dispatch(updateFeaturedEpisodeId({ showId, episodeId }));
+
+    return;
+  } catch (error) {
+    console.warn("[THUNK ERROR]: login", error);
+  }
+};
+
 // Reducer
 export default (state = INITIAL_STATE, action) =>
   switchcase({
@@ -201,6 +233,17 @@ export default (state = INITIAL_STATE, action) =>
         },
       },
     }),
+    [UPDATE_FEATURED_EPISODE_ID]: () => ({
+      ...state,
+      byId: {
+        ...state.byId,
+        [action.showId]: {
+          ...(state.byId[action.showId] || {}),
+          featuredEpisodeId: action.episodeId,
+        },
+      },
+    }),
+
     LOGOUT: () => ({
       ...INITIAL_STATE,
     }),

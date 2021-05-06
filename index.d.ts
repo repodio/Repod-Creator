@@ -33,6 +33,7 @@ interface ShowItem {
   topEpisodes?: EpisodeItem[];
   episodes?: EpisodeItem[];
   yearlyFollowData?: { x: string; y: number }[];
+  featuredEpisodeId?: string;
 }
 
 interface ClaimedShowItems extends ShowItem {
