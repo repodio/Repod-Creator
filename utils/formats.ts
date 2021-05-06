@@ -50,10 +50,15 @@ export const fromNow = (incomingDate) => {
 };
 
 export const formatIntegers = (num, fixed = 1) => {
+  console.log("num", num, typeof num, num.toPrecision);
+
   if (num === null) {
     return null;
   } // terminate early
   if (num === 0) {
+    return "0";
+  }
+  if (!num.toPrecision) {
     return "0";
   } // terminate early
   fixed = !fixed || fixed < 0 ? 0 : fixed; // number of decimal places to show

@@ -25,7 +25,7 @@ const Home = () => {
       const claimedShows = await dispatch(fetchClaimedShows());
       console.log("Home claimedShows", claimedShows);
 
-      if (!claimedShows.length) {
+      if (!claimedShows || !claimedShows.length) {
         router.replace(`/claim`);
       } else {
         router.replace(`/console/${claimedShows[0]}`);

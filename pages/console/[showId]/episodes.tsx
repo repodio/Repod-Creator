@@ -26,6 +26,10 @@ const Dashboard = () => {
       }
     })();
   }, []);
+
+  if (!show) {
+    return null;
+  }
   return (
     <DashboardLayout>
       <div className="flex flex-col justify-start items-start">

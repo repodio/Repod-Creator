@@ -55,7 +55,6 @@ const makeStore = ({ isServer }) => {
     ); // Creating the store again
 
     store.__persistor = persistStore(store); // This creates a persistor object & push that persisted object to .__persistor, so that we can avail the persistability feature
-
     return store;
   }
 };
