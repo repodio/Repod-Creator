@@ -77,9 +77,6 @@ const capitalizeFirstLetter = (string = "") => {
   return string.charAt(0).toUpperCase() + string.slice(1);
 };
 
-/*
- * @params displayName: full name
- */
 export const getFirstName = (
   displayName = "",
   shouldFirstLetterBeRaised = false
@@ -90,9 +87,6 @@ export const getFirstName = (
     : firstName;
 };
 
-/*
- * @params displayName: full name
- */
 export const getLastName = (
   displayName = "",
   shouldFirstLetterBeRaised = false
@@ -101,4 +95,52 @@ export const getLastName = (
     displayName.split(" ").splice(1, displayName.split(" ").length).join(" ") ||
     "";
   return shouldFirstLetterBeRaised ? capitalizeFirstLetter(lastName) : lastName;
+};
+
+export const formatDuration = (
+  duration,
+  includeHours = false,
+  longMin = false,
+  longSec = false
+) => {
+  if (!duration) {
+    return null;
+  }
+  if (includeHours) {
+    const inDays = Math.floor(
+      moment.duration(Number(duration)).asDays()
+    ).toFixed(0);
+
+    if (Number(inDays) > 0) {
+      const inHours = (
+        moment.duration(Number(duration)).asHours() -
+        24 * Number(inDays)
+      ).toFixed(0);
+      return `${inDays}d ${inHours}h`;
+    }
+
+    const inHours = Math.floor(
+      moment.duration(Number(duration)).asHours()
+    ).toFixed(0);
+
+    if (Number(inHours) > 0) {
+      const inMinutes = (
+        moment.duration(Number(duration)).asMinutes() -
+        60 * Number(inHours)
+      ).toFixed(0);
+
+      return `${inHours}h ${inMinutes}m`;
+    }
+  }
+
+  const inMinutes = moment.duration(Number(duration)).asMinutes().toFixed(0);
+  if (Number(inMinutes) > 0) {
+    if (longMin) {
+      return `${inMinutes} min`;
+    } else {
+      return `${inMinutes}m`;
+    }
+  }
+  const inSeconds = moment.duration(Number(duration)).asSeconds().toFixed(0);
+  return longSec ? `${inSeconds} sec` : `${inSeconds}s`;
 };

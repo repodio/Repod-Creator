@@ -12,6 +12,7 @@ import { Button } from "components/Buttons";
 import Link from "next/link";
 import find from "lodash/fp/find";
 import { clipText } from "utils/textTransform";
+import { formatDuration } from "utils/formats";
 
 const Dashboard = () => {
   const router = useRouter();
@@ -38,8 +39,6 @@ const Dashboard = () => {
     (episode: EpisodeItem) => episode.episodeId === featuredEpisodeId
   )(show.episodes);
 
-  console.log("featuredEpisode", featuredEpisode);
-
   const selectedEpisodeIsAlreadySaved =
     featuredEpisodeId === show.featuredEpisodeId;
 
@@ -63,8 +62,8 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="flex flex-row justify-center items-center">
-      <div className="h-vh ">
+    <div className="flex flex-row justify-center items-start">
+      <div className="mt-24">
         <div className="relative">
           <img
             style={{ maxWidth: 412 }}
@@ -73,41 +72,67 @@ const Dashboard = () => {
             alt={`${show.title} app mock up`}
           />
           <div
-            className="absolute flex flex-row"
+            className="absolute"
             style={{
               top: 98,
-              left: 80,
+              left: 84,
             }}
           >
-            <img
-              style={{ width: 84, height: 84 }}
-              className="w-12 mr-4 rounded"
-              src={show.artworkUrl}
-              alt={`${show.title} artwork`}
-            />
-            <div className="flex flex-col justify-between">
-              <div className="flex flex-col">
-                <p
-                  style={{ maxWidth: 150 }}
-                  className="text-lg font-bold truncate"
+            <div className="flex flex-row">
+              <img
+                style={{ width: 84, height: 84 }}
+                className="w-12 mr-4 rounded"
+                src={show.artworkUrl}
+                alt={`${show.title} artwork`}
+              />
+              <div className="flex flex-col justify-between">
+                <div className="flex flex-col">
+                  <p
+                    style={{ maxWidth: 150 }}
+                    className="text-lg font-bold truncate"
+                  >
+                    {show.title}
+                  </p>
+                  <div className="flex flex-row justify-start items-center">
+                    <img
+                      style={{ width: 9, height: 8 }}
+                      src="/icons/claimed-icon.svg"
+                      alt="claim icon"
+                    />
+                    <p className="text-sm text-info ml-1">Claimed</p>
+                  </div>
+                </div>
+
+                <Button.Tiny
+                  className={`bg-repod-tint text-repod-text-alternative border-2 border-repod-tint transition`}
                 >
-                  {show.title}
-                </p>
-                <div className="flex flex-row justify-start items-center">
-                  <img
-                    style={{ width: 9, height: 8 }}
-                    src="/icons/claimed-icon.svg"
-                    alt="claim icon"
-                  />
-                  <p className="text-sm text-info ml-1">Claimed</p>
+                  Follow
+                </Button.Tiny>
+              </div>
+            </div>
+            <div className="mt-2 rounded p-2 bg-repod-canvas-secondary border border-repod-border-light flex flex-row">
+              <img
+                style={{ width: 50, height: 50 }}
+                className="w-12 mr-2 rounded"
+                src={featuredEpisode.artworkUrl}
+                alt={`${featuredEpisode.title} artwork`}
+              />
+              <div className="flex flex-col justify-between">
+                <div className="flex flex-col">
+                  <p
+                    style={{ maxWidth: 170 }}
+                    className="text-sm text-repod-text-primary truncate"
+                  >
+                    {featuredEpisode.title}
+                  </p>
+                  <p
+                    style={{ maxWidth: 170 }}
+                    className="text-xs text-repod-text-secondary truncate"
+                  >
+                    {formatDuration(featuredEpisode.calculatedDuration)}
+                  </p>
                 </div>
               </div>
-
-              <Button.Tiny
-                className={`bg-repod-tint text-repod-text-alternative border-2 border-repod-tint transition`}
-              >
-                Follow
-              </Button.Tiny>
             </div>
           </div>
         </div>
