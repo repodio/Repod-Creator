@@ -7,34 +7,12 @@ import { LoadingScreen } from "components/Loading";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
 import Link from "next/link";
-import {
-  ConsoleOverview,
-  ConsoleFollowers,
-  ConsoleEpisodes,
-} from "components/Console";
-
-const NavigationLink = ({
-  destination = "",
-  label = "",
-  isSelected = false,
-}) => (
-  <div className="flex flex-col pointer">
-    <Link href={destination}>
-      <a
-        className={`mx-4 py-2 transition text-md font-semibold ${
-          isSelected ? "text-repod-text-primary" : "text-repod-text-secondary"
-        }`}
-      >
-        {label}
-      </a>
-    </Link>
-    <div
-      className={`h-0 border-solid border-b-2 mx-4 ${
-        isSelected ? "border-repod-tint" : "border-repod-canvas"
-      }`}
-    />
-  </div>
-);
+import { ShowStat } from "components/Console";
+import { Button } from "components/Buttons";
+import { Chart } from "components/Chart";
+import { FollowersTable, EpisodesTable } from "components/Table";
+import { ArrowRight } from "react-feather";
+import { DashboardLayout } from "components/Layouts";
 
 const Dashboard = () => {
   const router = useRouter();
@@ -56,42 +34,105 @@ const Dashboard = () => {
   if (!show) {
     return <LoadingScreen />;
   }
-  console.log("route", router);
-  const splitLink = router.asPath.split("#");
-  const viewFollowers = splitLink[1] && splitLink[1] === "followers";
-  const viewEpisodes = splitLink[1] && splitLink[1] === "episodes";
-  const viewOverview = !viewFollowers && !viewEpisodes;
+
+  const slicedFollowers = (show.followers || []).slice(0, 5);
+  const slicedEpisodes = (show.topEpisodes || []).slice(0, 5);
+
+  console.log("slicedFollowers", slicedFollowers);
+
   return (
-    <>
-      <div className="">
-        <h1 className="mt-4 mb-8 ml-8 text-xl font-bold text-repod-text-primary font-bold truncate">
-          Dashboard
-        </h1>
-        <div className="flex flex-row ml-4">
-          <NavigationLink
-            label="Overview"
-            isSelected={viewOverview}
-            destination={`/console/${showId}`}
-          />
-          <NavigationLink
-            label="Followers"
-            isSelected={viewFollowers}
-            destination={`/console/${showId}#followers`}
-          />
-          <NavigationLink
-            label="Episodes"
-            isSelected={viewEpisodes}
-            destination={`/console/${showId}#episodes`}
+    <DashboardLayout>
+      <div className="flex flex-row">
+        <img
+          style={{ width: 120, height: 120 }}
+          className="rounded "
+          src={show.artworkUrl}
+          alt="show artwork"
+        />
+        <div className="w-full flex flex-col pl-8 justify-center items-start">
+          <p className="text-xl font-bold text-repod-text-primary font-bold truncate">
+            {show.title}
+          </p>
+          <p className="mb-4 text-sm text-repod-text-secondary font-bold truncate">
+            by {show.author}
+          </p>
+          <Button.Tiny
+            style={{ minWidth: 170, maxWidth: 170 }}
+            className={`bg-info text-repod-text-alternative flex-0`}
+          >
+            Set Featured Episode
+          </Button.Tiny>
+        </div>
+      </div>
+      <div className="flex flex-row my-12">
+        <ShowStat type={ShowStat.TYPES.streams} value={show.totalStreams} />
+        <ShowStat
+          type={ShowStat.TYPES.listeners}
+          value={show.uniqueListeners}
+        />
+        <ShowStat
+          type={ShowStat.TYPES.followers}
+          value={show.totalSubscriptions}
+        />
+      </div>
+      {show.monthlyListenData && show.monthlyListenData.length ? (
+        <div className="flex flex-col my-12 h-96">
+          <p className="text-lg font-semibold text-repod-text-primary">
+            Daily Streams
+          </p>
+          <Chart
+            data={[
+              {
+                id: "Streams",
+                data: show.monthlyListenData,
+              },
+            ]}
           />
         </div>
-        <div className="h-0 border border-solid border-t-0 border-repod-border-light" />
-      </div>
-      <div className="pt-6 px-8">
-        {viewOverview ? <ConsoleOverview /> : null}
-        {viewFollowers ? <ConsoleFollowers /> : null}
-        {viewEpisodes ? <ConsoleEpisodes /> : null}
-      </div>
-    </>
+      ) : null}
+      <>
+        <div className="flex flex-row justify-between items-center">
+          <p className="text-lg font-semibold text-repod-text-primary">
+            Top Episodes
+          </p>
+          {slicedEpisodes && slicedEpisodes.length ? (
+            <Link href={`/console/${showId}/episodes`}>
+              <a
+                className={` text-md font-semibold text-repod-tint flex flex-row items-center`}
+              >
+                View All
+                <ArrowRight
+                  className="ml-2 stroke-current text-repod-text-secondary"
+                  size={20}
+                />
+              </a>
+            </Link>
+          ) : null}
+        </div>
+        <EpisodesTable data={slicedEpisodes} />
+      </>
+      <>
+        <div className="flex flex-row justify-between items-center">
+          <p className="text-lg font-semibold text-repod-text-primary">
+            Recent Followers
+          </p>
+          {slicedFollowers && slicedFollowers.length ? (
+            <Link href={`/console/${showId}/followers`}>
+              <a
+                className={` text-md font-semibold text-repod-tint flex flex-row items-center`}
+              >
+                View All
+                <ArrowRight
+                  className="ml-2 stroke-current text-repod-text-secondary"
+                  size={20}
+                />
+              </a>
+            </Link>
+          ) : null}
+        </div>
+        <FollowersTable data={slicedFollowers} />
+      </>
+    </DashboardLayout>
   );
 };
 

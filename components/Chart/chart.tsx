@@ -49,12 +49,14 @@ const ChartComponent = ({ data }) => (
     enableSlices="x"
     crosshairType="bottom"
     sliceTooltip={({ slice }) => {
-      const data = slice.points[0] && slice.points[0].data;
+      const point = slice.points[0];
+      const data = point && point.data;
+
       return (
         <div className="flex flex-col justify-start items-start bg-repod-canvas rounded-md shadow-md  p-4">
           <p className="text-md text-repod-text-primary">{data.xFormatted}</p>
           <p className="text-md font-bold text-repod-text-primary">
-            {data.yFormatted} Streams
+            {`${data.yFormatted} ${point.serieId}`}
           </p>
         </div>
       );

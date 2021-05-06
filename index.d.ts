@@ -29,6 +29,10 @@ interface ShowItem {
   totalStreams?: number;
   uniqueListeners?: number;
   monthlyListenData?: { x: string; y: number }[];
+  followers?: UserItem[];
+  topEpisodes?: EpisodeItem[];
+  episodes?: EpisodeItem[];
+  yearlyFollowData?: { x: string; y: number }[];
 }
 
 interface ClaimedShowItems extends ShowItem {

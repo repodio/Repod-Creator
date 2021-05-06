@@ -26,7 +26,7 @@ module.exports = {
         "repod-tint": "#14D08E",
         "repod-tint2": "#F75B7B",
         "repod-canvas": "#FFFFFF",
-        "repod-canvas-secondary": "#D8D8D8",
+        "repod-canvas-secondary": "#F7F9FC",
         "repod-canvas-auth-bg": "#D9FFD9",
         "repod-canvas-dark": "#111827",
         "repod-text-primary": "#222B45",

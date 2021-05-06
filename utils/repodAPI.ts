@@ -78,22 +78,21 @@ const fetchShowData = async (
   return data;
 };
 
-// const getEpisode = async ({ episodeId }, token) => {
-//   const episode = await fetch(`${API_DOMAIN}/v1/episode/${episodeId}`, {
-//     headers: getHeaders(token),
-//   })
-//     .then((data) => data.json())
-//     .then(({ data }) => {
-//       return data;
-//     });
+const getEpisodes = async ({ showId }) => {
+  const response = await fetch(
+    `${API_DOMAIN}/v1/${ROUTES.claimShow}/${showId}/episodes`,
+    {
+      headers: await getHeaders(),
+    }
+  ).then((data) => data.json());
 
-//   if (!episode) {
-//     console.log("getEpisode: response data got nothing");
-//     return Promise.resolve();
-//   }
+  if (!response) {
+    console.log("getEpisode: response data got nothing");
+    return Promise.resolve();
+  }
 
-//   return episode;
-// };
+  return response;
+};
 
 const search = async ({
   query,
@@ -215,7 +214,7 @@ const sendVerificationCodeEmail = async ({
 };
 
 export {
-  // getEpisode,
+  getEpisodes,
   fetchClaimedShowsAPI,
   getUser,
   setUser,

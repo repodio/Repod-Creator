@@ -1,3 +1,4 @@
-import Table from "./table";
+import FollowersTable from "./followersTable";
+import EpisodesTable from "./episodesTable";
 
-export { Table };
+export { FollowersTable, EpisodesTable };

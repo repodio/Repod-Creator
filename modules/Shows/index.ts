@@ -1,6 +1,10 @@
 import { createSelector } from "reselect";
 import switchcase from "utils/switchcase";
-import { fetchClaimedShowsAPI, fetchShowData } from "utils/repodAPI";
+import {
+  fetchClaimedShowsAPI,
+  fetchShowData,
+  getEpisodes,
+} from "utils/repodAPI";
 import { convertArrayToObject } from "utils/normalizing";
 import { flow, pick, values } from "lodash/fp";
 import { RootState } from "reduxConfig/store";
@@ -49,6 +53,7 @@ export const selectors = {
 const UPSERT_SHOWS = "repod/Shows/UPSERT_SHOWS";
 const UPSERT_SHOW_STATS = "repod/Shows/UPSERT_SHOW_STATS";
 const UPDATE_CLAIMED_SHOWS = "repod/Shows/UPDATE_CLAIMED_SHOWS";
+const UPDATE_EPISODES = "repod/Shows/UPDATE_EPISODES";
 
 // Action Creators
 export const upsertShows: ActionCreator<Action> = (shows: {
@@ -82,6 +87,26 @@ const updateClaimedShowsList: ActionCreator<Action> = (
   claimedShowIds,
 });
 
+export const updateEpisodes: ActionCreator<Action> = ({
+  showId,
+  episodes,
+  cursor,
+  total,
+}: {
+  showId: string;
+  episodes: {
+    [key: string]: EpisodeItem;
+  };
+  cursor: number;
+  total: number;
+}) => ({
+  type: UPDATE_EPISODES,
+  showId,
+  episodes,
+  cursor,
+  total,
+});
+
 // Thunks
 export const fetchClaimedShows = (
   idToken?: string
@@ -104,8 +129,37 @@ export const fetchShowStats = (showId): ThunkResult<Promise<void>> => async (
 ) => {
   try {
     const showStats = await fetchShowData({ showId });
-    console.log("fetchShowStats showStats", showStats);
-    dispatch(upsertShowStats({ showId, showStats }));
+
+    dispatch(
+      upsertShowStats({
+        showId,
+        showStats,
+      })
+    );
+  } catch (error) {
+    console.warn("[THUNK ERROR]: login", error);
+  }
+};
+
+export const fetchShowEpisodes = (showId): ThunkResult<Promise<void>> => async (
+  dispatch: AsyncDispatch
+) => {
+  try {
+    console.log("showId", showId);
+    const episodesResponse = await getEpisodes({ showId });
+
+    console.log("episodesResponse", episodesResponse);
+
+    dispatch(
+      updateEpisodes({
+        episodes: episodesResponse.items,
+        cursor: episodesResponse.cursor,
+        total: episodesResponse.total,
+        showId,
+      })
+    );
+
+    return;
   } catch (error) {
     console.warn("[THUNK ERROR]: login", error);
   }
@@ -134,6 +188,18 @@ export default (state = INITIAL_STATE, action) =>
     [UPDATE_CLAIMED_SHOWS]: () => ({
       ...state,
       claimedShowIds: action.claimedShowIds,
+    }),
+    [UPDATE_EPISODES]: () => ({
+      ...state,
+      byId: {
+        ...state.byId,
+        [action.showId]: {
+          ...(state.byId[action.showId] || {}),
+          episodes: action.episodes,
+          cursor: action.cursor,
+          total: action.total,
+        },
+      },
     }),
     LOGOUT: () => ({
       ...INITIAL_STATE,

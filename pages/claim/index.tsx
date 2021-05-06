@@ -183,7 +183,6 @@ const ClaimSendEmail = ({ show, email }: ClaimSendEmailProps) => {
       showId: show.showId,
     })
       .then((response) => {
-        console.log("sendVerificationCodeEmail response", response);
         setEmailSent(true);
       })
       .catch((error) => {
@@ -193,15 +192,12 @@ const ClaimSendEmail = ({ show, email }: ClaimSendEmailProps) => {
   };
 
   const handleClaimShow = () => {
-    console.log("handleClaimShow pressed");
     claimShow({
       showId: show.showId,
       type: "host",
       verifyCode: code,
     })
       .then((response) => {
-        console.log("handleClaimShow response", response);
-
         if (response && response.success === true) {
           router.replace(`/console/${show.showId}`);
         } else {
