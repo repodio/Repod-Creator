@@ -6,7 +6,7 @@ import {
 } from "modules/Shows";
 import { useRouter } from "next/router";
 import { useDispatch, useSelector } from "react-redux";
-import { ArrowLeft } from "react-feather";
+import { ArrowLeft, X } from "react-feather";
 import { EpisodesTable, FeaturedEpisodesTable } from "components/Table";
 import { Button } from "components/Buttons";
 import Link from "next/link";
@@ -51,6 +51,7 @@ const Dashboard = () => {
           episodeId: null,
         })
       );
+      setFeaturedEpisodeId(null);
     } else {
       dispatch(
         handleFeaturedEpisodeSet({
@@ -145,9 +146,17 @@ const Dashboard = () => {
             </p>
             <div className="w-full flex flex-col rounded p-4 bg-repod-canvas-secondary">
               <div className="flex flex-col w-full">
-                <p className="text-lg text-repod-text-primary font-bold">
-                  {clipText(featuredEpisode.title, 300)}
-                </p>
+                <div className="flex flex-row w-full justify-between items-start">
+                  <p className="text-lg text-repod-text-primary font-bold">
+                    {clipText(featuredEpisode.title, 300)}
+                  </p>
+                  <X
+                    onClick={() => setFeaturedEpisodeId(null)}
+                    size={24}
+                    className="stroke-current text-repod-text-secondary ml-2 cursor-pointer"
+                  />
+                </div>
+
                 <p className="text-md text-repod-text-secondary">
                   {clipText(featuredEpisode.description, 300)}
                 </p>
