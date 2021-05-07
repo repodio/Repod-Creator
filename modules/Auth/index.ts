@@ -50,7 +50,10 @@ export const login = (
   idToken?: string
 ) => async (dispatch) => {
   try {
+    console.log("login userId", userId);
+
     const profile = await getUser({ userId }, idToken);
+    console.log("login profile", profile);
     if (profile) {
       dispatch(
         upsertProfiles({

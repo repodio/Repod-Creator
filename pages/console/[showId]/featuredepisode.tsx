@@ -36,9 +36,13 @@ const Dashboard = () => {
     return null;
   }
 
-  const featuredEpisode = find(
-    (episode: EpisodeItem) => episode.episodeId === featuredEpisodeId
-  )(show.episodes);
+  const featuredEpisode =
+    find((episode: EpisodeItem) => episode.episodeId === featuredEpisodeId)(
+      show.episodes
+    ) ||
+    find(
+      (episode: EpisodeItem) => episode.episodeId === show.featuredEpisodeId
+    )(show.episodes);
 
   const selectedEpisodeIsAlreadySaved =
     featuredEpisodeId === show.featuredEpisodeId;
@@ -111,30 +115,41 @@ const Dashboard = () => {
                 </Button.Tiny>
               </div>
             </div>
-            <div className="mt-2 rounded p-2 bg-repod-canvas-secondary border border-repod-border-light flex flex-row">
-              <img
-                style={{ width: 50, height: 50 }}
-                className="w-12 mr-2 rounded"
-                src={featuredEpisode.artworkUrl}
-                alt={`${featuredEpisode.title} artwork`}
-              />
-              <div className="flex flex-col justify-between">
-                <div className="flex flex-col">
-                  <p
-                    style={{ maxWidth: 170 }}
-                    className="text-sm text-repod-text-primary truncate"
-                  >
-                    {featuredEpisode.title}
-                  </p>
-                  <p
-                    style={{ maxWidth: 170 }}
-                    className="text-xs text-repod-text-secondary truncate"
-                  >
-                    {formatDuration(featuredEpisode.calculatedDuration)}
-                  </p>
+            {featuredEpisode ? (
+              <div className="mt-2 rounded p-2 bg-repod-canvas-secondary border border-repod-border-light flex flex-row">
+                <img
+                  style={{ width: 50, height: 50 }}
+                  className="w-12 mr-2 rounded"
+                  src={featuredEpisode.artworkUrl}
+                  alt={`${featuredEpisode.title} artwork`}
+                />
+                <div className="flex flex-col justify-between">
+                  <div className="flex flex-col">
+                    <p
+                      style={{ maxWidth: 170 }}
+                      className="text-sm text-repod-text-primary truncate"
+                    >
+                      {featuredEpisode.title}
+                    </p>
+                    <p
+                      style={{ maxWidth: 170 }}
+                      className="text-xs text-repod-text-secondary truncate"
+                    >
+                      {formatDuration(featuredEpisode.calculatedDuration)}
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
+            ) : (
+              <div className="mt-2 rounded p-2 bg-repod-canvas-secondary border-dashed bg-repod-canvas-secondary border-repod-border-light border-2 flex flex-row justify-center items-center">
+                <p
+                  style={{ maxWidth: 220 }}
+                  className="text-me text-repod-text-secondary text-center"
+                >
+                  Your featured episode will go here
+                </p>
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -176,11 +191,15 @@ const Dashboard = () => {
                   <p className="text-lg text-repod-text-primary font-bold">
                     {clipText(featuredEpisode.title, 300)}
                   </p>
-                  <X
-                    onClick={() => setFeaturedEpisodeId(null)}
-                    size={24}
-                    className="stroke-current text-repod-text-secondary ml-2 cursor-pointer"
-                  />
+                  {!selectedEpisodeIsAlreadySaved ? (
+                    <X
+                      onClick={() =>
+                        setFeaturedEpisodeId(show.featuredEpisodeId)
+                      }
+                      size={24}
+                      className="stroke-current text-repod-text-secondary ml-2 cursor-pointer"
+                    />
+                  ) : null}
                 </div>
 
                 <p className="text-md text-repod-text-secondary">

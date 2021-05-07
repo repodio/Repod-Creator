@@ -50,8 +50,6 @@ export const fromNow = (incomingDate) => {
 };
 
 export const formatIntegers = (num, fixed = 1) => {
-  console.log("num", num, typeof num, num.toPrecision);
-
   if (num === null) {
     return null;
   } // terminate early
