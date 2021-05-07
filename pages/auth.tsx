@@ -105,7 +105,6 @@ const SignUp = ({ handleToggleSignupMode, authError, setAuthError }) => {
 
 const LogIn = ({ handleToggleSignupMode, authError, setAuthError }) => {
   const { signIn } = useAuth();
-  console.log("auth");
 
   const {
     register,
@@ -113,7 +112,6 @@ const LogIn = ({ handleToggleSignupMode, authError, setAuthError }) => {
     formState: { errors },
   } = useForm<Inputs>();
   const onSubmit = async ({ email, password }) => {
-    console.log("signIn onSubmit");
     const response = await signIn({
       email,
       password,

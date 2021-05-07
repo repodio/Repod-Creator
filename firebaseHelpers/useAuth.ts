@@ -4,7 +4,6 @@ import { setUser } from "utils/repodAPI";
 import { get } from "lodash/fp";
 import { useDispatch } from "react-redux";
 import { login, logout } from "modules/Auth";
-import { getIdToken } from "firebaseHelpers/getIdToken";
 
 const signInWithProvider = async (provider) => {
   try {
@@ -16,16 +15,13 @@ const signInWithProvider = async (provider) => {
     const providerDisplayName =
       get('providerData["0"].displayName')(user) || user.displayName;
 
-    const idToken = await (user && user.getIdToken && user.getIdToken());
-
     await setUser({
       email: providerEmail,
       displayName: providerDisplayName,
       userId: user.uid,
       twitterId: providerTwitterId,
     });
-    console.log("signInWithProvider user", user);
-    return response;
+    return;
   } catch (error) {
     console.log("signInWithProvider error", error);
     return { error };
@@ -53,7 +49,7 @@ const TwitterSignIn = () => {
 export const useAuth = () => {
   const dispatch = useDispatch();
   const auth = firebase.auth();
-  console.log("useAuth called");
+
   return {
     signIn: async ({
       email,
@@ -63,8 +59,11 @@ export const useAuth = () => {
       email?: string;
       password?: string;
       provider?: string;
-    }) => {
-      console.log("signIn");
+    }): Promise<{
+      error?: {
+        code: "";
+      };
+    }> => {
       if (email && password) {
         try {
           const response = await auth.signInWithEmailAndPassword(
@@ -75,7 +74,7 @@ export const useAuth = () => {
 
           dispatch(login({ userId }));
 
-          return response.user;
+          return;
         } catch (error) {
           return { error };
         }
@@ -93,7 +92,6 @@ export const useAuth = () => {
       }
     },
     signOut: () => {
-      console.log("signing out");
       dispatch(logout());
       auth.signOut();
     },
@@ -107,7 +105,11 @@ export const useAuth = () => {
       password?: string;
       name?: string;
       provider?: string;
-    }) => {
+    }): Promise<{
+      error?: {
+        code: "";
+      };
+    }> => {
       try {
         if (email && password) {
           const response = await auth.createUserWithEmailAndPassword(
@@ -123,7 +125,7 @@ export const useAuth = () => {
             userId: user.uid,
           });
 
-          return response;
+          return;
         } else if (provider) {
           switch (provider) {
             case AUTH_PROVIDERS.apple:
