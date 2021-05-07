@@ -78,10 +78,13 @@ const fetchShowData = async (
   return data;
 };
 
-const getEpisodes = async ({ showId }) => {
+const getEpisodes = async ({ showId, cursor }) => {
   const response = await fetch(
-    `${API_DOMAIN}/v1/${ROUTES.claimShow}/${showId}/episodes`,
+    `${API_DOMAIN}/v1/${ROUTES.claimShow}/${showId}/episodes${
+      cursor ? `?cursor=${cursor}` : ""
+    }`,
     {
+      method: "GET",
       headers: await getHeaders(),
     }
   ).then((data) => data.json());

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import { withAuthUser, AuthAction } from "next-firebase-auth";
 import { selectors as showsSelectors, fetchShowEpisodes } from "modules/Shows";
 import { useRouter } from "next/router";
@@ -15,7 +15,17 @@ const Dashboard = () => {
   const showIdString = showId as string;
 
   const show = useSelector(showsSelectors.getShowById(showIdString));
+  const loadingEpisodes = useSelector(showsSelectors.getShowEpisodesLoading);
+
   const dispatch = useDispatch<ThunkDispatch<{}, undefined, Action>>();
+
+  console.log("showIdString", showIdString);
+
+  const fetchData = useCallback(
+    (pageIndex) =>
+      dispatch(fetchShowEpisodes({ showId: showIdString, pageIndex })),
+    [fetchShowEpisodes, showIdString]
+  );
 
   useEffect(() => {
     (async () => {
@@ -23,7 +33,7 @@ const Dashboard = () => {
         router.replace(`/`);
       }
       if (!show.episodes) {
-        await dispatch(fetchShowEpisodes(showId));
+        await fetchData(0);
       }
     })();
   }, []);
@@ -37,7 +47,12 @@ const Dashboard = () => {
         <p className="text-lg font-semibold text-repod-text-primary">
           All Episodes
         </p>
-        <EpisodesTable data={show.episodes} />
+        <EpisodesTable
+          data={show.episodes}
+          loading={loadingEpisodes}
+          total={show.total}
+          fetchData={fetchData}
+        />
       </div>
     </DashboardLayout>
   );

@@ -1,10 +1,21 @@
 import React from "react";
 import Table from "./table";
+import PaginationTable from "./paginationTable";
 import EmptyTable from "./emptyTable";
 
 import { fromNow } from "utils/formats";
 
-const EpisodesTable = ({ data }) => {
+const EpisodesTable = ({
+  data,
+  loading,
+  total,
+  fetchData,
+}: {
+  data: EpisodeItem[];
+  loading?: boolean;
+  total?: number;
+  fetchData?: (pageIndex: number) => void;
+}) => {
   const columns = React.useMemo(
     () => [
       {
@@ -54,6 +65,20 @@ const EpisodesTable = ({ data }) => {
     ],
     []
   );
+
+  if (fetchData) {
+    return data && data.length ? (
+      <PaginationTable
+        data={data}
+        columns={columns}
+        loading={loading}
+        total={total}
+        fetchData={fetchData}
+      />
+    ) : (
+      <EmptyTable message="No episode data yet" />
+    );
+  }
 
   return data && data.length ? (
     <Table data={data} columns={columns} />

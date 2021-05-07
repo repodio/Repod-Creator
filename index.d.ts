@@ -36,6 +36,13 @@ interface ShowItem {
   featuredEpisodeId?: string;
 }
 
+interface ReduxShowItem extends ShowItem {
+  total?: number;
+  episodeCursors?: {
+    [key: number]: number;
+  };
+}
+
 interface ClaimedShowItems extends ShowItem {
   featuredEpisodeId: string;
   users: {

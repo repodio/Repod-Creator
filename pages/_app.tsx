@@ -12,6 +12,8 @@ function MyApp({ Component, pageProps }) {
   const store: any = useStore();
   const router = useRouter();
 
+  // store.__persistor && store.__persistor.purge();
+
   return (
     <Provider store={store}>
       <PersistGate persistor={store.__persistor}>
