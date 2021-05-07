@@ -4,7 +4,7 @@ import shows, { StateType as ShowsStateType } from "modules/Shows";
 import auth, { StateType as AuthStateType } from "modules/Auth";
 import profile, { StateType as ProfileStateType } from "modules/Profile";
 
-import { createStore, applyMiddleware, combineReducers } from "redux";
+import { createStore, applyMiddleware, combineReducers, Store } from "redux";
 import { createWrapper } from "next-redux-wrapper";
 
 const middlewareCollection = [thunk];
@@ -32,7 +32,8 @@ const bindMiddleware = (middleware) => {
   return applyMiddleware(...middleware);
 };
 
-const makeStore = ({ isServer }) => {
+const makeStore = () => {
+  const isServer = typeof window === "undefined";
   if (isServer) {
     //If it's on server side, create a store
     return createStore(combinedReducer, bindMiddleware(middlewareCollection));
@@ -49,7 +50,7 @@ const makeStore = ({ isServer }) => {
 
     const persistedReducer = persistReducer(persistConfig, combinedReducer); // Create a new reducer with our existing reducer
 
-    const store = createStore(
+    const store: Store & { __persistor: any } = createStore(
       persistedReducer,
       bindMiddleware(middlewareCollection)
     ); // Creating the store again

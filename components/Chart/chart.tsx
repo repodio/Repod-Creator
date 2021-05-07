@@ -1,5 +1,6 @@
 import React from "react";
 import { ResponsiveLine } from "@nivo/line";
+// @ts-ignore
 import { linearGradientDef } from "@nivo/core";
 
 const ChartComponent = ({ data }) => (

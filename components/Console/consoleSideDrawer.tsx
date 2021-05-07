@@ -63,8 +63,8 @@ const ConsoleSideDrawer = () => {
   const openMenu = () => {
     setExpanded(true);
   };
-  const closeMenu = () => {
-    setExpanded(false);
+  const toggleMenu = () => {
+    setExpanded(!expanded);
   };
   return (
     <div
@@ -93,20 +93,25 @@ const ConsoleSideDrawer = () => {
       </div>
       <div>
         <div className="py-4">
-          <ProfileDropdown lightMode={false} expanded={expanded} />
+          <ProfileDropdown
+            lightMode={false}
+            expanded={expanded}
+            openMenu={openMenu}
+          />
         </div>
         <div className="h-0 border border-solid border-t-0 border-repod-border-dark" />
 
-        <div className="flex flex-col justify-end items-end p-4 cursor-pointer hover:opacity-50 transition">
+        <div
+          onClick={toggleMenu}
+          className="flex flex-col justify-end items-end p-4 cursor-pointer hover:opacity-50 transition"
+        >
           {expanded ? (
             <ChevronLeft
-              onClick={closeMenu}
               className={`stroke-current text-repod-text-secondary`}
               size={24}
             />
           ) : (
             <ChevronRight
-              onClick={openMenu}
               className={`stroke-current text-repod-text-secondary`}
               size={24}
             />

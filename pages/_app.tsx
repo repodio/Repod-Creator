@@ -14,10 +14,7 @@ function MyApp({ Component, pageProps }) {
 
   return (
     <Provider store={store}>
-      <PersistGate
-        persistor={store.__persistor}
-        // loading={null}
-      >
+      <PersistGate persistor={store.__persistor}>
         {router.pathname.startsWith("/console/") ? (
           <ConsoleLayout>
             <Component {...pageProps} />
@@ -29,7 +26,5 @@ function MyApp({ Component, pageProps }) {
     </Provider>
   );
 }
-
-// export default MyApp;
 
 export default wrapper.withRedux(MyApp);

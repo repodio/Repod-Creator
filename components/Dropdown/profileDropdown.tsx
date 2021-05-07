@@ -8,9 +8,11 @@ import { MoreHorizontal } from "react-feather";
 const ProfileDropdown = ({
   lightMode = true,
   expanded = true,
+  openMenu,
 }: {
   lightMode: boolean;
-  expanded: boolean;
+  expanded?: boolean;
+  openMenu?: () => void;
 }) => {
   const profile = useSelector(authSelectors.getAuthedProfile);
 
