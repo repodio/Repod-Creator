@@ -1,11 +1,17 @@
-import { Fragment, useEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useAuth } from "firebaseHelpers/useAuth";
 import { selectors as authSelectors } from "modules/Auth";
 import { Menu, Transition } from "@headlessui/react";
 import { MoreHorizontal } from "react-feather";
 
-const ProfileDropdown = ({ lightMode = true }: { lightMode: boolean }) => {
+const ProfileDropdown = ({
+  lightMode = true,
+  expanded = true,
+}: {
+  lightMode: boolean;
+  expanded: boolean;
+}) => {
   const profile = useSelector(authSelectors.getAuthedProfile);
 
   const { signOut } = useAuth();
@@ -32,18 +38,24 @@ const ProfileDropdown = ({ lightMode = true }: { lightMode: boolean }) => {
               <Menu.Button className="inline-flex justify-between items-center w-full px-4 py-2 text-lg text-repod-text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
                 <div className="flex flex-row justify-center items-center">
                   <img
-                    className="w-10 mr-4 rounded-full"
+                    className="w-10 rounded-full"
                     src={profile.avatarUrl}
                     alt="Repod Logo"
                   />
-                  <p className={`text-md ${color}`}>{profile.displayName}</p>
+                  {expanded ? (
+                    <p className={`ml-4 text-md ${color}`}>
+                      {profile.displayName}
+                    </p>
+                  ) : null}
                 </div>
-                <div>
-                  <MoreHorizontal
-                    className="stroke-current text-repod-text-alternative"
-                    size={24}
-                  />
-                </div>
+                {expanded ? (
+                  <div>
+                    <MoreHorizontal
+                      className="stroke-current text-repod-text-alternative"
+                      size={24}
+                    />
+                  </div>
+                ) : null}
               </Menu.Button>
             </div>
             <Transition

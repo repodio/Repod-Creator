@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import { BarChart2, Settings, ChevronLeft } from "react-feather";
 import { ProfileDropdown } from "components/Dropdown";
@@ -12,46 +12,62 @@ const NavigationLink = ({
   IconComponent,
   label = "",
   isSelected = false,
+  expanded,
 }) => (
   <Link href={destination}>
     <a
       className={`rounded-md mx-4 my-2 transition ${
-        isSelected ? "bg-white-100" : "bg-repod-canvas-dark"
+        isSelected && expanded ? "bg-white-100" : "bg-repod-canvas-dark"
       }  hover:bg-white-100`}
     >
-      <div className="w-full p-4 flex flex-row">
-        <IconComponent
-          className={`mr-2 stroke-current transition ${
-            isSelected ? "text-repod-tint" : "text-repod-text-alternative"
-          }`}
-          size={24}
-        />
-        <p
-          className={`transition ${
-            isSelected ? "text-repod-tint" : "text-repod-text-alternative"
-          }`}
-        >
-          {label}
-        </p>
-      </div>
+      {expanded ? (
+        <div className="w-full p-3 flex flex-row">
+          <IconComponent
+            className={`mr-2 stroke-current transition ${
+              isSelected ? "text-repod-tint" : "text-repod-text-alternative"
+            }`}
+            size={24}
+          />
+
+          <p
+            className={`transition ${
+              isSelected ? "text-repod-tint" : "text-repod-text-alternative"
+            }`}
+          >
+            {label}
+          </p>
+        </div>
+      ) : (
+        <div className="w-full m-3 flex flex-row">
+          <IconComponent
+            className={`mr-2 stroke-current transition ${
+              isSelected ? "text-repod-tint" : "text-repod-text-alternative"
+            }`}
+            size={24}
+          />
+        </div>
+      )}
     </a>
   </Link>
 );
 
 const ConsoleSideDrawer = () => {
+  const [expanded, setExpanded] = useState(true);
   const router = useRouter();
   const { showId } = router.query;
   const show = useSelector(showsSelectors.getShowById(showId));
 
   const route = router.pathname.replace("/console/[showId]", "");
 
+  const width = expanded ? 340 : 80;
+
   return (
     <div
-      style={{ minWidth: 340 }}
+      style={{ minWidth: width, width }}
       className="bg-repod-canvas-dark h-full flex flex-col"
     >
       <div className="my-4">
-        <ShowSelector show={show} />
+        <ShowSelector show={show} expanded={expanded} />
       </div>
       <div className="h-0 border border-solid border-t-0 border-repod-border-dark" />
       <div className="w-full flex flex-col mt-12 flex-1">
@@ -60,22 +76,27 @@ const ConsoleSideDrawer = () => {
           destination={`/console/${router.query.showId}/`}
           label="Dashboard"
           IconComponent={BarChart2}
+          expanded={expanded}
         />
         <NavigationLink
           isSelected={route === "/settings"}
           destination={`/console/${router.query.showId}/settings`}
           label="Settings"
           IconComponent={Settings}
+          expanded={expanded}
         />
       </div>
       <div>
         <div className="py-4">
-          <ProfileDropdown lightMode={false} />
+          <ProfileDropdown lightMode={false} expanded={expanded} />
         </div>
         <div className="h-0 border border-solid border-t-0 border-repod-border-dark" />
 
         <div className="flex flex-col justify-end items-end p-4">
           <ChevronLeft
+            onClick={() => {
+              setExpanded(!expanded);
+            }}
             className="stroke-current text-repod-text-secondary"
             size={24}
           />

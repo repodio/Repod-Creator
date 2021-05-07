@@ -6,7 +6,13 @@ import { useSelector } from "react-redux";
 import { map } from "lodash/fp";
 import { Loader } from "components/Loading";
 
-const ShowSelector = ({ show }: { show: ShowItem }) => {
+const ShowSelector = ({
+  show,
+  expanded,
+}: {
+  show: ShowItem;
+  expanded: boolean;
+}) => {
   const [dropdownPopoverShow, setDropdownPopoverShow] = useState(false);
   const shows = useSelector(showsSelectors.getClaimedShows);
 
@@ -45,14 +51,18 @@ const ShowSelector = ({ show }: { show: ShowItem }) => {
             src={show.artworkUrl}
             alt="Repod Logo"
           />
-          <p className="ml-4 text-xl text-repod-text-alternative font-bold truncate">
-            {show.title}
-          </p>
+          {expanded ? (
+            <p className="ml-4 text-xl text-repod-text-alternative font-bold truncate">
+              {show.title}
+            </p>
+          ) : null}
         </div>
-        <ChevronDown
-          className="stroke-current text-repod-text-secondary"
-          size={24}
-        />
+        {expanded ? (
+          <ChevronDown
+            className="stroke-current text-repod-text-secondary"
+            size={24}
+          />
+        ) : null}
       </button>
       <div className="h-2" ref={destinationDropdownRef} />
       <div
