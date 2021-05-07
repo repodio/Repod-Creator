@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Link from "next/link";
-import { BarChart2, Settings, ChevronLeft } from "react-feather";
+import { BarChart2, Settings, ChevronLeft, ChevronRight } from "react-feather";
 import { ProfileDropdown } from "components/Dropdown";
 import { ShowSelector } from "components/Console";
 import { useRouter } from "next/router";
@@ -60,14 +60,19 @@ const ConsoleSideDrawer = () => {
   const route = router.pathname.replace("/console/[showId]", "");
 
   const width = expanded ? 340 : 80;
-
+  const openMenu = () => {
+    setExpanded(true);
+  };
+  const closeMenu = () => {
+    setExpanded(false);
+  };
   return (
     <div
       style={{ minWidth: width, width }}
       className="bg-repod-canvas-dark h-full flex flex-col"
     >
       <div className="my-4">
-        <ShowSelector show={show} expanded={expanded} />
+        <ShowSelector show={show} expanded={expanded} openMenu={openMenu} />
       </div>
       <div className="h-0 border border-solid border-t-0 border-repod-border-dark" />
       <div className="w-full flex flex-col mt-12 flex-1">
@@ -92,14 +97,20 @@ const ConsoleSideDrawer = () => {
         </div>
         <div className="h-0 border border-solid border-t-0 border-repod-border-dark" />
 
-        <div className="flex flex-col justify-end items-end p-4">
-          <ChevronLeft
-            onClick={() => {
-              setExpanded(!expanded);
-            }}
-            className="stroke-current text-repod-text-secondary"
-            size={24}
-          />
+        <div className="flex flex-col justify-end items-end p-4 cursor-pointer hover:opacity-50 transition">
+          {expanded ? (
+            <ChevronLeft
+              onClick={closeMenu}
+              className={`stroke-current text-repod-text-secondary`}
+              size={24}
+            />
+          ) : (
+            <ChevronRight
+              onClick={openMenu}
+              className={`stroke-current text-repod-text-secondary`}
+              size={24}
+            />
+          )}
         </div>
       </div>
     </div>

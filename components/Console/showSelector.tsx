@@ -1,4 +1,4 @@
-import React, { createRef, useState } from "react";
+import React, { createRef, useEffect, useState } from "react";
 import { ChevronDown } from "react-feather";
 import { createPopper } from "@popperjs/core";
 import { selectors as showsSelectors } from "modules/Shows";
@@ -9,16 +9,25 @@ import { Loader } from "components/Loading";
 const ShowSelector = ({
   show,
   expanded,
+  openMenu,
 }: {
   show: ShowItem;
   expanded: boolean;
+  openMenu: () => void;
 }) => {
   const [dropdownPopoverShow, setDropdownPopoverShow] = useState(false);
   const shows = useSelector(showsSelectors.getClaimedShows);
 
+  useEffect(() => {
+    if (!expanded) {
+      setDropdownPopoverShow(false);
+    }
+  }, [expanded]);
+
   const destinationDropdownRef = createRef<HTMLDivElement>();
   const popoverDropdownRef = createRef<HTMLDivElement>();
   const openDropdownPopover = () => {
+    openMenu();
     createPopper(destinationDropdownRef.current, popoverDropdownRef.current, {
       placement: "bottom-start",
     });
