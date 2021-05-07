@@ -19,8 +19,6 @@ const Dashboard = () => {
 
   const dispatch = useDispatch<ThunkDispatch<{}, undefined, Action>>();
 
-  console.log("showIdString", showIdString);
-
   const fetchData = useCallback(
     (pageIndex) =>
       dispatch(fetchShowEpisodes({ showId: showIdString, pageIndex })),

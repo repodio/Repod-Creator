@@ -30,10 +30,10 @@ const DashboardLayout = ({ children }) => {
   const { showId } = router.query;
 
   const splitLink = router.asPath.split("/");
-  console.log("splitLink", router);
   const viewFollowers = splitLink[3] && splitLink[3] === "followers";
   const viewEpisodes = splitLink[3] && splitLink[3] === "episodes";
   const viewOverview = !viewFollowers && !viewEpisodes;
+
   return (
     <>
       <div className="">
@@ -51,11 +51,11 @@ const DashboardLayout = ({ children }) => {
             isSelected={viewFollowers}
             destination={`/console/${showId}/followers`}
           />
-          <NavigationLink
+          {/* <NavigationLink
             label="Episodes"
             isSelected={viewEpisodes}
             destination={`/console/${showId}/episodes`}
-          />
+          /> */}
         </div>
         <div className="h-0 border border-solid border-t-0 border-repod-border-light" />
       </div>

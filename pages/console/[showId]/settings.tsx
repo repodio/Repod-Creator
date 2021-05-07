@@ -14,11 +14,7 @@ const Dashboard = () => {
     return <LoadingScreen />;
   }
 
-  return (
-    <>
-      <p>settings</p>
-    </>
-  );
+  return <></>;
 };
 
 export default withAuthUser({
