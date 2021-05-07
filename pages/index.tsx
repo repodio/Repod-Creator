@@ -15,7 +15,7 @@ const Home = () => {
 
   useEffect(() => {
     (async () => {
-      if (!storedProfile) {
+      if (!storedProfile || !storedProfile.displayName) {
         const profile = await dispatch(login({ userId: AuthUser.id }));
         if (!profile) {
           console.error("Home couldnt find user", AuthUser.id);

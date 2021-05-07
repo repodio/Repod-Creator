@@ -31,7 +31,7 @@ const FormInput = ({
         {label}
       </label>
       <input
-        className={`w-full text-lg px-6 h-12 border-2 font-bold rounded border-repod-text-primary text-repod-text-primary focus:border-info ${
+        className={`w-full text-lg px-6 h-12 border-2 font-semibold rounded border-repod-text-primary text-repod-text-primary focus:border-info ${
           error ? "border-danger" : ""
         }`}
         type={type}

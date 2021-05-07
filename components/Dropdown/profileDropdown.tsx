@@ -4,6 +4,7 @@ import { useAuth } from "firebaseHelpers/useAuth";
 import { selectors as authSelectors } from "modules/Auth";
 import { Menu, Transition } from "@headlessui/react";
 import { MoreHorizontal } from "react-feather";
+import { ProfileAvatar } from "components/Images";
 
 const ProfileDropdown = ({
   lightMode = true,
@@ -39,11 +40,7 @@ const ProfileDropdown = ({
             <div>
               <Menu.Button className="inline-flex justify-between items-center w-full px-4 py-2 text-lg text-repod-text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
                 <div className="flex flex-row justify-center items-center">
-                  <img
-                    className="w-10 rounded-full"
-                    src={profile.avatarUrl}
-                    alt="Repod Logo"
-                  />
+                  <ProfileAvatar url={profile.avatarUrl} />
                   {expanded ? (
                     <p className={`ml-4 text-md ${color}`}>
                       {profile.displayName}

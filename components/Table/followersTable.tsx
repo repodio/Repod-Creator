@@ -2,6 +2,7 @@ import React from "react";
 import Table from "./table";
 import { fromNow } from "utils/formats";
 import EmptyTable from "./emptyTable";
+import { ProfileAvatar } from "components/Images";
 
 const FollowersTable = ({ data }) => {
   const columns = React.useMemo(
@@ -10,23 +11,19 @@ const FollowersTable = ({ data }) => {
         Header: "",
         Cell: (row) => (
           <>
-            <img
-              className="w-10 h-10 object-cover rounded-full"
-              src={row.cell.value}
-              alt="Repod Logo"
-            />
+            <ProfileAvatar url={row.cell.value} />
           </>
         ),
         width: 24,
-        accessor: "avatarUrl", // accessor is the "key" in the data
+        accessor: "avatarUrl",
       },
       {
         Header: "Name",
-        accessor: "displayName", // accessor is the "key" in the data
+        accessor: "displayName",
       },
       {
         Header: "Email",
-        accessor: "email", // accessor is the "key" in the data
+        accessor: "email",
       },
       // {
       //   Header: () => <div style={{ textAlign: "right" }}>Streams</div>,
