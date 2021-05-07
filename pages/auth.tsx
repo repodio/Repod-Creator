@@ -117,7 +117,7 @@ const LogIn = ({ handleToggleSignupMode, authError, setAuthError }) => {
       password,
     });
 
-    if (response.error) {
+    if (response && response.error) {
       const errorMessage =
         AUTH_ERROR_CODES[response.error.code] ||
         "Something went wrong. Try again later";

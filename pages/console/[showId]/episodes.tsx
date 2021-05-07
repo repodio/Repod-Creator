@@ -7,6 +7,7 @@ import { DashboardLayout } from "components/Layouts";
 import { useDispatch, useSelector } from "react-redux";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
+import { LoadingScreen } from "components/Loading";
 
 const Dashboard = () => {
   const router = useRouter();
@@ -43,6 +44,7 @@ const Dashboard = () => {
 };
 
 export default withAuthUser({
-  whenUnauthedBeforeInit: AuthAction.RETURN_NULL,
+  whenUnauthedBeforeInit: AuthAction.SHOW_LOADER,
   whenUnauthedAfterInit: AuthAction.REDIRECT_TO_LOGIN,
+  LoaderComponent: LoadingScreen,
 })(Dashboard);

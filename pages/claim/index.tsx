@@ -10,6 +10,7 @@ import { claimShow } from "utils/repodAPI";
 import { useForm } from "react-hook-form";
 import { FormInput } from "components/Inputs";
 import { useRouter } from "next/router";
+import { LoadingScreen } from "components/Loading";
 
 interface ClaimProps {
   children: JSX.Element[] | JSX.Element;
@@ -372,6 +373,7 @@ const Claim = ({}: ClaimProps) => {
 };
 
 export default withAuthUser({
-  whenUnauthedBeforeInit: AuthAction.RETURN_NULL,
+  whenUnauthedBeforeInit: AuthAction.SHOW_LOADER,
   whenUnauthedAfterInit: AuthAction.REDIRECT_TO_LOGIN,
+  LoaderComponent: LoadingScreen,
 })(Claim);

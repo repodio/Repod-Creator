@@ -13,6 +13,7 @@ import Link from "next/link";
 import find from "lodash/fp/find";
 import { clipText } from "utils/textTransform";
 import { formatDuration } from "utils/formats";
+import { LoadingScreen } from "components/Loading";
 
 const Dashboard = () => {
   const router = useRouter();
@@ -212,6 +213,7 @@ const Dashboard = () => {
 };
 
 export default withAuthUser({
-  whenUnauthedBeforeInit: AuthAction.RETURN_NULL,
+  whenUnauthedBeforeInit: AuthAction.SHOW_LOADER,
   whenUnauthedAfterInit: AuthAction.REDIRECT_TO_LOGIN,
+  LoaderComponent: LoadingScreen,
 })(Dashboard);

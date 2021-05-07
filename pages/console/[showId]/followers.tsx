@@ -7,6 +7,7 @@ import { DashboardLayout } from "components/Layouts";
 import { useSelector } from "react-redux";
 import { Chart } from "components/Chart";
 import { OptionsDropdown } from "components/Dropdown";
+import { LoadingScreen } from "components/Loading";
 
 const TOTAL_CHART_LENGTH = 365;
 
@@ -101,6 +102,7 @@ const Dashboard = () => {
 };
 
 export default withAuthUser({
-  whenUnauthedBeforeInit: AuthAction.RETURN_NULL,
+  whenUnauthedBeforeInit: AuthAction.SHOW_LOADER,
   whenUnauthedAfterInit: AuthAction.REDIRECT_TO_LOGIN,
+  LoaderComponent: LoadingScreen,
 })(Dashboard);
