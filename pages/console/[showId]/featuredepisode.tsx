@@ -14,6 +14,7 @@ import find from "lodash/fp/find";
 import { clipText } from "utils/textTransform";
 import { formatDuration } from "utils/formats";
 import { LoadingScreen } from "components/Loading";
+import { useMediaQuery } from "react-responsive";
 
 const Dashboard = () => {
   const router = useRouter();
@@ -24,6 +25,7 @@ const Dashboard = () => {
   const [featuredEpisodeId, setFeaturedEpisodeId] = useState(
     show ? show.featuredEpisodeId : null
   );
+  const isMobile = useMediaQuery({ query: "(max-width: 1224px)" });
 
   useEffect(() => {
     (async () => {
@@ -68,91 +70,93 @@ const Dashboard = () => {
 
   return (
     <div className="flex flex-row justify-center items-start">
-      <div className="mt-24">
-        <div className="relative">
-          <img
-            style={{ maxWidth: 412 }}
-            className=""
-            src="/claim-mock-phone2.png"
-            alt={`${show.title} app mock up`}
-          />
-          <div
-            className="absolute"
-            style={{
-              top: 98,
-              left: 84,
-            }}
-          >
-            <div className="flex flex-row">
-              <img
-                style={{ width: 84, height: 84 }}
-                className="w-12 mr-4 rounded"
-                src={show.artworkUrl}
-                alt={`${show.title} artwork`}
-              />
-              <div className="flex flex-col justify-between">
-                <div className="flex flex-col">
-                  <p
-                    style={{ maxWidth: 150 }}
-                    className="text-lg font-bold truncate"
-                  >
-                    {show.title}
-                  </p>
-                  <div className="flex flex-row justify-start items-center">
-                    <img
-                      style={{ width: 9, height: 8 }}
-                      src="/icons/claimed-icon.svg"
-                      alt="claim icon"
-                    />
-                    <p className="text-sm text-info ml-1">Claimed</p>
-                  </div>
-                </div>
-
-                <Button.Tiny
-                  className={`bg-repod-tint text-repod-text-alternative border-2 border-repod-tint transition`}
-                >
-                  Follow
-                </Button.Tiny>
-              </div>
-            </div>
-            {featuredEpisode ? (
-              <div className="mt-2 rounded p-2 bg-repod-canvas-secondary border border-repod-border-light flex flex-row">
+      {!isMobile ? (
+        <div className="mt-24">
+          <div className="relative">
+            <img
+              style={{ maxWidth: 412 }}
+              className=""
+              src="/claim-mock-phone2.png"
+              alt={`${show.title} app mock up`}
+            />
+            <div
+              className="absolute"
+              style={{
+                top: 98,
+                left: 84,
+              }}
+            >
+              <div className="flex flex-row">
                 <img
-                  style={{ width: 50, height: 50 }}
-                  className="w-12 mr-2 rounded"
-                  src={featuredEpisode.artworkUrl}
-                  alt={`${featuredEpisode.title} artwork`}
+                  style={{ width: 84, height: 84 }}
+                  className="w-12 mr-4 rounded"
+                  src={show.artworkUrl}
+                  alt={`${show.title} artwork`}
                 />
                 <div className="flex flex-col justify-between">
                   <div className="flex flex-col">
                     <p
-                      style={{ maxWidth: 170 }}
-                      className="text-sm text-repod-text-primary truncate"
+                      style={{ maxWidth: 150 }}
+                      className="text-lg font-bold truncate"
                     >
-                      {featuredEpisode.title}
+                      {show.title}
                     </p>
-                    <p
-                      style={{ maxWidth: 170 }}
-                      className="text-xs text-repod-text-secondary truncate"
-                    >
-                      {formatDuration(featuredEpisode.calculatedDuration)}
-                    </p>
+                    <div className="flex flex-row justify-start items-center">
+                      <img
+                        style={{ width: 9, height: 8 }}
+                        src="/icons/claimed-icon.svg"
+                        alt="claim icon"
+                      />
+                      <p className="text-sm text-info ml-1">Claimed</p>
+                    </div>
                   </div>
+
+                  <Button.Tiny
+                    className={`bg-repod-tint text-repod-text-alternative border-2 border-repod-tint transition`}
+                  >
+                    Follow
+                  </Button.Tiny>
                 </div>
               </div>
-            ) : (
-              <div className="mt-2 rounded p-2 bg-repod-canvas-secondary border-dashed bg-repod-canvas-secondary border-repod-border-light border-2 flex flex-row justify-center items-center">
-                <p
-                  style={{ maxWidth: 220 }}
-                  className="text-me text-repod-text-secondary text-center"
-                >
-                  Your featured episode will go here
-                </p>
-              </div>
-            )}
+              {featuredEpisode ? (
+                <div className="mt-2 rounded p-2 bg-repod-canvas-secondary border border-repod-border-light flex flex-row">
+                  <img
+                    style={{ width: 50, height: 50 }}
+                    className="w-12 mr-2 rounded"
+                    src={featuredEpisode.artworkUrl}
+                    alt={`${featuredEpisode.title} artwork`}
+                  />
+                  <div className="flex flex-col justify-between">
+                    <div className="flex flex-col">
+                      <p
+                        style={{ maxWidth: 170 }}
+                        className="text-sm text-repod-text-primary truncate"
+                      >
+                        {featuredEpisode.title}
+                      </p>
+                      <p
+                        style={{ maxWidth: 170 }}
+                        className="text-xs text-repod-text-secondary truncate"
+                      >
+                        {formatDuration(featuredEpisode.calculatedDuration)}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className="mt-2 rounded p-2 bg-repod-canvas-secondary border-dashed bg-repod-canvas-secondary border-repod-border-light border-2 flex flex-row justify-center items-center">
+                  <p
+                    style={{ maxWidth: 220 }}
+                    className="text-me text-repod-text-secondary text-center"
+                  >
+                    Your featured episode will go here
+                  </p>
+                </div>
+              )}
+            </div>
           </div>
         </div>
-      </div>
+      ) : null}
       <div className="p-4 w-full">
         <Link href={`/console/${showId}/`}>
           <a
