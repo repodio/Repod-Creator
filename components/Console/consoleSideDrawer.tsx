@@ -6,6 +6,7 @@ import { ShowSelector } from "components/Console";
 import { useRouter } from "next/router";
 import { useSelector } from "react-redux";
 import { selectors as showsSelectors } from "modules/Shows";
+import { useMediaQuery } from "react-responsive";
 
 const NavigationLink = ({
   destination = "",
@@ -52,7 +53,8 @@ const NavigationLink = ({
 );
 
 const ConsoleSideDrawer = () => {
-  const [expanded, setExpanded] = useState(true);
+  const isMobile = useMediaQuery({ query: "(max-width: 1224px)" });
+  const [expanded, setExpanded] = useState(isMobile ? false : true);
   const router = useRouter();
   const { showId } = router.query;
   const show = useSelector(showsSelectors.getShowById(showId));

@@ -52,7 +52,6 @@ const Dashboard = () => {
 
   const timeframe = TIME_OPTIONS[timeframeIndex];
 
-  const followers = show.followers || [];
   const chartData = show.yearlyFollowData.slice(
     TOTAL_CHART_LENGTH - timeframe.days,
     TOTAL_CHART_LENGTH
@@ -95,7 +94,6 @@ const Dashboard = () => {
         <p className="text-lg font-semibold text-repod-text-primary">
           All Followers
         </p>
-        <FollowersTable data={followers} />
       </div>
     </DashboardLayout>
   );

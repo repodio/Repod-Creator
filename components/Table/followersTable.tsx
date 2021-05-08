@@ -3,10 +3,30 @@ import Table from "./table";
 import { fromNow } from "utils/formats";
 import EmptyTable from "./emptyTable";
 import { ProfileAvatar } from "components/Images";
+import { useMediaQuery } from "react-responsive";
 
 const FollowersTable = ({ data }) => {
-  const columns = React.useMemo(
-    () => [
+  const isMobile = useMediaQuery({ query: "(max-width: 1224px)" });
+
+  const columns = React.useMemo(() => {
+    if (isMobile) {
+      return [
+        {
+          Header: "Name",
+          accessor: "displayName",
+        },
+        {
+          Header: () => <div style={{ textAlign: "right" }}>Followed On</div>,
+          Cell: (row) => (
+            <div style={{ textAlign: "right" }}>{fromNow(row.value)}</div>
+          ),
+          accessor: "createdOn",
+          width: 80,
+        },
+      ];
+    }
+
+    return [
       {
         Header: "",
         Cell: (row) => (
@@ -22,22 +42,6 @@ const FollowersTable = ({ data }) => {
         accessor: "displayName",
       },
       {
-        Header: "Email",
-        accessor: "email",
-      },
-      // {
-      //   Header: () => <div style={{ textAlign: "right" }}>Streams</div>,
-      //   accessor: "streams",
-      //   width: 48,
-      //   Cell: (row) => <div style={{ textAlign: "right" }}>{row.value}</div>,
-      // },
-      // {
-      //   Header: () => <div style={{ textAlign: "right" }}>Comments</div>,
-      //   accessor: "comments",
-      //   width: 48,
-      //   Cell: (row) => <div style={{ textAlign: "right" }}>{row.value}</div>,
-      // },
-      {
         Header: () => <div style={{ textAlign: "right" }}>Followed On</div>,
         Cell: (row) => (
           <div style={{ textAlign: "right" }}>{fromNow(row.value)}</div>
@@ -45,9 +49,8 @@ const FollowersTable = ({ data }) => {
         accessor: "createdOn",
         width: 80,
       },
-    ],
-    []
-  );
+    ];
+  }, [isMobile]);
 
   return data && data.length ? (
     <Table data={data} columns={columns} />

@@ -2,8 +2,8 @@ import React from "react";
 import Table from "./table";
 import PaginationTable from "./paginationTable";
 import EmptyTable from "./emptyTable";
-
 import { fromNow } from "utils/formats";
+import { useMediaQuery } from "react-responsive";
 
 const EpisodesTable = ({
   data,
@@ -16,8 +16,19 @@ const EpisodesTable = ({
   total?: number;
   fetchData?: (pageIndex: number) => void;
 }) => {
-  const columns = React.useMemo(
-    () => [
+  const isMobile = useMediaQuery({ query: "(max-width: 1224px)" });
+
+  const columns = React.useMemo(() => {
+    if (isMobile) {
+      return [
+        {
+          Header: "Title",
+          accessor: "title",
+        },
+      ];
+    }
+
+    return [
       {
         Header: "",
         Cell: (row) => (
@@ -62,9 +73,8 @@ const EpisodesTable = ({
         accessor: "date",
         width: 80,
       },
-    ],
-    []
-  );
+    ];
+  }, [isMobile]);
 
   if (fetchData) {
     return data && data.length ? (

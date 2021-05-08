@@ -13,6 +13,7 @@ import { Chart } from "components/Chart";
 import { FollowersTable, EpisodesTable } from "components/Table";
 import { ArrowRight } from "react-feather";
 import { DashboardLayout } from "components/Layouts";
+import { useMediaQuery } from "react-responsive";
 
 const Dashboard = () => {
   const router = useRouter();
@@ -21,6 +22,7 @@ const Dashboard = () => {
 
   const show = useSelector(showsSelectors.getShowById(showIdString));
   const dispatch = useDispatch<ThunkDispatch<{}, undefined, Action>>();
+  const isMobile = useMediaQuery({ query: "(max-width: 1224px)" });
 
   useEffect(() => {
     (async () => {
@@ -38,18 +40,22 @@ const Dashboard = () => {
   const slicedFollowers = (show.followers || []).slice(0, 5);
   const slicedEpisodes = (show.topEpisodes || []).slice(0, 5);
 
-  console.log("slicedFollowers", slicedFollowers);
+  const artworkSize = isMobile ? 96 : 120;
 
   return (
     <DashboardLayout>
       <div className="flex flex-row">
         <img
-          style={{ width: 120, height: 120 }}
+          style={{ width: artworkSize, height: artworkSize }}
           className="rounded "
           src={show.artworkUrl}
           alt="show artwork"
         />
-        <div className="w-full flex flex-col pl-8 justify-center items-start">
+        <div
+          className={`w-full flex flex-col pl-8 justify-center items-start ${
+            isMobile ? "pl-3" : "pl-8"
+          }`}
+        >
           <p className="text-xl font-bold text-repod-text-primary font-bold truncate">
             {show.title}
           </p>

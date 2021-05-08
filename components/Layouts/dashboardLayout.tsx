@@ -1,6 +1,7 @@
 import React from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import { useMediaQuery } from "react-responsive";
 
 const NavigationLink = ({
   destination = "",
@@ -33,14 +34,19 @@ const DashboardLayout = ({ children }) => {
   const viewFollowers = splitLink[3] && splitLink[3] === "followers";
   const viewEpisodes = splitLink[3] && splitLink[3] === "episodes";
   const viewOverview = !viewFollowers && !viewEpisodes;
+  const isMobile = useMediaQuery({ query: "(max-width: 1224px)" });
 
   return (
     <>
       <div className="">
-        <h1 className="mt-4 mb-8 ml-8 text-xl font-bold text-repod-text-primary font-bold truncate">
+        <h1
+          className={`mt-4 mb-8 text-xl font-bold text-repod-text-primary font-bold truncate ${
+            isMobile ? "ml-4" : "ml-8"
+          }`}
+        >
           Dashboard
         </h1>
-        <div className="flex flex-row ml-4">
+        <div className={`flex flex-row ${isMobile ? "" : "ml-4"}`}>
           <NavigationLink
             label="Overview"
             isSelected={viewOverview}

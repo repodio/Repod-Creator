@@ -1,5 +1,6 @@
 import React from "react";
 import { useTable, useFlexLayout } from "react-table";
+import { useMediaQuery } from "react-responsive";
 
 const TableComponent = ({ data, columns }: { data: {}[]; columns: {}[] }) => {
   const {
@@ -9,23 +10,26 @@ const TableComponent = ({ data, columns }: { data: {}[]; columns: {}[] }) => {
     rows,
     prepareRow,
   } = useTable({ columns, data }, useFlexLayout);
+  const isMobile = useMediaQuery({ query: "(max-width: 1224px)" });
 
   return (
     <div {...getTableProps()} className="table w-full my-8">
-      <div className="mb-4">
-        {headerGroups.map((headerGroup) => (
-          <div {...headerGroup.getHeaderGroupProps()} className="tr">
-            {headerGroup.headers.map((column) => (
-              <div
-                {...column.getHeaderProps()}
-                className="th text-sm font-bold text-repod-text-secondary uppercase"
-              >
-                {column.render("Header")}
-              </div>
-            ))}
-          </div>
-        ))}
-      </div>
+      {!isMobile ? (
+        <div className="mb-4">
+          {headerGroups.map((headerGroup) => (
+            <div {...headerGroup.getHeaderGroupProps()} className="tr">
+              {headerGroup.headers.map((column) => (
+                <div
+                  {...column.getHeaderProps()}
+                  className="th text-sm font-bold text-repod-text-secondary uppercase"
+                >
+                  {column.render("Header")}
+                </div>
+              ))}
+            </div>
+          ))}
+        </div>
+      ) : null}
       <div className="tbody" {...getTableBodyProps()}>
         {rows.map((row) => {
           prepareRow(row);
