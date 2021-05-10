@@ -250,8 +250,6 @@ export const handleSearchEpisodes =
         query: queryString,
       });
 
-      console.log("handleSearchEpisodes episodesResponse", episodesResponse);
-
       const normalizedEpisodes = convertArrayToObject(
         episodesResponse.items,
         "episodeId"

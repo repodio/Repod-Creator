@@ -81,6 +81,7 @@ const ProfileDropdown = ({
                     <Menu.Item>
                       {({ active }) => (
                         <button
+                          key="Log out"
                           onClick={signOut}
                           className={`${
                             active ? "bg-repod-canvas-secondary" : ""

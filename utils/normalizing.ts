@@ -5,7 +5,7 @@ export const convertArrayToObject = (array: any[] = [], key: string) => {
     return {};
   }
   const cleanArray = reject((item: any) => !item[key])(array);
-  console.log("convertArrayToObject");
+
   return Object.assign(
     {},
     ...cleanArray.map((item: any) => ({

@@ -37,13 +37,9 @@ const Dashboard = () => {
   const isMobile = useMediaQuery({ query: "(max-width: 1224px)" });
   const loadingEpisodes = useSelector(showsSelectors.getShowEpisodesLoading);
   const [queryString, setQueryString] = useState("");
-  const [searchLoading, setSearchLoading] = useState(false);
-
-  console.log("allEpisodes, searchEpisodes", allEpisodes, searchEpisodes);
 
   useEffect(() => {
     (async () => {
-      console.log("useEffect time", queryString);
       if (queryString) {
         await dispatch(
           handleSearchEpisodes({

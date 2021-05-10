@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { BarChart2, Settings, ChevronLeft, ChevronRight } from "react-feather";
 import { ProfileDropdown } from "components/Dropdown";
@@ -68,6 +68,7 @@ const ConsoleSideDrawer = () => {
   const toggleMenu = () => {
     setExpanded(!expanded);
   };
+
   return (
     <div
       style={{ minWidth: width, width }}

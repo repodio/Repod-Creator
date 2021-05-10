@@ -91,9 +91,6 @@ const Dashboard = () => {
             ]}
           />
         </div>
-        <p className="text-lg font-semibold text-repod-text-primary">
-          All Followers
-        </p>
       </div>
     </DashboardLayout>
   );
