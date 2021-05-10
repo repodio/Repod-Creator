@@ -3,9 +3,9 @@ import "firebase/auth";
 import { setUser } from "utils/repodAPI";
 import { get } from "lodash/fp";
 import { useDispatch } from "react-redux";
-import { login, logout } from "modules/Auth";
+import { login, logout, updateUser } from "modules/Auth";
 
-const signInWithProvider = async (provider) => {
+const signInWithProvider = async (provider, dispatch) => {
   try {
     const response = await firebase.auth().signInWithPopup(provider);
     const user = response.user;
@@ -21,6 +21,8 @@ const signInWithProvider = async (provider) => {
       userId: user.uid,
       twitterId: providerTwitterId,
     });
+    dispatch(updateUser({ userId: user.uid, email, displayName: name }));
+
     return;
   } catch (error) {
     console.log("signInWithProvider error", error);
@@ -28,22 +30,22 @@ const signInWithProvider = async (provider) => {
   }
 };
 
-const AppleSignIn = () => {
+const AppleSignIn = (dispatch) => {
   var provider = new firebase.auth.OAuthProvider("apple.com");
 
-  return signInWithProvider(provider);
+  return signInWithProvider(provider, dispatch);
 };
 
-const FacebookSignIn = () => {
+const FacebookSignIn = (dispatch) => {
   var provider = new firebase.auth.FacebookAuthProvider();
 
-  return signInWithProvider(provider);
+  return signInWithProvider(provider, dispatch);
 };
 
-const TwitterSignIn = () => {
+const TwitterSignIn = (dispatch) => {
   var provider = new firebase.auth.TwitterAuthProvider();
 
-  return signInWithProvider(provider);
+  return signInWithProvider(provider, dispatch);
 };
 
 export const useAuth = () => {
@@ -81,11 +83,11 @@ export const useAuth = () => {
       } else if (provider) {
         switch (provider) {
           case AUTH_PROVIDERS.apple:
-            return AppleSignIn();
+            return AppleSignIn(dispatch);
           case AUTH_PROVIDERS.facebook:
-            return FacebookSignIn();
+            return FacebookSignIn(dispatch);
           case AUTH_PROVIDERS.twitter:
-            return TwitterSignIn();
+            return TwitterSignIn(dispatch);
           default:
             return;
         }
@@ -124,16 +126,17 @@ export const useAuth = () => {
             displayName: name,
             userId: user.uid,
           });
+          dispatch(updateUser({ userId: user.uid, email, displayName: name }));
 
           return;
         } else if (provider) {
           switch (provider) {
             case AUTH_PROVIDERS.apple:
-              return AppleSignIn();
+              return AppleSignIn(dispatch);
             case AUTH_PROVIDERS.facebook:
-              return FacebookSignIn();
+              return FacebookSignIn(dispatch);
             case AUTH_PROVIDERS.twitter:
-              return TwitterSignIn();
+              return TwitterSignIn(dispatch);
             default:
               return;
           }

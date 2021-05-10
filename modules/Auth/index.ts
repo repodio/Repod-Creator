@@ -1,6 +1,6 @@
 import { createSelector } from "reselect";
 import switchcase from "utils/switchcase";
-import { getUser } from "utils/repodAPI";
+import { getUser, setUser } from "utils/repodAPI";
 import { upsertProfiles, selectors as profileSelectors } from "modules/Profile";
 import { RootState } from "reduxConfig/store";
 
@@ -41,34 +41,65 @@ export const logout = (): ActionCreator => ({
 });
 
 // Thunk
-export const login = (
-  {
-    userId,
-  }: {
-    userId: string;
-  },
-  idToken?: string
-) => async (dispatch) => {
-  try {
-    console.log("login userId", userId);
+export const login =
+  (
+    {
+      userId,
+    }: {
+      userId: string;
+    },
+    idToken?: string
+  ) =>
+  async (dispatch) => {
+    try {
+      const profile = await getUser({ userId }, idToken);
 
-    const profile = await getUser({ userId }, idToken);
-    console.log("login profile", profile);
-    if (profile) {
+      if (profile) {
+        dispatch(
+          upsertProfiles({
+            [userId]: profile,
+          })
+        );
+      }
+
+      dispatch(loginSuccess(userId));
+
+      return profile;
+    } catch (error) {
+      console.warn("[THUNK ERROR]: login", error);
+    }
+  };
+
+export const updateUser =
+  (
+    {
+      userId,
+      email,
+      displayName,
+    }: {
+      userId: string;
+      email: string;
+      displayName: string;
+    },
+    idToken?: string
+  ) =>
+  async (dispatch) => {
+    try {
       dispatch(
         upsertProfiles({
-          [userId]: profile,
+          [userId]: {
+            userId,
+            email,
+            displayName,
+          },
         })
       );
+
+      dispatch(loginSuccess(userId));
+    } catch (error) {
+      console.warn("[THUNK ERROR]: login", error);
     }
-
-    dispatch(loginSuccess(userId));
-
-    return profile;
-  } catch (error) {
-    console.warn("[THUNK ERROR]: login", error);
-  }
-};
+  };
 
 // Reducer
 export default (state = INITIAL_STATE, action) =>

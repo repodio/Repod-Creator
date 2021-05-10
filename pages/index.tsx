@@ -17,6 +17,8 @@ const Home = () => {
     (async () => {
       if (!storedProfile || !storedProfile.displayName) {
         const profile = await dispatch(login({ userId: AuthUser.id }));
+
+        console.log("profile", profile);
         if (!profile) {
           console.error("Home couldnt find user", AuthUser.id);
           router.replace(`/auth`);

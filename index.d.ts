@@ -106,7 +106,7 @@ interface UserItem {
   displayName: string;
   email: string;
   fcmToken?: string;
-  handle: string;
+  handle?: string;
   onboarded?: boolean;
   streamUserToken?: string;
   userId: string;
