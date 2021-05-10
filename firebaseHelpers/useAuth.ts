@@ -21,7 +21,13 @@ const signInWithProvider = async (provider, dispatch) => {
       userId: user.uid,
       twitterId: providerTwitterId,
     });
-    dispatch(updateUser({ userId: user.uid, email, displayName: name }));
+    dispatch(
+      updateUser({
+        userId: user.uid,
+        email: providerEmail,
+        displayName: providerDisplayName,
+      })
+    );
 
     return;
   } catch (error) {
