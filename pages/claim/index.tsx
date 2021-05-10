@@ -30,6 +30,7 @@ interface ClaimSendEmailProps {
   show: ShowItem;
 }
 
+const REPOD_FAQ_URL = "https://repod.io/blog/for-podcasters";
 const PLACEHOLDER_COPY = "Search for your podcast here";
 const REPOD_SUPPORT_EMAIL = "podcasters@repod.io";
 const ERRORS_LOOKUP = {
@@ -154,6 +155,17 @@ const ClaimSearchPodcast = ({ onShowSelect }: ClaimSearchPodcastProps) => {
           </ul>
         </div>
       ) : null}
+
+      <div className="mt-12">
+        <a
+          onClick={() => {
+            window.open(REPOD_FAQ_URL, "_blank").focus();
+          }}
+          className="text-md font-bold text-info cursor-pointer hover:opacity-50 transition"
+        >
+          Why Claim?
+        </a>
+      </div>
     </div>
   );
 };
@@ -313,7 +325,12 @@ const ClaimSendEmail = ({ show }: ClaimSendEmailProps) => {
             </div>
             {error ? <p className="text-md text-danger my-4">{error}</p> : null}
 
-            <a className="text-lg text-repod-text-primary font-bold">
+            <a
+              onClick={() => {
+                window.open(REPOD_FAQ_URL, "_blank").focus();
+              }}
+              className="mt-4 text-md font-bold text-repod-text-primary cursor-pointer hover:opacity-50 transition"
+            >
               Need Help? Visit our FAQ
             </a>
           </div>
@@ -347,6 +364,14 @@ const ClaimSendEmail = ({ show }: ClaimSendEmailProps) => {
               href={`mailto:${REPOD_SUPPORT_EMAIL}`}
             >
               {REPOD_SUPPORT_EMAIL}
+            </a>
+            <a
+              onClick={() => {
+                window.open(REPOD_FAQ_URL, "_blank").focus();
+              }}
+              className="mt-4 text-md font-bold text-repod-text-primary cursor-pointer hover:opacity-50 transition"
+            >
+              Need Help? Visit our FAQ
             </a>
           </div>
         )}
