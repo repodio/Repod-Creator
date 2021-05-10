@@ -13,6 +13,10 @@ import { useRouter } from "next/router";
 import { LoadingScreen } from "components/Loading";
 import { fetchFeedEmailFromRSS } from "utils/rssParser";
 import { maskEmail } from "utils/textTransform";
+import { useDispatch } from "react-redux";
+import { ThunkDispatch } from "redux-thunk";
+import { Action } from "redux";
+import { upsertShows } from "modules/Shows";
 
 interface ClaimProps {
   children: JSX.Element[] | JSX.Element;
@@ -164,6 +168,7 @@ const ClaimSendEmail = ({ show }: ClaimSendEmailProps) => {
   const [error, setError] = useState<string>(null);
   const [disabled, setDisabled] = useState<boolean>(true);
   const [email, setEmail] = useState<string>(null);
+  const dispatch = useDispatch<ThunkDispatch<{}, undefined, Action>>();
   const router = useRouter();
   const {
     register,
@@ -204,6 +209,11 @@ const ClaimSendEmail = ({ show }: ClaimSendEmailProps) => {
     })
       .then((response) => {
         if (response && response.success === true) {
+          dispatch(
+            upsertShows({
+              [showId]: show,
+            })
+          );
           router.replace(`/console/${showId}`);
         } else {
           setError(ERRORS_LOOKUP[response && response.code]);
