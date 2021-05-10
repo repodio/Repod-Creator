@@ -214,7 +214,11 @@ const sendVerificationCodeEmail = async ({
   showId,
 }: {
   showId: string;
-}): Promise<void> => {
+}): Promise<{
+  error?: {
+    code: string;
+  };
+}> => {
   const response = await fetch(
     `${API_DOMAIN}/v1/${ROUTES.claimShow}/${showId}/verify`,
     {
@@ -222,6 +226,8 @@ const sendVerificationCodeEmail = async ({
       headers: await getHeaders(),
     }
   ).then((data) => data.json());
+
+  return response;
 };
 
 const setFeaturedEpisodeId = async ({

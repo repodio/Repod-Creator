@@ -11,6 +11,8 @@ import { useForm } from "react-hook-form";
 import { FormInput } from "components/Inputs";
 import { useRouter } from "next/router";
 import { LoadingScreen } from "components/Loading";
+import { fetchFeedEmailFromRSS } from "utils/rssParser";
+import { maskEmail } from "utils/textTransform";
 
 interface ClaimProps {
   children: JSX.Element[] | JSX.Element;
@@ -22,7 +24,6 @@ interface ClaimSearchPodcastProps {
 
 interface ClaimSendEmailProps {
   show: ShowItem;
-  email: string;
 }
 
 const PLACEHOLDER_COPY = "Search for your podcast here";
@@ -30,6 +31,8 @@ const REPOD_SUPPORT_EMAIL = "podcasters@repod.io";
 const ERRORS_LOOKUP = {
   "wrong-verify-code": "The code you entered did not match.",
   "no-verify-code": "The code you entered did not match.",
+  too_many_attempts:
+    "You've attempted to claim a podcast too many times today, reach out to us to manually get your show claimed",
   default: "Something went wrong.",
 };
 const ClaimSearchPodcast = ({ onShowSelect }: ClaimSearchPodcastProps) => {
@@ -59,7 +62,6 @@ const ClaimSearchPodcast = ({ onShowSelect }: ClaimSearchPodcastProps) => {
           query: debouncedSearchTerm,
           includeRSS: true,
         }).then((searchResponse) => {
-          console.log("searchResponse", searchResponse);
           const { items } = searchResponse;
           clearTimeout(searchingTimeout);
 
@@ -117,35 +119,34 @@ const ClaimSearchPodcast = ({ onShowSelect }: ClaimSearchPodcastProps) => {
               </li>
             )}
 
-            {!isSearching &&
-              searchResults &&
-              searchResults.length &&
-              searchResults.map((item, i) => {
-                return (
-                  <li key={i}>
-                    <button
-                      onClick={() => onShowSelect(item)}
-                      className="block rounded-lg p-4 mb-2 w-full hover:bg-repod-canvas-secondary"
-                    >
-                      <div className="flex overflow-hidden w-full">
-                        <img
-                          className="w-12 mr-4 rounded"
-                          src={item.artworkUrl}
-                          alt={`${item.title} artwork`}
-                        />
-                        <div className="flex flex-col flex-1 overflow-hidden">
-                          <p className="text-lg text-repod-text-primary text-left">
-                            {item.title}
-                          </p>
-                          <p className="text-sm text-repod-text-secondary text-left">
-                            {item.author}
-                          </p>
+            {!isSearching && searchResults && searchResults.length
+              ? searchResults.map((item, i) => {
+                  return (
+                    <li key={i}>
+                      <button
+                        onClick={() => onShowSelect(item)}
+                        className="block rounded-lg p-4 mb-2 w-full hover:bg-repod-canvas-secondary"
+                      >
+                        <div className="flex overflow-hidden w-full">
+                          <img
+                            className="w-12 mr-4 rounded"
+                            src={item.artworkUrl}
+                            alt={`${item.title} artwork`}
+                          />
+                          <div className="flex flex-col flex-1 overflow-hidden">
+                            <p className="text-lg text-repod-text-primary text-left">
+                              {item.title}
+                            </p>
+                            <p className="text-sm text-repod-text-secondary text-left">
+                              {item.author}
+                            </p>
+                          </div>
                         </div>
-                      </div>
-                    </button>
-                  </li>
-                );
-              })}
+                      </button>
+                    </li>
+                  );
+                })
+              : null}
           </ul>
         </div>
       ) : null}
@@ -157,10 +158,12 @@ type Inputs = {
   code: string;
 };
 
-const ClaimSendEmail = ({ show, email }: ClaimSendEmailProps) => {
+const ClaimSendEmail = ({ show }: ClaimSendEmailProps) => {
+  const { rss, showId } = show;
   const [emailSent, setEmailSent] = useState<boolean>(false);
   const [error, setError] = useState<string>(null);
   const [disabled, setDisabled] = useState<boolean>(true);
+  const [email, setEmail] = useState<string>(null);
   const router = useRouter();
   const {
     register,
@@ -170,7 +173,6 @@ const ClaimSendEmail = ({ show, email }: ClaimSendEmailProps) => {
   const { code } = watch();
 
   useEffect(() => {
-    console.log("code", code, code && code.length >= 6);
     if (code && code.length === 6) {
       setDisabled(false);
     } else {
@@ -180,35 +182,44 @@ const ClaimSendEmail = ({ show, email }: ClaimSendEmailProps) => {
 
   const handleSendEmail = async () => {
     sendVerificationCodeEmail({
-      showId: show.showId,
+      showId,
     })
       .then((response) => {
-        setEmailSent(true);
+        if (response && response.error) {
+          setError(ERRORS_LOOKUP[response.error.code]);
+        } else {
+          setEmailSent(true);
+        }
       })
       .catch((error) => {
-        console.log("sendVerificationCodeEmail error", error);
         setError(ERRORS_LOOKUP.default);
       });
   };
 
   const handleClaimShow = () => {
     claimShow({
-      showId: show.showId,
+      showId,
       type: "host",
       verifyCode: code,
     })
       .then((response) => {
         if (response && response.success === true) {
-          router.replace(`/console/${show.showId}`);
+          router.replace(`/console/${showId}`);
         } else {
           setError(ERRORS_LOOKUP[response && response.code]);
         }
       })
       .catch((error) => {
-        console.log("handleClaimShow error", error);
         setError(ERRORS_LOOKUP.default);
       });
   };
+
+  useEffect(() => {
+    (async () => {
+      const email: string = await fetchFeedEmailFromRSS({ rss });
+      setEmail(email);
+    })();
+  }, [rss]);
 
   return (
     <>
@@ -305,8 +316,8 @@ const ClaimSendEmail = ({ show, email }: ClaimSendEmailProps) => {
               sent an email to the{" "}
               <p className="inline font-bold">{"<itunes:email>"}</p> address
               listed on your podcast feed (
-              <p className="inline font-bold">{email}</p>). Tap the button below
-              to send the email and continue your registration.
+              <p className="inline font-bold">{maskEmail(email)}</p>). Tap the
+              button below to send the email and continue your registration.
             </p>
             <Button.Medium
               onClick={handleSendEmail}
@@ -363,7 +374,7 @@ const Claim = ({}: ClaimProps) => {
           {!show ? (
             <ClaimSearchPodcast onShowSelect={setShow} />
           ) : (
-            <ClaimSendEmail show={show} email={"test@gmail.com"} />
+            <ClaimSendEmail show={show} />
           )}
         </div>
       </div>

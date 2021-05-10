@@ -35,6 +35,7 @@ interface ShowItem {
   yearlyFollowData?: { x: string; y: number }[];
   featuredEpisodeId?: string;
 
+  rss?: string;
   episodesById?: {
     [key: string]: EpisodeItem;
   };
