@@ -8,7 +8,9 @@ const ProfileAvatar = ({ url }) => {
   });
 
   if (isLoading || error) {
-    return <div className="w-10 h-10 rounded-full bg-repod-canvas-secondary" />;
+    return (
+      <div className="w-10 h-10 rounded-full bg-repod-canvas-secondary border border-repod-border-light" />
+    );
   }
   return (
     <img
