@@ -97,23 +97,44 @@ const getEpisodes = async ({ showId, cursor }) => {
   return response;
 };
 
-const search = async ({
+const searchShows = async ({
   query,
   size = 5,
-  type,
   includeRSS = false,
 }: {
   query: string;
   size?: number;
-  type: string;
   includeRSS?: boolean;
 }) => {
   const response = await fetch(
     `${API_DOMAIN}/v1/${
       ROUTES.search
-    }?type=${type}&size=${size}&queryString=${query}&includeRSS=${
+    }?type=shows&size=${size}&queryString=${query}&includeRSS=${
       includeRSS ? 1 : 0
     }`,
+    {
+      method: "GET",
+      headers: await getHeaders(),
+    }
+  );
+  return response.json();
+};
+
+const searchEpisodes = async ({
+  query,
+  size = 5,
+  showId,
+}: {
+  query: string;
+  size?: number;
+  showId?: string;
+}): Promise<{
+  items: EpisodeItem[];
+  cursor: number;
+  total: number;
+}> => {
+  const response = await fetch(
+    `${API_DOMAIN}/v1/${ROUTES.search}?type=episodes&size=${size}&queryString=${query}&showId=${showId}`,
     {
       method: "GET",
       headers: await getHeaders(),
@@ -229,7 +250,8 @@ export {
   fetchClaimedShowsAPI,
   getUser,
   setUser,
-  search,
+  searchShows,
+  searchEpisodes,
   claimShow,
   sendVerificationCodeEmail,
   fetchShowData,

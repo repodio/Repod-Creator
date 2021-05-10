@@ -3,7 +3,7 @@ import { withAuthUser, AuthAction } from "next-firebase-auth";
 import { RepodLogo } from "components/Header";
 import { ProfileDropdown } from "components/Dropdown";
 import { Search } from "react-feather";
-import { search, sendVerificationCodeEmail } from "utils/repodAPI";
+import { searchShows, sendVerificationCodeEmail } from "utils/repodAPI";
 import { useDebounce } from "utils/hooks";
 import { Button } from "components/Buttons";
 import { claimShow } from "utils/repodAPI";
@@ -55,9 +55,8 @@ const ClaimSearchPodcast = ({ onShowSelect }: ClaimSearchPodcastProps) => {
           setIsSearching(true);
         }, 150);
 
-        search({
+        searchShows({
           query: debouncedSearchTerm,
-          type: "shows",
           includeRSS: true,
         }).then((searchResponse) => {
           console.log("searchResponse", searchResponse);

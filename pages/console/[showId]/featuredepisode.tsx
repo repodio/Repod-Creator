@@ -1,7 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { withAuthUser, AuthAction } from "next-firebase-auth";
 import {
+  fetchShowEpisodes,
   handleFeaturedEpisodeSet,
+  handleSearchEpisodes,
   selectors as showsSelectors,
 } from "modules/Shows";
 import { useRouter } from "next/router";
@@ -12,9 +14,10 @@ import { Button } from "components/Buttons";
 import Link from "next/link";
 import find from "lodash/fp/find";
 import { clipText } from "utils/textTransform";
-import { formatDuration } from "utils/formats";
+import { formatDuration, fromNow } from "utils/formats";
 import { LoadingScreen } from "components/Loading";
 import { useMediaQuery } from "react-responsive";
+import { SearchInput } from "components/Inputs";
 
 const Dashboard = () => {
   const router = useRouter();
@@ -25,11 +28,43 @@ const Dashboard = () => {
   const [featuredEpisodeId, setFeaturedEpisodeId] = useState(
     show ? show.featuredEpisodeId : null
   );
+  const allEpisodes = useSelector(
+    showsSelectors.getAllShowEpisodes(showIdString)
+  );
+  const searchEpisodes = useSelector(
+    showsSelectors.getSearchShowEpisodes(showIdString)
+  );
   const isMobile = useMediaQuery({ query: "(max-width: 1224px)" });
+  const loadingEpisodes = useSelector(showsSelectors.getShowEpisodesLoading);
+  const [queryString, setQueryString] = useState("");
+  const [searchLoading, setSearchLoading] = useState(false);
+
+  console.log("allEpisodes, searchEpisodes", allEpisodes, searchEpisodes);
+
+  useEffect(() => {
+    (async () => {
+      console.log("useEffect time", queryString);
+      if (queryString) {
+        await dispatch(
+          handleSearchEpisodes({
+            showId: showIdString,
+            queryString,
+          })
+        );
+      }
+    })();
+  }, [queryString]);
 
   useEffect(() => {
     (async () => {
       if (!show) {
+        router.replace(`/`);
+        return;
+      }
+      if (!allEpisodes) {
+        await dispatch(
+          fetchShowEpisodes({ showId: showIdString, pageIndex: 0 })
+        );
       }
     })();
   }, []);
@@ -37,17 +72,6 @@ const Dashboard = () => {
   if (!show) {
     return null;
   }
-
-  const featuredEpisode =
-    find((episode: EpisodeItem) => episode.episodeId === featuredEpisodeId)(
-      show.episodes
-    ) ||
-    find(
-      (episode: EpisodeItem) => episode.episodeId === show.featuredEpisodeId
-    )(show.episodes);
-
-  const selectedEpisodeIsAlreadySaved =
-    featuredEpisodeId === show.featuredEpisodeId;
 
   const handleEpisodeSave = () => {
     if (selectedEpisodeIsAlreadySaved) {
@@ -67,6 +91,13 @@ const Dashboard = () => {
       );
     }
   };
+
+  const episodesById = show.episodesById;
+  const featuredEpisode =
+    episodesById[featuredEpisodeId] || episodesById[show.featuredEpisodeId];
+
+  const selectedEpisodeIsAlreadySaved =
+    featuredEpisodeId === show.featuredEpisodeId;
 
   return (
     <div className="flex flex-row justify-center items-start">
@@ -192,8 +223,8 @@ const Dashboard = () => {
             <div className="w-full flex flex-col rounded p-4 bg-repod-canvas-secondary">
               <div className="flex flex-col w-full">
                 <div className="flex flex-row w-full justify-between items-start">
-                  <p className="text-lg text-repod-text-primary font-bold">
-                    {clipText(featuredEpisode.title, 300)}
+                  <p className="text-md text-repod-text-secondary">
+                    {fromNow(featuredEpisode.date)}
                   </p>
                   {!selectedEpisodeIsAlreadySaved ? (
                     <X
@@ -206,6 +237,9 @@ const Dashboard = () => {
                   ) : null}
                 </div>
 
+                <p className="text-lg text-repod-text-primary font-bold">
+                  {clipText(featuredEpisode.title, 300)}
+                </p>
                 <p className="text-md text-repod-text-secondary">
                   {clipText(featuredEpisode.description, 300)}
                 </p>
@@ -226,10 +260,18 @@ const Dashboard = () => {
           </div>
         ) : null}
 
-        <FeaturedEpisodesTable
-          data={show.episodes}
-          onClick={setFeaturedEpisodeId}
-        />
+        <div className="w-full mt-8">
+          <SearchInput
+            placeholder="Search Episodes"
+            handleSearch={setQueryString}
+          />
+
+          <FeaturedEpisodesTable
+            data={!queryString ? allEpisodes : searchEpisodes}
+            onClick={setFeaturedEpisodeId}
+            loading={loadingEpisodes}
+          />
+        </div>
       </div>
     </div>
   );

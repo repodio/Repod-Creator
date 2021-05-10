@@ -5,7 +5,7 @@ import EmptyTable from "./emptyTable";
 import { fromNow } from "utils/formats";
 import { Button } from "components/Buttons";
 
-const FeaturedEpisodesTable = ({ data, onClick }) => {
+const FeaturedEpisodesTable = ({ data, onClick, loading }) => {
   const columns = React.useMemo(
     () => [
       {
@@ -55,7 +55,7 @@ const FeaturedEpisodesTable = ({ data, onClick }) => {
   );
 
   return data && data.length ? (
-    <Table data={data} columns={columns} />
+    <Table data={data} columns={columns} loading={loading} />
   ) : (
     <EmptyTable message="No episode data yet" />
   );

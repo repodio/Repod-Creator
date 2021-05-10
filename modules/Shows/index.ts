@@ -4,6 +4,7 @@ import {
   fetchClaimedShowsAPI,
   fetchShowData,
   getEpisodes,
+  searchEpisodes,
   setFeaturedEpisodeId,
 } from "utils/repodAPI";
 import { convertArrayToObject } from "utils/normalizing";
@@ -52,8 +53,15 @@ const getClaimedShows = createSelector(
 const getShowEpisodeCursors = (showId) =>
   createSelector(getShowById(showId), (show) => show && show.episodeCursors);
 
-const getShowEpisodes = (showId) =>
-  createSelector(getShowById(showId), (show) => (show && show.episodes) || []);
+const getAllShowEpisodes = (showId) =>
+  createSelector(getShowById(showId), (show) =>
+    show ? flow(pick(show.allEpisodeIds), values)(show.episodesById) : []
+  );
+
+const getSearchShowEpisodes = (showId) =>
+  createSelector(getShowById(showId), (show) =>
+    show ? flow(pick(show.searchEpisodeIds), values)(show.episodesById) : []
+  );
 
 export const selectors = {
   getShowsById,
@@ -61,16 +69,20 @@ export const selectors = {
   getClaimedShowIds,
   getClaimedShows,
   getShowEpisodesLoading,
+  getAllShowEpisodes,
+  getSearchShowEpisodes,
 };
 
 // Actions
 const UPSERT_SHOWS = "repod/Shows/UPSERT_SHOWS";
 const UPSERT_SHOW_STATS = "repod/Shows/UPSERT_SHOW_STATS";
 const UPDATE_CLAIMED_SHOWS = "repod/Shows/UPDATE_CLAIMED_SHOWS";
-const UPDATE_EPISODES = "repod/Shows/UPDATE_EPISODES";
 const START_EPISODES = "repod/Shows/START_EPISODES";
 const FINISH_EPISODES = "repod/Shows/FINISH_EPISODES";
 const UPDATE_FEATURED_EPISODE_ID = "repod/Shows/UPDATE_FEATURED_EPISODE_ID";
+const UPSERT_EPISODES = "repod/Shows/UPSERT_EPISODES";
+const UPDATE_ALL_EPISODE_LIST = "repod/Shows/UPDATE_ALL_EPISODE_LIST";
+const UPDATE_SEARCH_EPISODE_LIST = "repod/Shows/UPDATE_SEARCH_EPISODE_LIST";
 
 // Action Creators
 export const upsertShows: ActionCreator<Action> = (shows: {
@@ -116,28 +128,6 @@ const updateFeaturedEpisodeId: ActionCreator<Action> = ({
   episodeId,
 });
 
-const updateEpisodes: ActionCreator<Action> = ({
-  showId,
-  episodes,
-  episodeCursors,
-  total,
-}: {
-  showId: string;
-  episodes: {
-    [key: string]: EpisodeItem;
-  };
-  episodeCursors: {
-    [key: number]: number;
-  };
-  total: number;
-}) => ({
-  type: UPDATE_EPISODES,
-  showId,
-  episodes,
-  episodeCursors,
-  total,
-});
-
 const fetchEpisodesStart: ActionCreator<Action> = () => ({
   type: START_EPISODES,
 });
@@ -146,96 +136,166 @@ const fetchEpisodesFinish: ActionCreator<Action> = () => ({
   type: FINISH_EPISODES,
 });
 
-// Thunks
-export const fetchClaimedShows = (
-  idToken?: string
-): ThunkResult<Promise<string[]>> => async (dispatch: AsyncDispatch) => {
-  try {
-    const claimedShows = await fetchClaimedShowsAPI(idToken);
-    const normalizedShows = convertArrayToObject(claimedShows, "showId");
-    dispatch(upsertShows(normalizedShows));
-
-    dispatch(updateClaimedShowsList(Object.keys(normalizedShows)));
-
-    return Object.keys(normalizedShows);
-  } catch (error) {
-    console.warn("[THUNK ERROR]: login", error);
-  }
-};
-
-export const fetchShowStats = (showId): ThunkResult<Promise<void>> => async (
-  dispatch: AsyncDispatch
-) => {
-  try {
-    const showStats = await fetchShowData({ showId });
-
-    dispatch(
-      upsertShowStats({
-        showId,
-        showStats,
-      })
-    );
-  } catch (error) {
-    console.warn("[THUNK ERROR]: login", error);
-  }
-};
-
-export const fetchShowEpisodes = ({
+const upsertShowEpisodes: ActionCreator<Action> = ({
+  episodesById,
   showId,
-  pageIndex = 0,
-}): ThunkResult<Promise<void>> => async (
-  dispatch: AsyncDispatch,
-  getState: () => RootState
-) => {
-  try {
-    dispatch(fetchEpisodesStart());
-
-    const state = getState();
-    const episodeCursors = getShowEpisodeCursors(showId)(state);
-    const episodes = getShowEpisodes(showId)(state);
-
-    const cursor = pageIndex === 0 ? null : episodeCursors[pageIndex];
-    const episodesResponse = await getEpisodes({ showId, cursor });
-
-    dispatch(
-      updateEpisodes({
-        episodes: uniqBy((item: EpisodeItem) => item.episodeId)([
-          ...episodes,
-          ...episodesResponse.items,
-        ]),
-        episodeCursors: {
-          [pageIndex + 1]: episodesResponse.cursor,
-        },
-        total: episodesResponse.total,
-        showId,
-      })
-    );
-
-    return;
-  } catch (error) {
-    dispatch(fetchEpisodesFinish());
-
-    console.warn("[THUNK ERROR]: login", error);
-  }
-};
-
-export const handleFeaturedEpisodeSet = ({
-  showId,
-  episodeId,
 }: {
+  episodesById: { [key: string]: EpisodeItem };
   showId: string;
-  episodeId: string;
-}): ThunkResult<Promise<void>> => async (dispatch: AsyncDispatch) => {
-  try {
-    await setFeaturedEpisodeId({ showId, episodeId });
+}) => ({
+  type: UPSERT_EPISODES,
+  episodesById,
+  showId,
+});
 
-    dispatch(updateFeaturedEpisodeId({ showId, episodeId }));
+const updateAllEpisodeList: ActionCreator<Action> = ({
+  allEpisodeIds,
+  showId,
+}: {
+  allEpisodeIds: string[];
+  showId: string;
+}) => ({
+  type: UPDATE_ALL_EPISODE_LIST,
+  allEpisodeIds,
+  showId,
+});
 
-    return;
-  } catch (error) {
-    console.warn("[THUNK ERROR]: login", error);
-  }
-};
+const updateSearchEpisodeList: ActionCreator<Action> = ({
+  searchEpisodeIds,
+  showId,
+}: {
+  searchEpisodeIds: string[];
+  showId: string;
+}) => ({
+  type: UPDATE_SEARCH_EPISODE_LIST,
+  searchEpisodeIds,
+  showId,
+});
+
+// Thunks
+export const fetchClaimedShows =
+  (idToken?: string): ThunkResult<Promise<string[]>> =>
+  async (dispatch: AsyncDispatch) => {
+    try {
+      const claimedShows = await fetchClaimedShowsAPI(idToken);
+      const normalizedShows = convertArrayToObject(claimedShows, "showId");
+      dispatch(upsertShows(normalizedShows));
+
+      dispatch(updateClaimedShowsList(Object.keys(normalizedShows)));
+
+      return Object.keys(normalizedShows);
+    } catch (error) {
+      console.warn("[THUNK ERROR]: login", error);
+    }
+  };
+
+export const fetchShowStats =
+  (showId): ThunkResult<Promise<void>> =>
+  async (dispatch: AsyncDispatch) => {
+    try {
+      const showStats = await fetchShowData({ showId });
+
+      dispatch(
+        upsertShowStats({
+          showId,
+          showStats,
+        })
+      );
+    } catch (error) {
+      console.warn("[THUNK ERROR]: login", error);
+    }
+  };
+
+export const fetchShowEpisodes =
+  ({ showId, pageIndex = 0 }): ThunkResult<Promise<void>> =>
+  async (dispatch: AsyncDispatch, getState: () => RootState) => {
+    try {
+      dispatch(fetchEpisodesStart());
+
+      const cursor = pageIndex;
+      const episodesResponse = await getEpisodes({ showId, cursor });
+
+      const normalizedEpisodes = convertArrayToObject(
+        episodesResponse.items,
+        "episodeId"
+      );
+
+      dispatch(
+        upsertShowEpisodes({
+          episodesById: normalizedEpisodes,
+          showId,
+        })
+      );
+      dispatch(
+        updateAllEpisodeList({
+          allEpisodeIds: Object.keys(normalizedEpisodes),
+          showId,
+        })
+      );
+
+      return;
+    } catch (error) {
+      dispatch(fetchEpisodesFinish());
+
+      console.warn("[THUNK ERROR]: login", error);
+    }
+  };
+
+export const handleSearchEpisodes =
+  ({ showId, queryString }): ThunkResult<Promise<void>> =>
+  async (dispatch: AsyncDispatch, getState: () => RootState) => {
+    try {
+      const episodesResponse = await searchEpisodes({
+        showId,
+        query: queryString,
+      });
+
+      console.log("handleSearchEpisodes episodesResponse", episodesResponse);
+
+      const normalizedEpisodes = convertArrayToObject(
+        episodesResponse.items,
+        "episodeId"
+      );
+
+      dispatch(
+        upsertShowEpisodes({
+          episodesById: normalizedEpisodes,
+          showId,
+        })
+      );
+      dispatch(
+        updateSearchEpisodeList({
+          searchEpisodeIds: Object.keys(normalizedEpisodes),
+          showId,
+        })
+      );
+      return;
+    } catch (error) {
+      dispatch(fetchEpisodesFinish());
+
+      console.warn("[THUNK ERROR]: login", error);
+    }
+  };
+
+export const handleFeaturedEpisodeSet =
+  ({
+    showId,
+    episodeId,
+  }: {
+    showId: string;
+    episodeId: string;
+  }): ThunkResult<Promise<void>> =>
+  async (dispatch: AsyncDispatch) => {
+    try {
+      await setFeaturedEpisodeId({ showId, episodeId });
+
+      dispatch(updateFeaturedEpisodeId({ showId, episodeId }));
+
+      return;
+    } catch (error) {
+      console.warn("[THUNK ERROR]: login", error);
+    }
+  };
 
 // Reducer
 export default (state = INITIAL_STATE, action) =>
@@ -261,21 +321,41 @@ export default (state = INITIAL_STATE, action) =>
       ...state,
       claimedShowIds: action.claimedShowIds,
     }),
-    [UPDATE_EPISODES]: () => ({
+    [UPSERT_EPISODES]: () => ({
       ...state,
       byId: {
         ...state.byId,
         [action.showId]: {
           ...(state.byId[action.showId] || {}),
-          episodes: action.episodes,
-          episodeCursors: {
-            ...(state.byId[action.showId] || {}).episodeCursors,
-            ...action.episodeCursors,
+          episodesById: {
+            ...((state.byId[action.showId] || {}).episodesById || {}),
+            ...action.episodesById,
           },
-          total: action.total,
+        },
+      },
+      loadingEpisodes: false,
+    }),
+    [UPDATE_ALL_EPISODE_LIST]: () => ({
+      ...state,
+      byId: {
+        ...state.byId,
+        [action.showId]: {
+          ...(state.byId[action.showId] || {}),
+          allEpisodeIds: action.allEpisodeIds,
         },
       },
     }),
+    [UPDATE_SEARCH_EPISODE_LIST]: () => ({
+      ...state,
+      byId: {
+        ...state.byId,
+        [action.showId]: {
+          ...(state.byId[action.showId] || {}),
+          searchEpisodeIds: action.searchEpisodeIds,
+        },
+      },
+    }),
+
     [UPDATE_FEATURED_EPISODE_ID]: () => ({
       ...state,
       byId: {
@@ -285,7 +365,6 @@ export default (state = INITIAL_STATE, action) =>
           featuredEpisodeId: action.episodeId,
         },
       },
-      loadingEpisodes: false,
     }),
     [START_EPISODES]: () => ({
       ...state,

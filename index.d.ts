@@ -34,6 +34,12 @@ interface ShowItem {
   episodes?: EpisodeItem[];
   yearlyFollowData?: { x: string; y: number }[];
   featuredEpisodeId?: string;
+
+  episodesById?: {
+    [key: string]: EpisodeItem;
+  };
+  allEpisodeIds: string[];
+  searchEpisodeIds: string[];
 }
 
 interface ReduxShowItem extends ShowItem {
