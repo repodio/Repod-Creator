@@ -17,6 +17,7 @@ import { useDispatch } from "react-redux";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
 import { upsertShows } from "modules/Shows";
+import { useMediaQuery } from "react-responsive";
 
 interface ClaimProps {
   children: JSX.Element[] | JSX.Element;
@@ -28,6 +29,7 @@ interface ClaimSearchPodcastProps {
 
 interface ClaimSendEmailProps {
   show: ShowItem;
+  isMobile: boolean;
 }
 
 const REPOD_FAQ_URL = "https://repod.io/blog/for-podcasters";
@@ -174,7 +176,7 @@ type Inputs = {
   code: string;
 };
 
-const ClaimSendEmail = ({ show }: ClaimSendEmailProps) => {
+const ClaimSendEmail = ({ show, isMobile }: ClaimSendEmailProps) => {
   const { rss, showId } = show;
   const [emailSent, setEmailSent] = useState<boolean>(false);
   const [error, setError] = useState<string>(null);
@@ -246,52 +248,54 @@ const ClaimSendEmail = ({ show }: ClaimSendEmailProps) => {
   return (
     <>
       <div className="w-full flex-row flex relative justify-start items-start">
-        <div className="relative">
-          <img
-            style={{ maxWidth: 412 }}
-            className=""
-            src="/claim-mock-phone.png"
-            alt={`${show.title} app mock up`}
-          />
-          <div
-            className="absolute flex flex-row"
-            style={{
-              top: 98,
-              left: 80,
-            }}
-          >
+        {!isMobile ? (
+          <div className="relative">
             <img
-              style={{ width: 84, height: 84 }}
-              className="w-12 mr-4 rounded"
-              src={show.artworkUrl}
-              alt={`${show.title} artwork`}
+              style={{ maxWidth: 412 }}
+              className=""
+              src="/claim-mock-phone.png"
+              alt={`${show.title} app mock up`}
             />
-            <div className="flex flex-col justify-between">
-              <div className="flex flex-col">
-                <p
-                  style={{ maxWidth: 150 }}
-                  className="text-lg font-bold truncate"
-                >
-                  {show.title}
-                </p>
-                <div className="flex flex-row justify-start items-center">
-                  <img
-                    style={{ width: 9, height: 8 }}
-                    src="/icons/claimed-icon.svg"
-                    alt="claim icon"
-                  />
-                  <p className="text-sm text-info ml-1">Claimed</p>
+            <div
+              className="absolute flex flex-row"
+              style={{
+                top: 98,
+                left: 80,
+              }}
+            >
+              <img
+                style={{ width: 84, height: 84 }}
+                className="w-12 mr-4 rounded"
+                src={show.artworkUrl}
+                alt={`${show.title} artwork`}
+              />
+              <div className="flex flex-col justify-between">
+                <div className="flex flex-col">
+                  <p
+                    style={{ maxWidth: 150 }}
+                    className="text-lg font-bold truncate"
+                  >
+                    {show.title}
+                  </p>
+                  <div className="flex flex-row justify-start items-center">
+                    <img
+                      style={{ width: 9, height: 8 }}
+                      src="/icons/claimed-icon.svg"
+                      alt="claim icon"
+                    />
+                    <p className="text-sm text-info ml-1">Claimed</p>
+                  </div>
                 </div>
-              </div>
 
-              <Button.Tiny
-                className={`bg-repod-tint text-repod-text-alternative border-2 border-repod-tint`}
-              >
-                Follow
-              </Button.Tiny>
+                <Button.Tiny
+                  className={`bg-repod-tint text-repod-text-alternative border-2 border-repod-tint`}
+                >
+                  Follow
+                </Button.Tiny>
+              </div>
             </div>
           </div>
-        </div>
+        ) : null}
         {emailSent ? (
           <div className="flex flex-col mt-6" style={{ maxWidth: 412 }}>
             <p className="text-md text-repod-text-primary mb-4">
@@ -382,15 +386,20 @@ const ClaimSendEmail = ({ show }: ClaimSendEmailProps) => {
 
 const Claim = ({}: ClaimProps) => {
   const [show, setShow] = useState(null);
+  const isMobile = useMediaQuery({ query: "(max-width: 1224px)" });
 
   return (
     <>
       <div className="flex flex-col items-center w-full">
         <div className="flex justify-between items-center w-full">
           <RepodLogo />
-          <ProfileDropdown lightMode={true} />
+          <ProfileDropdown expanded={!isMobile} lightMode={true} />
         </div>
-        <div className="flex flex-col justify-center items-center">
+        <div
+          className={`flex flex-col justify-center items-center ${
+            isMobile ? "px-2" : ""
+          }`}
+        >
           <div className="flex flex-col justify-center items-center max-w-xl">
             <img
               style={{ width: 72, height: 90 }}
@@ -409,7 +418,7 @@ const Claim = ({}: ClaimProps) => {
           {!show ? (
             <ClaimSearchPodcast onShowSelect={setShow} />
           ) : (
-            <ClaimSendEmail show={show} />
+            <ClaimSendEmail show={show} isMobile={isMobile} />
           )}
         </div>
       </div>

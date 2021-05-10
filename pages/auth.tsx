@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { initAuth } from "firebaseHelpers/init";
 import { RepodLogo } from "components/Header";
 import { FormInput } from "components/Inputs";
+import { useMediaQuery } from "react-responsive";
 
 import {
   Button,
@@ -172,6 +173,8 @@ const LogIn = ({ handleToggleSignupMode, authError, setAuthError }) => {
 };
 
 const Auth = () => {
+  const isMobile = useMediaQuery({ query: "(max-width: 1224px)" });
+
   const [inSignUpMode, toggleSignUpMode] = useState(true);
   const [authError, setAuthError] = useState(null);
 
@@ -202,17 +205,19 @@ const Auth = () => {
           )}
         </div>
       </div>
-      <div className="flex flex-col flex-0 bg-auth-background bg-cover bg-center w-full items-center justify-center">
-        <div className="flex flex-col w-96 items-start justify-center">
-          <p className="text-repod-text-primary text-6xl font-bold mb-6">
-            Be where your listeners are
-          </p>
-          <p className="text-repod-text-primary text-lg">
-            Claim your podcast on the platform with an existing listener
-            community.
-          </p>
+      {!isMobile ? (
+        <div className="flex flex-col flex-0 bg-auth-background bg-cover bg-center w-full items-center justify-center">
+          <div className="flex flex-col w-96 items-start justify-center">
+            <p className="text-repod-text-primary text-6xl font-bold mb-6">
+              Be where your listeners are
+            </p>
+            <p className="text-repod-text-primary text-lg">
+              Claim your podcast on the platform with an existing listener
+              community.
+            </p>
+          </div>
         </div>
-      </div>
+      ) : null}
     </div>
   );
 };
