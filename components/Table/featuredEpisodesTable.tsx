@@ -85,7 +85,7 @@ const FeaturedEpisodesTable = ({ data, onClick, loading }) => {
   return data && data.length ? (
     <Table data={data} columns={columns} loading={loading} />
   ) : (
-    <EmptyTable message="No episode data yet" />
+    <EmptyTable loading={loading} message="No episode data yet" />
   );
 };
 

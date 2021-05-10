@@ -57,7 +57,10 @@ const Dashboard = () => {
         router.replace(`/`);
         return;
       }
-      if (!allEpisodes) {
+
+      if (!allEpisodes || !allEpisodes.length) {
+        console.log("fetchShowEpisodes");
+
         await dispatch(
           fetchShowEpisodes({ showId: showIdString, pageIndex: 0 })
         );
@@ -89,8 +92,9 @@ const Dashboard = () => {
   };
 
   const episodesById = show.episodesById;
-  const featuredEpisode =
-    episodesById[featuredEpisodeId] || episodesById[show.featuredEpisodeId];
+  const featuredEpisode = episodesById
+    ? episodesById[featuredEpisodeId] || episodesById[show.featuredEpisodeId]
+    : null;
 
   const selectedEpisodeIsAlreadySaved =
     featuredEpisodeId === show.featuredEpisodeId;

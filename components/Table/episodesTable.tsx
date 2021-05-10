@@ -86,14 +86,14 @@ const EpisodesTable = ({
         fetchData={fetchData}
       />
     ) : (
-      <EmptyTable message="No episode data yet" />
+      <EmptyTable loading={loading} message="No episode data yet" />
     );
   }
 
   return data && data.length ? (
     <Table data={data} columns={columns} />
   ) : (
-    <EmptyTable message="No episode data yet" />
+    <EmptyTable loading={loading} message="No episode data yet" />
   );
 };
 

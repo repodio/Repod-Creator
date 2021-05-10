@@ -245,6 +245,7 @@ export const handleSearchEpisodes =
   ({ showId, queryString }): ThunkResult<Promise<void>> =>
   async (dispatch: AsyncDispatch, getState: () => RootState) => {
     try {
+      dispatch(fetchEpisodesStart());
       const episodesResponse = await searchEpisodes({
         showId,
         query: queryString,
@@ -352,6 +353,7 @@ export default (state = INITIAL_STATE, action) =>
           searchEpisodeIds: action.searchEpisodeIds,
         },
       },
+      loadingEpisodes: false,
     }),
 
     [UPDATE_FEATURED_EPISODE_ID]: () => ({
