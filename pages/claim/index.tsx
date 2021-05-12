@@ -136,8 +136,8 @@ const ClaimSearchPodcast = ({ onShowSelect }: ClaimSearchPodcastProps) => {
                       >
                         <div className="flex overflow-hidden w-full">
                           <img
-                            className="w-12 mr-4 rounded"
-                            src={item.artworkUrl}
+                            className="w-12 h-12 mr-4 rounded"
+                            src={item.thumbnail}
                             alt={`${item.title} artwork`}
                           />
                           <div className="flex flex-col flex-1 overflow-hidden">
