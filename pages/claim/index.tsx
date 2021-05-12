@@ -242,6 +242,7 @@ const ClaimSendEmail = ({ show, isMobile }: ClaimSendEmailProps) => {
   useEffect(() => {
     (async () => {
       const email: string = await fetchFeedEmailFromRSS({ rss });
+
       setEmail(email);
     })();
   }, [rss]);
@@ -289,7 +290,7 @@ const ClaimSendEmail = ({ show, isMobile }: ClaimSendEmailProps) => {
                 </div>
 
                 <Button.Tiny
-                  className={`bg-repod-tint text-repod-text-alternative border-2 border-repod-tint`}
+                  className={`bg-repod-tint text-repod-text-alternative border-2 border-repod-tint hover:opacity-100 cursor-default`}
                 >
                   Follow
                 </Button.Tiny>

@@ -143,7 +143,7 @@ const Dashboard = () => {
                   </div>
 
                   <Button.Tiny
-                    className={`bg-repod-tint text-repod-text-alternative border-2 border-repod-tint transition`}
+                    className={`bg-repod-tint text-repod-text-alternative border-2 border-repod-tint hover:opacity-100 cursor-default`}
                   >
                     Follow
                   </Button.Tiny>
