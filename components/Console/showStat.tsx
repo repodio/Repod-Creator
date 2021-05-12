@@ -15,7 +15,6 @@ const ShowStat = ({ type, value }: { type: string; value: number }) => (
     </p>
     <div className="flex flex-row justify-center items-center">
       <p className="text-sm text-repod-text-secondary mr-1">{type}</p>
-      <Info className="stroke-current text-repod-text-secondary" size={12} />
     </div>
   </div>
 );
