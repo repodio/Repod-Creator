@@ -58,7 +58,7 @@ const Dashboard = () => {
           />
         ) : null}
         <div
-          className={`w-full flex flex-col pl-8 justify-center items-start ${
+          className={`w-full flex flex-col justify-center items-start ${
             isMobile ? "" : "pl-8"
           }`}
         >
