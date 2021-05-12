@@ -1,7 +1,11 @@
 import React, { useEffect } from "react";
 import { withAuthUser, AuthAction } from "next-firebase-auth";
 import { useSelector, useDispatch } from "react-redux";
-import { selectors as showsSelectors, fetchShowStats } from "modules/Shows";
+import {
+  selectors as showsSelectors,
+  fetchShowStats,
+  fetchClaimedShows,
+} from "modules/Shows";
 import { useRouter } from "next/router";
 import { LoadingScreen } from "components/Loading";
 import { ThunkDispatch } from "redux-thunk";
@@ -30,6 +34,7 @@ const Dashboard = () => {
         router.replace(`/`);
       }
       await dispatch(fetchShowStats(showId));
+      await dispatch(fetchClaimedShows());
     })();
   }, []);
 
