@@ -347,9 +347,12 @@ const ClaimSendEmail = ({ show, isMobile }: ClaimSendEmailProps) => {
               To claim <p className="inline font-bold">{show.title}</p>, we’ll
               sent an email to the{" "}
               <p className="inline font-bold">{"<itunes:email>"}</p> address
-              listed on your podcast feed (
-              <p className="inline font-bold">{maskEmail(email)}</p>). Tap the
-              button below to send the email and continue your registration.
+              listed on your podcast feed
+              {email ? (
+                <p className="inline font-bold">{` (${maskEmail(email)})`}</p>
+              ) : null}
+              . Tap the button below to send the email and continue your
+              registration.
             </p>
             <Button.Medium
               onClick={handleSendEmail}
