@@ -65,7 +65,7 @@ const DashboardLayout = ({ children }) => {
         </div>
         <div className="h-0 border border-solid border-t-0 border-repod-border-light" />
       </div>
-      <div className="pt-6 px-8">{children}</div>
+      <div className={`pt-6 ${isMobile ? "px-4" : "px-8"}`}>{children}</div>
     </>
   );
 };
