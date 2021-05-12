@@ -189,7 +189,11 @@ const Auth = () => {
           <RepodLogo />
         </div>
 
-        <div className="flex flex-col h-full w-96 mx-16  items-start justify-center">
+        <div
+          className={`flex flex-col h-full mx-16  items-start justify-center ${
+            isMobile ? "w-full px-4" : "w-96"
+          }`}
+        >
           {inSignUpMode ? (
             <SignUp
               handleToggleSignupMode={handleToggleSignupMode}
