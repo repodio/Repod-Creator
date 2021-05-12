@@ -16,7 +16,7 @@ import { maskEmail } from "utils/textTransform";
 import { useDispatch } from "react-redux";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
-import { upsertShows } from "modules/Shows";
+import { upsertClaimedShowId, upsertShows } from "modules/Shows";
 import { useMediaQuery } from "react-responsive";
 
 interface ClaimProps {
@@ -229,6 +229,7 @@ const ClaimSendEmail = ({ show, isMobile }: ClaimSendEmailProps) => {
               [showId]: show,
             })
           );
+          dispatch(upsertClaimedShowId(showId));
           router.replace(`/console/${showId}`);
         } else {
           setError(ERRORS_LOOKUP[response && response.code]);

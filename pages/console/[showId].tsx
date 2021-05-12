@@ -34,7 +34,6 @@ const Dashboard = () => {
         router.replace(`/`);
       }
       await dispatch(fetchShowStats(showId));
-      await dispatch(fetchClaimedShows());
     })();
   }, []);
 
@@ -50,15 +49,17 @@ const Dashboard = () => {
   return (
     <DashboardLayout>
       <div className="flex flex-row">
-        <img
-          style={{ width: artworkSize, height: artworkSize }}
-          className="rounded "
-          src={show.artworkUrl}
-          alt="show artwork"
-        />
+        {!isMobile ? (
+          <img
+            style={{ width: artworkSize, height: artworkSize }}
+            className="rounded "
+            src={show.artworkUrl}
+            alt="show artwork"
+          />
+        ) : null}
         <div
           className={`w-full flex flex-col pl-8 justify-center items-start ${
-            isMobile ? "pl-3" : "pl-8"
+            isMobile ? "" : "pl-8"
           }`}
         >
           <p className="text-xl font-bold text-repod-text-primary font-bold truncate">
@@ -71,7 +72,7 @@ const Dashboard = () => {
             onClick={() => {
               router.replace(`/console/${showId}/featuredepisode`);
             }}
-            style={{ minWidth: 170, maxWidth: 170 }}
+            style={{ minWidth: 200, maxWidth: 200, width: 200 }}
             className={`bg-info text-repod-text-alternative flex-0`}
           >
             Set Featured Episode

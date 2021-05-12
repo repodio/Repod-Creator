@@ -8,7 +8,7 @@ import {
   setFeaturedEpisodeId,
 } from "utils/repodAPI";
 import { convertArrayToObject } from "utils/normalizing";
-import { flow, pick, values, uniqBy } from "lodash/fp";
+import { flow, pick, values, uniq } from "lodash/fp";
 import { RootState } from "reduxConfig/store";
 
 import { Action, ActionCreator } from "redux";
@@ -83,6 +83,7 @@ const UPDATE_FEATURED_EPISODE_ID = "repod/Shows/UPDATE_FEATURED_EPISODE_ID";
 const UPSERT_EPISODES = "repod/Shows/UPSERT_EPISODES";
 const UPDATE_ALL_EPISODE_LIST = "repod/Shows/UPDATE_ALL_EPISODE_LIST";
 const UPDATE_SEARCH_EPISODE_LIST = "repod/Shows/UPDATE_SEARCH_EPISODE_LIST";
+const UPSERT_CLAIMED_SHOW_ID = "repod/Shows/UPSERT_CLAIMED_SHOW_ID";
 
 // Action Creators
 export const upsertShows: ActionCreator<Action> = (shows: {
@@ -114,6 +115,13 @@ const updateClaimedShowsList: ActionCreator<Action> = (
 ) => ({
   type: UPDATE_CLAIMED_SHOWS,
   claimedShowIds,
+});
+
+export const upsertClaimedShowId: ActionCreator<Action> = (
+  claimedShowId: string
+) => ({
+  type: UPSERT_CLAIMED_SHOW_ID,
+  claimedShowId,
 });
 
 const updateFeaturedEpisodeId: ActionCreator<Action> = ({
@@ -319,6 +327,10 @@ export default (state = INITIAL_STATE, action) =>
     [UPDATE_CLAIMED_SHOWS]: () => ({
       ...state,
       claimedShowIds: action.claimedShowIds,
+    }),
+    [UPSERT_CLAIMED_SHOW_ID]: () => ({
+      ...state,
+      claimedShowIds: uniq([...state.claimedShowIds, action.claimedShowId]),
     }),
     [UPSERT_EPISODES]: () => ({
       ...state,

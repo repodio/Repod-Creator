@@ -52,6 +52,18 @@ const Dashboard = () => {
 
   const timeframe = TIME_OPTIONS[timeframeIndex];
 
+  if (!show.yearlyFollowData) {
+    return (
+      <DashboardLayout>
+        <div className="flex flex-col justify-start items-start">
+          <p className="text-lg font-bold text-repod-text-primary">
+            No Follower data
+          </p>
+        </div>
+      </DashboardLayout>
+    );
+  }
+
   const chartData = show.yearlyFollowData.slice(
     TOTAL_CHART_LENGTH - timeframe.days,
     TOTAL_CHART_LENGTH
