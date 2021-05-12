@@ -52,6 +52,7 @@ const ClaimSearchPodcast = ({ onShowSelect }: ClaimSearchPodcastProps) => {
   const onChangeText = useCallback(
     (event) => {
       setValue(event.target.value);
+      setNoResults(false);
     },
     [setValue]
   );
