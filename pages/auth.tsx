@@ -13,6 +13,8 @@ import {
   TwitterLoginButton,
 } from "components/Buttons";
 
+import Copy from "constants/i18n";
+
 initAuth();
 
 type Inputs = {
@@ -22,9 +24,9 @@ type Inputs = {
 };
 
 const AUTH_ERROR_CODES = {
-  "auth/user-not-found": "Couldn't find an account by this email/password",
-  "auth/email-already-in-use": "That email is already in use",
-  "auth/weak-password": "Password must be at least 6 characters",
+  "auth/user-not-found": Copy.Auth.userNotFoundError,
+  "auth/email-already-in-use": Copy.Auth.emailAlreadyInUseError,
+  "auth/weak-password": Copy.Auth.weakPasswordError,
 };
 
 const SignUp = ({ handleToggleSignupMode, authError, setAuthError }) => {
@@ -44,8 +46,7 @@ const SignUp = ({ handleToggleSignupMode, authError, setAuthError }) => {
 
     if (response && response.error) {
       const errorMessage =
-        AUTH_ERROR_CODES[response.error.code] ||
-        "Something went wrong. Try again later";
+        AUTH_ERROR_CODES[response.error.code] || Copy.Auth.defaultError;
       setAuthError(errorMessage);
     }
   };
@@ -213,11 +214,10 @@ const Auth = () => {
         <div className="flex flex-col flex-0 bg-auth-background bg-cover bg-center w-full items-center justify-center">
           <div className="flex flex-col w-96 items-start justify-center">
             <p className="text-repod-text-primary text-6xl font-bold mb-6">
-              Be where your listeners are
+              {Copy.Auth.authTitle}
             </p>
             <p className="text-repod-text-primary text-lg">
-              Claim your podcast on the platform with an existing listener
-              community.
+              {Copy.Auth.authSubTitle}
             </p>
           </div>
         </div>

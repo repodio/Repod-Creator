@@ -18,6 +18,7 @@ import { formatDuration, fromNow } from "utils/formats";
 import { LoadingScreen } from "components/Loading";
 import { useMediaQuery } from "react-responsive";
 import { SearchInput } from "components/Inputs";
+import Copy from "constants/i18n";
 
 const Dashboard = () => {
   const router = useRouter();
@@ -180,7 +181,7 @@ const Dashboard = () => {
                     style={{ maxWidth: 220 }}
                     className="text-me text-repod-text-secondary text-center"
                   >
-                    Your featured episode will go here
+                    {Copy.FeaturedEpisodes.featuredEpisodePlaceholder}
                   </p>
                 </div>
               )}
@@ -203,15 +204,9 @@ const Dashboard = () => {
         <p
           className={`text-xl font-semibold text-repod-text-primary flex flex-row items-center my-4`}
         >
-          Pick an episode
+          {Copy.FeaturedEpisodes.featuredEpisodeTitle}
         </p>
-        <p>
-          you should pick an episode, you should pick an episode, you should
-          pick an episode, you should pick an episode, you should pick an
-          episode, you should pick an episode, you should pick an episode, you
-          should pick an episode, you should pick an episode, you should pick an
-          episode, you should pick an episode
-        </p>
+        <p>{Copy.FeaturedEpisodes.featuredEpisodeSubtitle}</p>
 
         {featuredEpisode ? (
           <div className="w-full">

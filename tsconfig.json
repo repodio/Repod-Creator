@@ -27,6 +27,9 @@
       "components": [
         "./components"
       ],
+      "constants": [
+        "./constants"
+      ]
     },
     "forceConsistentCasingInFileNames": true,
     "module": "esnext"
