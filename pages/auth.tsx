@@ -220,6 +220,9 @@ const Auth = () => {
               {Copy.Auth.authSubTitle}
             </p>
           </div>
+          <div className="absolute opacity-5 right-0 bottom-0">
+            <p>{process.env.NODE_ENV}</p>
+          </div>
         </div>
       ) : null}
     </div>
