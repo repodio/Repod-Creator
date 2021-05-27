@@ -183,8 +183,13 @@ const Auth = () => {
     setAuthError(null);
     toggleSignUpMode(!inSignUpMode);
   };
+
   return (
-    <div className="flex flex-row bg-repod-canvas-auth-bg">
+    <div
+      className={`flex ${
+        isMobile ? "justify-center" : "flex-row bg-repod-canvas-auth-bg"
+      }`}
+    >
       <div className="flex flex-col flex-0 bg-repod-canvas min-w-1/2 items-center">
         <div className="self-start ">
           <RepodLogo />
