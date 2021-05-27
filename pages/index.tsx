@@ -18,14 +18,12 @@ const Home = () => {
       if (!storedProfile || !storedProfile.displayName) {
         const profile = await dispatch(login({ userId: AuthUser.id }));
 
-        console.log("profile", profile);
         if (!profile) {
           console.error("Home couldnt find user", AuthUser.id);
           router.replace(`/auth`);
         }
       }
       const claimedShows = await dispatch(fetchClaimedShows());
-      console.log("Home claimedShows", claimedShows);
 
       if (!claimedShows || !claimedShows.length) {
         router.replace(`/claim`);

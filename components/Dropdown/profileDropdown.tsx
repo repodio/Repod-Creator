@@ -85,7 +85,7 @@ const ProfileDropdown = ({
                           onClick={signOut}
                           className={`${
                             active ? "bg-repod-canvas-secondary" : ""
-                          } group flex rounded-md items-center w-full px-2 py-2 text-md text-repod-text-primary`}
+                          } group flex rounded-md items-center w-full px-2 py-2 text-md text-repod-text-primary z-10`}
                         >
                           Log out
                         </button>
