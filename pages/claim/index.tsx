@@ -70,10 +70,10 @@ const ClaimSearchPodcast = ({ onShowSelect }: ClaimSearchPodcastProps) => {
           query: debouncedSearchTerm,
           includeRSS: true,
         }).then((searchResponse) => {
-          const { items } = searchResponse;
+          const { items = [] } = searchResponse;
           clearTimeout(searchingTimeout);
 
-          if (!items.length) {
+          if (!items && !items.length) {
             setNoResults(true);
           }
 
