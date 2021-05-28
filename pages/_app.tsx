@@ -14,10 +14,14 @@ function MyApp({ Component, pageProps }) {
 
   // store.__persistor && store.__persistor.purge();
 
+  const consoleLayout =
+    router.pathname.startsWith("/console") ||
+    router.pathname.startsWith("/team");
+
   return (
     <Provider store={store}>
       <PersistGate persistor={store.__persistor}>
-        {router.pathname.startsWith("/console/") ? (
+        {consoleLayout ? (
           <ConsoleLayout>
             <Component {...pageProps} />
           </ConsoleLayout>

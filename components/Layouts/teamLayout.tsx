@@ -3,14 +3,16 @@ import { useRouter } from "next/router";
 import { useMediaQuery } from "react-responsive";
 import NavigationLink from "./partials/navigationLink";
 
-const DashboardLayout = ({ children }) => {
+const ROUTE = "team";
+
+const TeamLayout = ({ children }) => {
   const router = useRouter();
   const { showId } = router.query;
 
   const splitLink = router.asPath.split("/");
   const viewFollowers = splitLink[3] && splitLink[3] === "followers";
   const viewEpisodes = splitLink[3] && splitLink[3] === "episodes";
-  const viewOverview = !viewFollowers && !viewEpisodes;
+  const viewMembers = !viewFollowers && !viewEpisodes;
   const isMobile = useMediaQuery({ query: "(max-width: 1224px)" });
 
   return (
@@ -21,23 +23,18 @@ const DashboardLayout = ({ children }) => {
             isMobile ? "ml-4" : "ml-8"
           }`}
         >
-          Dashboard
+          Team
         </h1>
         <div className={`flex flex-row ${isMobile ? "" : "ml-4"}`}>
           <NavigationLink
-            label="Overview"
-            isSelected={viewOverview}
-            destination={`/console/${showId}`}
-          />
-          <NavigationLink
-            label="Followers"
-            isSelected={viewFollowers}
-            destination={`/console/${showId}/followers`}
+            label="Members"
+            isSelected={viewMembers}
+            destination={`/${ROUTE}/${showId}`}
           />
           {/* <NavigationLink
-            label="Episodes"
-            isSelected={viewEpisodes}
-            destination={`/console/${showId}/episodes`}
+            label="Followers"
+            isSelected={viewFollowers}
+            destination={`/${ROUTE}/${showId}/activity`}
           /> */}
         </div>
         <div className="h-0 border border-solid border-t-0 border-repod-border-light" />
@@ -47,4 +44,4 @@ const DashboardLayout = ({ children }) => {
   );
 };
 
-export default DashboardLayout;
+export default TeamLayout;

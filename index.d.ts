@@ -41,6 +41,8 @@ interface ShowItem {
   };
   allEpisodeIds: string[];
   searchEpisodeIds: string[];
+
+  claimedShow: ClaimedShowItems;
 }
 
 interface ReduxShowItem extends ShowItem {

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { BarChart2, Settings, ChevronLeft, ChevronRight } from "react-feather";
+import { BarChart2, ChevronLeft, ChevronRight, Users } from "react-feather";
 import { ProfileDropdown } from "components/Dropdown";
 import { ShowSelector } from "components/Console";
 import { useRouter } from "next/router";
@@ -80,19 +80,19 @@ const ConsoleSideDrawer = () => {
       <div className="h-0 border border-solid border-t-0 border-repod-border-dark" />
       <div className="w-full flex flex-col mt-12 flex-1">
         <NavigationLink
-          isSelected={route === ""}
+          isSelected={router.pathname.startsWith("/console")}
           destination={`/console/${router.query.showId}/`}
           label="Dashboard"
           IconComponent={BarChart2}
           expanded={expanded}
         />
-        {/* <NavigationLink
-          isSelected={route === "/settings"}
-          destination={`/console/${router.query.showId}/settings`}
-          label="Settings"
-          IconComponent={Settings}
+        <NavigationLink
+          isSelected={router.pathname.startsWith("/team")}
+          destination={`/team/${router.query.showId}`}
+          label="Team"
+          IconComponent={Users}
           expanded={expanded}
-        /> */}
+        />
       </div>
       <div>
         <div className="py-4">
