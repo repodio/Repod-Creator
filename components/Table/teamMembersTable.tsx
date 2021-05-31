@@ -6,24 +6,39 @@ import { ProfileAvatar } from "components/Images";
 import { useMediaQuery } from "react-responsive";
 import { Menu, Transition } from "@headlessui/react";
 import { MoreHorizontal } from "react-feather";
+import { useRouter } from "next/router";
 
-const TeamMembersTable = ({ data }) => {
+const TeamMembersTable = ({
+  data,
+  onlyEdit = false,
+}: {
+  data: {}[];
+  onlyEdit?: boolean;
+}) => {
   const isMobile = useMediaQuery({ query: "(max-width: 1224px)" });
+  const router = useRouter();
 
   const columns = React.useMemo(() => {
     const options = [];
     if (isMobile) {
-      options.push([
-        {
-          Header: "Name",
-          accessor: "displayName",
-          Cell: (row) => (
-            <p className="font-semibold text-md text-repod-text-primary">
-              {row.cell.value}
-            </p>
-          ),
-        },
-      ]);
+      options.push({
+        Header: "Name",
+        accessor: "displayName",
+        Cell: (row) => (
+          <p className="font-semibold text-md text-repod-text-primary">
+            {row.cell.value}
+          </p>
+        ),
+      });
+      options.push({
+        Header: "Access",
+        accessor: "role",
+        Cell: (row) => (
+          <p className="font-semibold text-md text-repod-text-primary">
+            {row.cell.value}
+          </p>
+        ),
+      });
     } else {
       options.push({
         Header: "",
@@ -64,7 +79,7 @@ const TeamMembersTable = ({ data }) => {
         ),
       });
     }
-
+    console.log("router.pathname", router.asPath);
     options.push({
       Header: "Manage",
       Cell: (row) => (
@@ -102,7 +117,9 @@ const TeamMembersTable = ({ data }) => {
                           <button
                             key="Edit"
                             onClick={() => {
-                              console.log("Edit Pressed");
+                              router.push(
+                                `${router.asPath}/p/${row.cell.value}`
+                              );
                             }}
                             className={`${
                               active ? "bg-repod-canvas-secondary" : ""
@@ -112,21 +129,23 @@ const TeamMembersTable = ({ data }) => {
                           </button>
                         )}
                       </Menu.Item>
-                      <Menu.Item>
-                        {({ active }) => (
-                          <button
-                            key="Remove"
-                            onClick={() => {
-                              console.log("Remove Pressed");
-                            }}
-                            className={`${
-                              active ? "bg-repod-canvas-secondary" : ""
-                            } group flex rounded-md items-center w-full px-2 py-2 text-md text-repod-text-primary z-10`}
-                          >
-                            Remove
-                          </button>
-                        )}
-                      </Menu.Item>
+                      {onlyEdit ? null : (
+                        <Menu.Item>
+                          {({ active }) => (
+                            <button
+                              key="Remove"
+                              onClick={() => {
+                                console.log("Remove Pressed");
+                              }}
+                              className={`${
+                                active ? "bg-repod-canvas-secondary" : ""
+                              } group flex rounded-md items-center w-full px-2 py-2 text-md text-repod-text-primary z-10`}
+                            >
+                              Remove
+                            </button>
+                          )}
+                        </Menu.Item>
+                      )}
                     </div>
                   </Menu.Items>
                 </Transition>

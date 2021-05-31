@@ -57,7 +57,7 @@ const Team = () => {
     <TeamLayout>
       <div className="flex flex-col">
         <p className="text-2xl font-bold text-repod-text-primary">You</p>
-        <TeamMembersTable data={[authProfileWithRoles]} />
+        <TeamMembersTable data={[authProfileWithRoles]} onlyEdit />
 
         {loading ? (
           <Loader />
