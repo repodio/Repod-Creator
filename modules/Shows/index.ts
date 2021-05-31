@@ -84,6 +84,7 @@ const UPSERT_EPISODES = "repod/Shows/UPSERT_EPISODES";
 const UPDATE_ALL_EPISODE_LIST = "repod/Shows/UPDATE_ALL_EPISODE_LIST";
 const UPDATE_SEARCH_EPISODE_LIST = "repod/Shows/UPDATE_SEARCH_EPISODE_LIST";
 const UPSERT_CLAIMED_SHOW_ID = "repod/Shows/UPSERT_CLAIMED_SHOW_ID";
+const UPDATE_CLAIMED_SHOW_ON_SHOW = "repod/Shows/UPDATE_CLAIMED_SHOW_ON_SHOW";
 
 // Action Creators
 export const upsertShows: ActionCreator<Action> = (shows: {
@@ -177,6 +178,18 @@ const updateSearchEpisodeList: ActionCreator<Action> = ({
 }) => ({
   type: UPDATE_SEARCH_EPISODE_LIST,
   searchEpisodeIds,
+  showId,
+});
+
+export const updateClaimedShowOnShow: ActionCreator<Action> = ({
+  claimedShow,
+  showId,
+}: {
+  claimedShow: ClaimedShowItems;
+  showId: string;
+}) => ({
+  type: UPDATE_CLAIMED_SHOW_ON_SHOW,
+  claimedShow,
   showId,
 });
 
@@ -367,7 +380,6 @@ export default (state = INITIAL_STATE, action) =>
       },
       loadingEpisodes: false,
     }),
-
     [UPDATE_FEATURED_EPISODE_ID]: () => ({
       ...state,
       byId: {
@@ -385,6 +397,16 @@ export default (state = INITIAL_STATE, action) =>
     [FINISH_EPISODES]: () => ({
       ...state,
       loadingEpisodes: false,
+    }),
+    [UPDATE_CLAIMED_SHOW_ON_SHOW]: () => ({
+      ...state,
+      byId: {
+        ...state.byId,
+        [action.showId]: {
+          ...(state.byId[action.showId] || {}),
+          claimedShow: action.claimedShow,
+        },
+      },
     }),
     LOGOUT: () => ({
       ...INITIAL_STATE,

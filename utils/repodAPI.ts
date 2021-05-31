@@ -58,6 +58,26 @@ const fetchClaimedShowsAPI = async (token?: string) => {
   return shows;
 };
 
+const getTeamMembers = async (showId?: string) => {
+  const data = await fetch(
+    `${API_DOMAIN}/v1/${ROUTES.claimShow}/${showId}/team`,
+    {
+      method: "GET",
+      headers: await getHeaders(),
+    }
+  )
+    .then((data) => data.json())
+    .then(({ data }) => {
+      return data;
+    });
+
+  if (!data) {
+    console.log("fetchClaimedShowsAPI: response data got nothing");
+  }
+
+  return data;
+};
+
 const fetchShowData = async (
   { showId }: { showId: string },
   token?: string
@@ -254,6 +274,7 @@ const setFeaturedEpisodeId = async ({
 export {
   getEpisodes,
   fetchClaimedShowsAPI,
+  getTeamMembers,
   getUser,
   setUser,
   searchShows,
