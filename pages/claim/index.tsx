@@ -347,7 +347,7 @@ const ClaimSendEmail = ({ show, isMobile }: ClaimSendEmailProps) => {
 
             <p className="text-md text-repod-text-primary mb-4">
               To claim <p className="inline font-bold">{show.title}</p>, we’ll
-              sent an email to the{" "}
+              send an email to the{" "}
               <p className="inline font-bold">{"<itunes:email>"}</p> address
               listed on your podcast feed
               {email ? (
