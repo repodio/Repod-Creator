@@ -57,7 +57,7 @@ const SignUp = ({ handleToggleSignupMode, authError, setAuthError }) => {
 
       <form className=" w-full" onSubmit={handleSubmit(onSubmit)}>
         <FormInput
-          label="Display Name"
+          label="First and Last Name"
           registerInput={register("name", { required: true })}
           name="name"
           type="name"
