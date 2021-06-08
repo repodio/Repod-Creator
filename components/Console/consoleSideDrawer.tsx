@@ -86,13 +86,13 @@ const ConsoleSideDrawer = () => {
           IconComponent={BarChart2}
           expanded={expanded}
         />
-        <NavigationLink
+        {/* <NavigationLink
           isSelected={router.pathname.startsWith("/team")}
           destination={`/team/${router.query.showId}`}
           label="Team"
           IconComponent={Users}
           expanded={expanded}
-        />
+        /> */}
       </div>
       <div>
         <div className="py-4">
