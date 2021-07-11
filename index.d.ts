@@ -53,6 +53,7 @@ interface ReduxShowItem extends ShowItem {
 }
 
 interface ClaimedShowItems extends ShowItem {
+  stripeAccountId?: string;
   featuredEpisodeId: string;
   users: {
     [key: string]: {

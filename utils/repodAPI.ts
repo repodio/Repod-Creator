@@ -271,6 +271,26 @@ const setFeaturedEpisodeId = async ({
   return response;
 };
 
+const fetchConnectedAccountOnboardingUrl = async ({
+  showId,
+}: {
+  showId: string;
+}): Promise<{
+  error?: {
+    code: string;
+  };
+}> => {
+  const response = await fetch(
+    `${API_DOMAIN}/v1/${ROUTES.claimShow}/${showId}/connect-account`,
+    {
+      method: "GET",
+      headers: await getHeaders(),
+    }
+  ).then((data) => data.json());
+
+  return response.url;
+};
+
 export {
   getEpisodes,
   fetchClaimedShowsAPI,
@@ -283,4 +303,5 @@ export {
   sendVerificationCodeEmail,
   fetchShowData,
   setFeaturedEpisodeId,
+  fetchConnectedAccountOnboardingUrl,
 };

@@ -1,6 +1,12 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { BarChart2, ChevronLeft, ChevronRight, Users } from "react-feather";
+import {
+  BarChart2,
+  ChevronLeft,
+  ChevronRight,
+  Users,
+  DollarSign,
+} from "react-feather";
 import { ProfileDropdown } from "components/Dropdown";
 import { ShowSelector } from "components/Console";
 import { useRouter } from "next/router";
@@ -84,6 +90,13 @@ const ConsoleSideDrawer = () => {
           destination={`/console/${router.query.showId}/`}
           label="Dashboard"
           IconComponent={BarChart2}
+          expanded={expanded}
+        />
+        <NavigationLink
+          isSelected={router.pathname.startsWith("/monetization")}
+          destination={`/monetization/${router.query.showId}/`}
+          label="Monetization"
+          IconComponent={DollarSign}
           expanded={expanded}
         />
         {/* <NavigationLink
