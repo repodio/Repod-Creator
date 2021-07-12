@@ -50,9 +50,6 @@ const getClaimedShows = createSelector(
     flow(pick(claimedShowIds), values)(allShowsById)
 );
 
-const getShowEpisodeCursors = (showId) =>
-  createSelector(getShowById(showId), (show) => show && show.episodeCursors);
-
 const getAllShowEpisodes = (showId) =>
   createSelector(getShowById(showId), (show) =>
     show ? flow(pick(show.allEpisodeIds), values)(show.episodesById) : []
@@ -85,6 +82,8 @@ const UPDATE_ALL_EPISODE_LIST = "repod/Shows/UPDATE_ALL_EPISODE_LIST";
 const UPDATE_SEARCH_EPISODE_LIST = "repod/Shows/UPDATE_SEARCH_EPISODE_LIST";
 const UPSERT_CLAIMED_SHOW_ID = "repod/Shows/UPSERT_CLAIMED_SHOW_ID";
 const UPDATE_CLAIMED_SHOW_ON_SHOW = "repod/Shows/UPDATE_CLAIMED_SHOW_ON_SHOW";
+const UPDATE_STRIPE_ACCOUNT_ID_ON_SHOW =
+  "repod/Shows/UPDATE_STRIPE_ACCOUNT_ID_ON_SHOW";
 
 // Action Creators
 export const upsertShows: ActionCreator<Action> = (shows: {
@@ -190,6 +189,18 @@ export const updateClaimedShowOnShow: ActionCreator<Action> = ({
 }) => ({
   type: UPDATE_CLAIMED_SHOW_ON_SHOW,
   claimedShow,
+  showId,
+});
+
+export const updateStripeAccountIdOnShow: ActionCreator<Action> = ({
+  stripeAccountId,
+  showId,
+}: {
+  stripeAccountId: string;
+  showId: string;
+}) => ({
+  type: UPDATE_STRIPE_ACCOUNT_ID_ON_SHOW,
+  stripeAccountId,
   showId,
 });
 
@@ -408,6 +419,17 @@ export default (state = INITIAL_STATE, action) =>
         },
       },
     }),
+    [UPDATE_STRIPE_ACCOUNT_ID_ON_SHOW]: () => ({
+      ...state,
+      byId: {
+        ...state.byId,
+        [action.showId]: {
+          ...(state.byId[action.showId] || {}),
+          stripeAccountId: action.stripeAccountId,
+        },
+      },
+    }),
+
     LOGOUT: () => ({
       ...INITIAL_STATE,
     }),

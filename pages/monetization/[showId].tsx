@@ -3,7 +3,6 @@ import { withAuthUser, AuthAction } from "next-firebase-auth";
 import { useSelector, useDispatch } from "react-redux";
 import { selectors as showsSelectors } from "modules/Shows";
 import { selectors as authSelectors } from "modules/Auth";
-import { connectStripeAccount } from "modules/Monetization";
 import { useRouter } from "next/router";
 import { Loader, LoadingScreen } from "components/Loading";
 import { ThunkDispatch } from "redux-thunk";
@@ -12,6 +11,8 @@ import * as Badge from "components/Badge";
 import { Button } from "components/Buttons";
 import { MonetizationLayout } from "components/Layouts";
 import { useMediaQuery } from "react-responsive";
+import { fetchConnectedAccountOnboardingUrl } from "utils/repodAPI";
+
 // import {
 //   selectors as profileSelectors,
 //   fetchConnectedAccounts,
@@ -41,7 +42,9 @@ const Monetization = () => {
 
   const handleConnectAccount = useCallback(async () => {
     setConnectButtonLoading(true);
-    const onboardingURL = await dispatch(connectStripeAccount(showIdString));
+    const onboardingURL = await fetchConnectedAccountOnboardingUrl({
+      showId: showIdString,
+    });
 
     console.log("handleConnectAccount onboardingURL", onboardingURL);
 

@@ -275,11 +275,7 @@ const fetchConnectedAccountOnboardingUrl = async ({
   showId,
 }: {
   showId: string;
-}): Promise<{
-  error?: {
-    code: string;
-  };
-}> => {
+}): Promise<string> => {
   const response = await fetch(
     `${API_DOMAIN}/v1/${ROUTES.claimShow}/${showId}/connect-account`,
     {
@@ -289,6 +285,22 @@ const fetchConnectedAccountOnboardingUrl = async ({
   ).then((data) => data.json());
 
   return response.url;
+};
+
+const notifySuccessfulStripeAccountRedirect = async ({
+  showId,
+}: {
+  showId: string;
+}): Promise<string> => {
+  const response = await fetch(
+    `${API_DOMAIN}/v1/${ROUTES.claimShow}/${showId}/successful-account`,
+    {
+      method: "GET",
+      headers: await getHeaders(),
+    }
+  ).then((data) => data.json());
+
+  return response.stripeAccountId;
 };
 
 export {
@@ -304,4 +316,5 @@ export {
   fetchShowData,
   setFeaturedEpisodeId,
   fetchConnectedAccountOnboardingUrl,
+  notifySuccessfulStripeAccountRedirect,
 };
