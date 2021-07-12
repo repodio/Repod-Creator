@@ -303,6 +303,26 @@ const notifySuccessfulStripeAccountRedirect = async ({
   return response.stripeAccountId;
 };
 
+const fetchClaimedShowMonetizesAPI = async ({
+  showId,
+}: {
+  showId: string;
+}): Promise<{
+  tips;
+  totalTipVolume;
+  claimedShow;
+}> => {
+  const response = await fetch(
+    `${API_DOMAIN}/v1/${ROUTES.claimShow}/${showId}/monetization`,
+    {
+      method: "GET",
+      headers: await getHeaders(),
+    }
+  ).then((data) => data.json());
+
+  return response;
+};
+
 const removeStripeAccountIdOnShow = async ({
   showId,
 }: {
@@ -332,4 +352,5 @@ export {
   fetchConnectedAccountOnboardingUrl,
   notifySuccessfulStripeAccountRedirect,
   removeStripeAccountIdOnShow,
+  fetchClaimedShowMonetizesAPI,
 };

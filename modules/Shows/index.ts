@@ -1,6 +1,7 @@
 import { createSelector } from "reselect";
 import switchcase from "utils/switchcase";
 import {
+  fetchClaimedShowMonetizesAPI,
   fetchClaimedShowsAPI,
   fetchShowData,
   getEpisodes,
@@ -84,6 +85,8 @@ const UPSERT_CLAIMED_SHOW_ID = "repod/Shows/UPSERT_CLAIMED_SHOW_ID";
 const UPDATE_CLAIMED_SHOW_ON_SHOW = "repod/Shows/UPDATE_CLAIMED_SHOW_ON_SHOW";
 const UPDATE_STRIPE_ACCOUNT_ID_ON_SHOW =
   "repod/Shows/UPDATE_STRIPE_ACCOUNT_ID_ON_SHOW";
+const UPSERT_CLAIMED_SHOW_MONETIZE_STATS =
+  "repod/Shows/UPSERT_CLAIMED_SHOW_MONETIZE_STATS";
 
 // Action Creators
 export const upsertShows: ActionCreator<Action> = (shows: {
@@ -204,6 +207,24 @@ export const updateStripeAccountIdOnShow: ActionCreator<Action> = ({
   showId,
 });
 
+const upsertClaimedShowMonetizeStats: ActionCreator<Action> = ({
+  tips,
+  totalTipVolume,
+  claimedShow,
+  showId,
+}: {
+  tips: TipData[];
+  totalTipVolume: number;
+  claimedShow: ClaimedShowItems;
+  showId: string;
+}) => ({
+  type: UPSERT_CLAIMED_SHOW_MONETIZE_STATS,
+  tips,
+  totalTipVolume,
+  claimedShow,
+  showId,
+});
+
 // Thunks
 export const fetchClaimedShows =
   (idToken?: string): ThunkResult<Promise<string[]>> =>
@@ -216,6 +237,26 @@ export const fetchClaimedShows =
       dispatch(updateClaimedShowsList(Object.keys(normalizedShows)));
 
       return Object.keys(normalizedShows);
+    } catch (error) {
+      console.warn("[THUNK ERROR]: login", error);
+    }
+  };
+
+export const fetchClaimShowMonetizeStats =
+  (showId: string): ThunkResult<Promise<void>> =>
+  async (dispatch: AsyncDispatch) => {
+    try {
+      const { tips, totalTipVolume, claimedShow } =
+        await fetchClaimedShowMonetizesAPI({ showId });
+
+      dispatch(
+        upsertClaimedShowMonetizeStats({
+          tips,
+          totalTipVolume,
+          claimedShow,
+          showId,
+        })
+      );
     } catch (error) {
       console.warn("[THUNK ERROR]: login", error);
     }
@@ -432,7 +473,18 @@ export default (state = INITIAL_STATE, action) =>
         },
       },
     }),
-
+    [UPSERT_CLAIMED_SHOW_MONETIZE_STATS]: () => ({
+      ...state,
+      byId: {
+        ...state.byId,
+        [action.showId]: {
+          ...(state.byId[action.showId] || {}),
+          claimedShow: action.claimedShow,
+          tips: action.tips,
+          totalTipVolume: action.totalTipVolume,
+        },
+      },
+    }),
     LOGOUT: () => ({
       ...INITIAL_STATE,
     }),

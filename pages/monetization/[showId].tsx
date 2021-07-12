@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import {
   selectors as showsSelectors,
   updateStripeAccountIdOnShow,
+  fetchClaimShowMonetizeStats,
 } from "modules/Shows";
 import { selectors as authSelectors } from "modules/Auth";
 import { useRouter } from "next/router";
@@ -20,11 +21,6 @@ import {
 } from "utils/repodAPI";
 import Link from "next/link";
 import { ArrowUpRight } from "react-feather";
-
-// import {
-//   selectors as profileSelectors,
-//   fetchConnectedAccounts,
-// } from "modules/Profile";
 
 const Monetization = () => {
   const router = useRouter();
@@ -43,7 +39,7 @@ const Monetization = () => {
       if (!show) {
         router.replace(`/`);
       }
-      // await dispatch(fetchConnectedAccounts(showIdString));
+      await dispatch(fetchClaimShowMonetizeStats(showIdString));
       setPageLoading(false);
     })();
   }, []);
@@ -78,7 +74,12 @@ const Monetization = () => {
   }
 
   const stripeAccountId = show.claimedShow && show.claimedShow.stripeAccountId;
-  console.log("stripeAccountId", stripeAccountId);
+  console.log(
+    "stripeAccountId",
+    show.tips,
+    show.totalTipVolume,
+    stripeAccountId
+  );
 
   return (
     <MonetizationLayout>
