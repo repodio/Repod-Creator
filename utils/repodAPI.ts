@@ -303,6 +303,20 @@ const notifySuccessfulStripeAccountRedirect = async ({
   return response.stripeAccountId;
 };
 
+const removeStripeAccountIdOnShow = async ({
+  showId,
+}: {
+  showId: string;
+}): Promise<string> => {
+  return fetch(
+    `${API_DOMAIN}/v1/${ROUTES.claimShow}/${showId}/connect-account`,
+    {
+      method: "DELETE",
+      headers: await getHeaders(),
+    }
+  ).then((data) => data.json());
+};
+
 export {
   getEpisodes,
   fetchClaimedShowsAPI,
@@ -317,4 +331,5 @@ export {
   setFeaturedEpisodeId,
   fetchConnectedAccountOnboardingUrl,
   notifySuccessfulStripeAccountRedirect,
+  removeStripeAccountIdOnShow,
 };

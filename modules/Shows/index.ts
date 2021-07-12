@@ -425,7 +425,10 @@ export default (state = INITIAL_STATE, action) =>
         ...state.byId,
         [action.showId]: {
           ...(state.byId[action.showId] || {}),
-          stripeAccountId: action.stripeAccountId,
+          claimedShow: {
+            ...((state.byId[action.showId] || {}).claimedShow || {}),
+            stripeAccountId: action.stripeAccountId,
+          },
         },
       },
     }),
