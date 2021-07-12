@@ -18,6 +18,8 @@ import {
   fetchConnectedAccountOnboardingUrl,
   removeStripeAccountIdOnShow,
 } from "utils/repodAPI";
+import Link from "next/link";
+import { ArrowUpRight } from "react-feather";
 
 // import {
 //   selectors as profileSelectors,
@@ -93,9 +95,18 @@ const Monetization = () => {
             Stripe Account at anytime.
           </p>
           <div className="flex flex-row mb-8 items-center">
-            <p className="text-xl font-bold text-repod-text-primary mr-8">
-              {stripeAccountId}
-            </p>
+            <Link
+              href={`https://dashboard.stripe.com/test/connect/accounts/${stripeAccountId}`}
+            >
+              <a className="flex flex-row items-center text-xl font-bold text-repod-text-primary mr-8 hover:opacity-50 transition underline">
+                {stripeAccountId}
+
+                <ArrowUpRight
+                  className={`stroke-current text-repod-text-primary`}
+                  size={24}
+                />
+              </a>
+            </Link>
             <div className={`flex flex-col justify-center`}>
               <a
                 className="cursor-pointer flex w-full text-center no-underline text-sm font-bold text-danger hover:opacity-50 transition mt-2"
