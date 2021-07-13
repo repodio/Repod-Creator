@@ -52,18 +52,18 @@ const TipsTable = ({ data }) => {
           </p>
         ),
       });
-      options.push({
-        Header: "Date",
-        accessor: "createdOn",
-        Cell: (row) => (
-          <p className="font-medium text-sm text-repod-text-primary">
-            {formatDate(row.value)}
-          </p>
-        ),
-        width: 50,
-      });
     }
 
+    options.push({
+      Header: "Date",
+      accessor: "createdOn",
+      Cell: (row) => (
+        <p className="font-medium text-sm text-repod-text-primary">
+          {formatDate(row.value)}
+        </p>
+      ),
+      width: 50,
+    });
     options.push({
       Header: "Amount",
       accessor: "tipAmount",

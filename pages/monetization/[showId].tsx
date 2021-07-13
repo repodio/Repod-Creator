@@ -107,7 +107,7 @@ const Monetization = () => {
             <Link
               href={`https://dashboard.stripe.com/test/connect/accounts/${stripeAccountId}`}
             >
-              <a className="flex flex-row items-center text-xl font-bold text-repod-text-primary mr-8 hover:opacity-50 transition underline">
+              <a className="flex flex-row items-center text-xl font-bold text-repod-text-primary mr-4 hover:opacity-50 transition underline">
                 {stripeAccountId}
 
                 <ArrowUpRight
@@ -116,6 +116,15 @@ const Monetization = () => {
                 />
               </a>
             </Link>
+            <div className={`flex flex-col justify-center mr-4`}>
+              <Link
+                href={`https://dashboard.stripe.com/test/connect/accounts/${stripeAccountId}`}
+              >
+                <a className="cursor-pointer flex w-full text-center no-underline text-sm font-bold text-repod-text-secondary hover:opacity-50 transition mt-2">
+                  View on Stripe
+                </a>
+              </Link>
+            </div>
             <div className={`flex flex-col justify-center`}>
               <a
                 className="cursor-pointer flex w-full text-center no-underline text-sm font-bold text-danger hover:opacity-50 transition mt-2"
