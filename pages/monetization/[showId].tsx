@@ -6,9 +6,8 @@ import {
   updateStripeAccountIdOnShow,
   fetchClaimShowMonetizeStats,
 } from "modules/Shows";
-import { selectors as authSelectors } from "modules/Auth";
 import { useRouter } from "next/router";
-import { Loader, LoadingScreen } from "components/Loading";
+import { LoadingScreen } from "components/Loading";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
 import * as Badge from "components/Badge";
@@ -21,6 +20,8 @@ import {
 } from "utils/repodAPI";
 import Link from "next/link";
 import { ArrowUpRight } from "react-feather";
+import { formatCurrency } from "utils/formats";
+import { TipsTable } from "components/Table";
 
 const Monetization = () => {
   const router = useRouter();
@@ -30,9 +31,8 @@ const Monetization = () => {
   const showIdString = showId as string;
 
   const show = useSelector(showsSelectors.getShowById(showIdString));
-  const authProfile = useSelector(authSelectors.getAuthedProfile);
   const dispatch = useDispatch<ThunkDispatch<{}, undefined, Action>>();
-  const isMobile = useMediaQuery({ query: "(max-width: 1224px)" });
+  const isMobile = useMediaQuery({ query: "(max-width: 600px)" });
 
   useEffect(() => {
     (async () => {
@@ -91,11 +91,19 @@ const Monetization = () => {
             </p>
             <Badge.Info label="Enabled" />
           </div>
-          <p className="text-md font-book text-repod-text-secondary mb-8">
+          <p
+            className={`font-book text-repod-text-secondary mb-8 ${
+              isMobile ? "text-sm" : "text-md"
+            }`}
+          >
             Tipping is enabled for this show! You can change or remove this
             Stripe Account at anytime.
           </p>
-          <div className="flex flex-row mb-8 items-center">
+          <div
+            className={`flex mb-8 ${
+              isMobile ? "flex-col items-start" : "flex-row items-center"
+            }`}
+          >
             <Link
               href={`https://dashboard.stripe.com/test/connect/accounts/${stripeAccountId}`}
             >
@@ -116,6 +124,25 @@ const Monetization = () => {
                 Remove
               </a>
             </div>
+          </div>
+          <div className="flex flex-col mb-8 items-start">
+            <p className="text-md font-semibold text-repod-text-primary mb-2">
+              Balance
+            </p>
+            <p className="text-sm font-book text-repod-text-secondary">
+              Lifetime Total Volume
+            </p>
+            <p className="text-lg font-bold text-repod-text-primary">
+              {show.totalTipVolume
+                ? formatCurrency(show.totalTipVolume)
+                : "N/A"}
+            </p>
+          </div>
+          <div className="flex flex-col mb-8 items-start">
+            <p className="text-md font-semibold text-repod-text-primary mb-2">
+              Activity
+            </p>
+            <TipsTable data={show.tips || []} />
           </div>
         </div>
       ) : (

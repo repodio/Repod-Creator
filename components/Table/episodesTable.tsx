@@ -2,7 +2,7 @@ import React from "react";
 import Table from "./table";
 import PaginationTable from "./paginationTable";
 import EmptyTable from "./emptyTable";
-import { fromNow } from "utils/formats";
+import { formatDate } from "utils/formats";
 import { useMediaQuery } from "react-responsive";
 
 const EpisodesTable = ({
@@ -68,7 +68,7 @@ const EpisodesTable = ({
       {
         Header: () => <div style={{ textAlign: "right" }}>First Added</div>,
         Cell: (row) => (
-          <div style={{ textAlign: "right" }}>{fromNow(row.value)}</div>
+          <div style={{ textAlign: "right" }}>{formatDate(row.value)}</div>
         ),
         accessor: "date",
         width: 80,
@@ -91,7 +91,7 @@ const EpisodesTable = ({
   }
 
   return data && data.length ? (
-    <Table data={data} columns={columns} />
+    <Table data={data} columns={columns} isMobile={isMobile} />
   ) : (
     <EmptyTable loading={loading} message="No episode data yet" />
   );

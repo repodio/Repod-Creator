@@ -1,6 +1,6 @@
 import React from "react";
 import Table from "./table";
-import { fromNow } from "utils/formats";
+import { formatDate } from "utils/formats";
 import EmptyTable from "./emptyTable";
 import { ProfileAvatar } from "components/Images";
 import { useMediaQuery } from "react-responsive";
@@ -18,7 +18,7 @@ const FollowersTable = ({ data }) => {
         {
           Header: () => <div style={{ textAlign: "right" }}>Followed On</div>,
           Cell: (row) => (
-            <div style={{ textAlign: "right" }}>{fromNow(row.value)}</div>
+            <div style={{ textAlign: "right" }}>{formatDate(row.value)}</div>
           ),
           accessor: "createdOn",
           width: 80,
@@ -44,7 +44,7 @@ const FollowersTable = ({ data }) => {
       {
         Header: () => <div style={{ textAlign: "right" }}>Followed On</div>,
         Cell: (row) => (
-          <div style={{ textAlign: "right" }}>{fromNow(row.value)}</div>
+          <div style={{ textAlign: "right" }}>{formatDate(row.value)}</div>
         ),
         accessor: "createdOn",
         width: 80,
@@ -53,7 +53,7 @@ const FollowersTable = ({ data }) => {
   }, [isMobile]);
 
   return data && data.length ? (
-    <Table data={data} columns={columns} />
+    <Table data={data} columns={columns} isMobile={isMobile} />
   ) : (
     <EmptyTable message="No follower data yet" />
   );
