@@ -7,7 +7,9 @@ const BaseButton = ({ children, styles, className, disabled, ...rest }) => {
   return (
     <button
       disabled={disabled}
-      className={`focus:outline-none w-full rounded-md bg-repod-tint text-repod-text-primary font-sans tracking-wider hover:opacity-50 transition ${styles.classNames} ${className} ${disabledStyles}`}
+      className={`focus:outline-none w-full rounded-md bg-repod-tint text-repod-text-primary font-sans tracking-wider hover:opacity-50 transition ${
+        styles.classNames
+      } ${disabled ? disabledStyles : className}`}
       {...rest}
     >
       {children}

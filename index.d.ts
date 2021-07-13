@@ -35,6 +35,9 @@ interface ShowItem {
   yearlyFollowData?: { x: string; y: number }[];
   featuredEpisodeId?: string;
 
+  tips?: TipData[];
+  totalTipVolume?: number;
+
   rss?: string;
   episodesById?: {
     [key: string]: EpisodeItem;
@@ -52,7 +55,8 @@ interface ReduxShowItem extends ShowItem {
   };
 }
 
-interface ClaimedShowItems extends ShowItem {
+interface ClaimedShowItems {
+  stripeAccountId?: string;
   featuredEpisodeId: string;
   users: {
     [key: string]: {
@@ -60,6 +64,17 @@ interface ClaimedShowItems extends ShowItem {
       type: ClaimedShowType;
     };
   };
+}
+
+interface TipData {
+  tipAmount: number;
+  showId: string;
+  userId: string;
+  stripeSessionId: string;
+  status: string;
+  tipId: string;
+  stripeCheckoutUrl: string;
+  createdOn: Date;
 }
 
 interface EpisodeItem {

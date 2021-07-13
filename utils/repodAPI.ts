@@ -271,6 +271,72 @@ const setFeaturedEpisodeId = async ({
   return response;
 };
 
+const fetchConnectedAccountOnboardingUrl = async ({
+  showId,
+}: {
+  showId: string;
+}): Promise<string> => {
+  const response = await fetch(
+    `${API_DOMAIN}/v1/${ROUTES.claimShow}/${showId}/connect-account`,
+    {
+      method: "GET",
+      headers: await getHeaders(),
+    }
+  ).then((data) => data.json());
+
+  return response.url;
+};
+
+const notifySuccessfulStripeAccountRedirect = async ({
+  showId,
+}: {
+  showId: string;
+}): Promise<string> => {
+  const response = await fetch(
+    `${API_DOMAIN}/v1/${ROUTES.claimShow}/${showId}/successful-account`,
+    {
+      method: "GET",
+      headers: await getHeaders(),
+    }
+  ).then((data) => data.json());
+
+  return response.stripeAccountId;
+};
+
+const fetchClaimedShowMonetizesAPI = async ({
+  showId,
+}: {
+  showId: string;
+}): Promise<{
+  tips;
+  totalTipVolume;
+  claimedShow;
+}> => {
+  const response = await fetch(
+    `${API_DOMAIN}/v1/${ROUTES.claimShow}/${showId}/monetization`,
+    {
+      method: "GET",
+      headers: await getHeaders(),
+    }
+  ).then((data) => data.json());
+
+  return response;
+};
+
+const removeStripeAccountIdOnShow = async ({
+  showId,
+}: {
+  showId: string;
+}): Promise<string> => {
+  return fetch(
+    `${API_DOMAIN}/v1/${ROUTES.claimShow}/${showId}/connect-account`,
+    {
+      method: "DELETE",
+      headers: await getHeaders(),
+    }
+  ).then((data) => data.json());
+};
+
 export {
   getEpisodes,
   fetchClaimedShowsAPI,
@@ -283,4 +349,8 @@ export {
   sendVerificationCodeEmail,
   fetchShowData,
   setFeaturedEpisodeId,
+  fetchConnectedAccountOnboardingUrl,
+  notifySuccessfulStripeAccountRedirect,
+  removeStripeAccountIdOnShow,
+  fetchClaimedShowMonetizesAPI,
 };

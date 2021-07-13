@@ -14,7 +14,7 @@ import { Button } from "components/Buttons";
 import Link from "next/link";
 import find from "lodash/fp/find";
 import { clipText } from "utils/textTransform";
-import { formatDuration, fromNow } from "utils/formats";
+import { formatDuration, formatDate } from "utils/formats";
 import { LoadingScreen } from "components/Loading";
 import { useMediaQuery } from "react-responsive";
 import { SearchInput } from "components/Inputs";
@@ -219,7 +219,7 @@ const Dashboard = () => {
               <div className="flex flex-col w-full">
                 <div className="flex flex-row w-full justify-between items-start">
                   <p className="text-md text-repod-text-secondary">
-                    {fromNow(featuredEpisode.date)}
+                    {formatDate(featuredEpisode.date)}
                   </p>
                   {!selectedEpisodeIsAlreadySaved ? (
                     <X

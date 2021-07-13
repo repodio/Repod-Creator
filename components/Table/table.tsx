@@ -1,21 +1,22 @@
 import React from "react";
 import { useTable, useFlexLayout } from "react-table";
-import { useMediaQuery } from "react-responsive";
 import { Loader } from "components/Loading";
 
 const TableComponent = ({
   data,
   columns,
   loading = false,
+  isMobile,
 }: {
   data: {}[];
   columns: {}[];
   loading?: boolean;
+  isMobile: boolean;
 }) => {
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
     useTable({ columns, data }, useFlexLayout);
-  const isMobile = useMediaQuery({ query: "(max-width: 1224px)" });
 
+  console.log("TableComponent isMobile", isMobile);
   return (
     <div className="relative flex flex-col w-full">
       {loading ? (

@@ -3,7 +3,7 @@ import Table from "./table";
 import EmptyTable from "./emptyTable";
 import { useMediaQuery } from "react-responsive";
 
-import { fromNow } from "utils/formats";
+import { formatDate } from "utils/formats";
 import { Button } from "components/Buttons";
 
 const FeaturedEpisodesTable = ({ data, onClick, loading }) => {
@@ -58,7 +58,9 @@ const FeaturedEpisodesTable = ({ data, onClick, loading }) => {
 
       {
         Header: () => <div className="text-right">First Added</div>,
-        Cell: (row) => <div className="text-right">{fromNow(row.value)}</div>,
+        Cell: (row) => (
+          <div className="text-right">{formatDate(row.value)}</div>
+        ),
         accessor: "date",
         width: 80,
       },
@@ -83,7 +85,12 @@ const FeaturedEpisodesTable = ({ data, onClick, loading }) => {
   }, [isMobile]);
 
   return data && data.length ? (
-    <Table data={data} columns={columns} loading={loading} />
+    <Table
+      data={data}
+      columns={columns}
+      loading={loading}
+      isMobile={isMobile}
+    />
   ) : (
     <EmptyTable loading={loading} message="No episode data yet" />
   );
