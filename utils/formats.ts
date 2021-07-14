@@ -36,7 +36,11 @@ export const formatDate = (incomingDate) => {
     return null;
   }
 
-  const momentIncoming = moment(incomingDate);
+  const date = incomingDate._seconds
+    ? incomingDate._seconds * 1000
+    : incomingDate;
+
+  const momentIncoming = moment(date);
   return momentIncoming.format("MMM DD, hh:mm A");
 };
 
