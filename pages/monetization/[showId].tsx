@@ -39,7 +39,10 @@ const Monetization = () => {
       if (!show) {
         router.replace(`/`);
       }
+      console.log("fetchClaimShowMonetizeStats start");
       await dispatch(fetchClaimShowMonetizeStats(showIdString));
+      console.log("fetchClaimShowMonetizeStats end");
+
       setPageLoading(false);
     })();
   }, []);
