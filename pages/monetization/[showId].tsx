@@ -54,13 +54,13 @@ const Monetization = () => {
       );
 
       if (!updatedStripeAccountId) {
-        console.log("fetchClaimShowMonetizeStats again start");
+        console.log("fetchClaimShowMonetizeStats again start 2000");
 
         await new Promise((resolve) => {
           setTimeout(async () => {
             await dispatch(fetchClaimShowMonetizeStats(showIdString));
             resolve(0);
-          }, 1000);
+          }, 2000);
         });
         console.log("fetchClaimShowMonetizeStats again end");
       }
