@@ -2,8 +2,9 @@ import React from "react";
 
 const BaseButton = ({ children, styles, className, disabled, ...rest }) => {
   const disabledStyles = disabled
-    ? "text-repod-text-disabled bg-repod-disabled-bg hover:opacity-100"
+    ? `${className} text-repod-text-disabled bg-repod-disabled-bg hover:opacity-100`
     : "";
+
   return (
     <button
       disabled={disabled}

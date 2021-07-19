@@ -306,7 +306,7 @@ const ClaimSendEmail = ({ show, isMobile }: ClaimSendEmailProps) => {
               The code will expire in{" "}
               <p className="inline font-bold">{"1 hour!"}</p>
             </p>
-            <div className="flex flex-row my-2">
+            <div className="flex flex-row my-2 items-center">
               <FormInput
                 label="6 Digit Code"
                 registerInput={register("code", {
