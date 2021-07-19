@@ -243,7 +243,7 @@ export const fetchClaimedShows =
   };
 
 export const fetchClaimShowMonetizeStats =
-  (showId: string): ThunkResult<Promise<void>> =>
+  (showId: string): ThunkResult<Promise<ClaimedShowItems>> =>
   async (dispatch: AsyncDispatch) => {
     try {
       const { tips, totalTipVolume, claimedShow } =
@@ -257,6 +257,7 @@ export const fetchClaimShowMonetizeStats =
           showId,
         })
       );
+      return claimedShow;
     } catch (error) {
       console.warn("[THUNK ERROR]: login", error);
     }

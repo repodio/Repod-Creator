@@ -40,11 +40,13 @@ const Monetization = () => {
         router.replace(`/`);
       }
       console.log("fetchClaimShowMonetizeStats start");
-      await dispatch(fetchClaimShowMonetizeStats(showIdString));
+      const updatedClaimedShow = await dispatch(
+        fetchClaimShowMonetizeStats(showIdString)
+      );
       console.log("fetchClaimShowMonetizeStats end");
-      const updatedShow = useSelector(showsSelectors.getShowById(showIdString));
+
       const updatedStripeAccountId =
-        updatedShow.claimedShow && updatedShow.claimedShow.stripeAccountId;
+        updatedClaimedShow && updatedClaimedShow.stripeAccountId;
 
       console.log(
         "fetchClaimShowMonetizeStats updatedStripeAccountId",
