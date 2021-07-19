@@ -42,7 +42,24 @@ const Monetization = () => {
       console.log("fetchClaimShowMonetizeStats start");
       await dispatch(fetchClaimShowMonetizeStats(showIdString));
       console.log("fetchClaimShowMonetizeStats end");
+      const updatedShow = useSelector(showsSelectors.getShowById(showIdString));
+      const updatedStripeAccountId =
+        updatedShow.claimedShow && updatedShow.claimedShow.stripeAccountId;
 
+      console.log(
+        "fetchClaimShowMonetizeStats updatedStripeAccountId",
+        updatedStripeAccountId
+      );
+
+      if (!updatedStripeAccountId) {
+        console.log("fetchClaimShowMonetizeStats again start");
+
+        await new Promise(async (resolve): Promise<void> => {
+          await dispatch(fetchClaimShowMonetizeStats(showIdString));
+          resolve(0);
+        });
+        console.log("fetchClaimShowMonetizeStats again end");
+      }
       setPageLoading(false);
     })();
   }, []);
