@@ -39,30 +39,20 @@ const Monetization = () => {
       if (!show) {
         router.replace(`/`);
       }
-      console.log("fetchClaimShowMonetizeStats start");
       const updatedClaimedShow = await dispatch(
         fetchClaimShowMonetizeStats(showIdString)
       );
-      console.log("fetchClaimShowMonetizeStats end");
 
       const updatedStripeAccountId =
         updatedClaimedShow && updatedClaimedShow.stripeAccountId;
 
-      console.log(
-        "fetchClaimShowMonetizeStats updatedStripeAccountId",
-        updatedStripeAccountId
-      );
-
       if (!updatedStripeAccountId) {
-        console.log("fetchClaimShowMonetizeStats again start 2000");
-
         await new Promise((resolve) => {
           setTimeout(async () => {
             await dispatch(fetchClaimShowMonetizeStats(showIdString));
             resolve(0);
           }, 2000);
         });
-        console.log("fetchClaimShowMonetizeStats again end");
       }
       setPageLoading(false);
     })();
@@ -98,12 +88,6 @@ const Monetization = () => {
   }
 
   const stripeAccountId = show.claimedShow && show.claimedShow.stripeAccountId;
-  console.log(
-    "stripeAccountId",
-    show.tips,
-    show.totalTipVolume,
-    stripeAccountId
-  );
 
   return (
     <MonetizationLayout>
