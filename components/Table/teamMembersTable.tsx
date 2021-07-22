@@ -1,6 +1,6 @@
 import React, { Fragment } from "react";
 import Table from "./table";
-import { fromNow } from "utils/formats";
+import { formatDate } from "utils/formats";
 import EmptyTable from "./emptyTable";
 import { ProfileAvatar } from "components/Images";
 import { useMediaQuery } from "react-responsive";
@@ -143,7 +143,7 @@ const TeamMembersTable = ({ data }) => {
   }, [isMobile]);
 
   return data && data.length ? (
-    <Table data={data} columns={columns} />
+    <Table data={data} columns={columns} isMobile={isMobile} />
   ) : (
     <EmptyTable message="No team members yet" />
   );

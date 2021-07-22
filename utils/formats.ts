@@ -30,23 +30,18 @@ moment.locale("en", {
   },
 });
 
-export const fromNow = (incomingDate) => {
+export const formatDate = (incomingDate) => {
+  console.log("formatDate", incomingDate);
   if (!incomingDate) {
     return null;
   }
-  // Today:                      1d
-  // Today - 6 day:              6d
-  // Today - 6+ day until EOY:   02 May
-  // Any previous year:          02 May 19
 
-  const momentIncoming = moment(incomingDate);
-  const momentNow = moment(Date.now());
+  const date = incomingDate._seconds
+    ? incomingDate._seconds * 1000
+    : incomingDate;
 
-  if (momentNow.diff(momentIncoming, "days") < 1) {
-    return `${momentIncoming.calendar()}`;
-  } else {
-    return momentIncoming.format("Do MMM, YYYY");
-  }
+  const momentIncoming = moment(date);
+  return momentIncoming.format("MMM DD, hh:mm A");
 };
 
 export const formatIntegers = (num, fixed = 1) => {
@@ -142,3 +137,9 @@ export const formatDuration = (
   const inSeconds = moment.duration(Number(duration)).asSeconds().toFixed(0);
   return longSec ? `${inSeconds} sec` : `${inSeconds}s`;
 };
+
+export const formatCurrency = (cents) =>
+  (cents / 100).toLocaleString("en-US", {
+    style: "currency",
+    currency: "USD",
+  });
