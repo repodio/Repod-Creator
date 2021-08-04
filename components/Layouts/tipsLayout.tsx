@@ -3,9 +3,9 @@ import { useRouter } from "next/router";
 import { useMediaQuery } from "react-responsive";
 import NavigationLink from "./partials/navigationLink";
 
-const ROUTE = "monetization";
+const ROUTE = "tips";
 
-const MonetizationLayout = ({ children }) => {
+const TipsLayout = ({ children }) => {
   const router = useRouter();
   const { showId } = router.query;
 
@@ -22,7 +22,7 @@ const MonetizationLayout = ({ children }) => {
             isMobile ? "ml-4" : "ml-8"
           }`}
         >
-          Monetization
+          Tips
         </h1>
         <div className={`flex flex-row ${isMobile ? "" : "ml-4"}`}>
           <NavigationLink
@@ -38,4 +38,4 @@ const MonetizationLayout = ({ children }) => {
   );
 };
 
-export default MonetizationLayout;
+export default TipsLayout;

@@ -12,7 +12,7 @@ import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
 import * as Badge from "components/Badge";
 import { Button } from "components/Buttons";
-import { MonetizationLayout } from "components/Layouts";
+import { TipsLayout } from "components/Layouts";
 import { useMediaQuery } from "react-responsive";
 import {
   fetchConnectedAccountOnboardingUrl,
@@ -23,7 +23,7 @@ import { ArrowUpRight } from "react-feather";
 import { formatCurrency } from "utils/formats";
 import { TipsTable } from "components/Table";
 
-const Monetization = () => {
+const Tips = () => {
   const router = useRouter();
   const [pageLoading, setPageLoading] = useState(true);
   const [connectButtonLoading, setConnectButtonLoading] = useState(false);
@@ -90,7 +90,7 @@ const Monetization = () => {
   const stripeAccountId = show.claimedShow && show.claimedShow.stripeAccountId;
 
   return (
-    <MonetizationLayout>
+    <TipsLayout>
       {stripeAccountId ? (
         <div className="flex flex-col">
           <div className="flex flex-row items-center  mb-2">
@@ -186,7 +186,7 @@ const Monetization = () => {
           </Button.Medium>
         </div>
       )}
-    </MonetizationLayout>
+    </TipsLayout>
   );
 };
 
@@ -194,4 +194,4 @@ export default withAuthUser({
   whenUnauthedBeforeInit: AuthAction.SHOW_LOADER,
   whenUnauthedAfterInit: AuthAction.REDIRECT_TO_LOGIN,
   LoaderComponent: LoadingScreen,
-})(Monetization);
+})(Tips);

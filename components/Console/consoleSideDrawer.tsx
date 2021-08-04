@@ -1,13 +1,8 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import {
-  BarChart2,
-  ChevronLeft,
-  ChevronRight,
-  Users,
-  DollarSign,
-} from "react-feather";
+import { BarChart2, ChevronLeft, ChevronRight, Users } from "react-feather";
 import { ProfileDropdown } from "components/Dropdown";
+import { CrownIcon, CoinsIcon } from "components/Icons";
 import { ShowSelector } from "components/Console";
 import { useRouter } from "next/router";
 import { useSelector } from "react-redux";
@@ -30,7 +25,7 @@ const NavigationLink = ({
       {expanded ? (
         <div className="w-full p-3 flex flex-row">
           <IconComponent
-            className={`mr-2 stroke-current transition ${
+            className={`mr-2 fill-current transition ${
               isSelected ? "text-repod-tint" : "text-repod-text-alternative"
             }`}
             size={24}
@@ -47,7 +42,7 @@ const NavigationLink = ({
       ) : (
         <div className="w-full m-3 flex flex-row">
           <IconComponent
-            className={`mr-2 stroke-current transition ${
+            className={`mr-2 fill-current transition ${
               isSelected ? "text-repod-tint" : "text-repod-text-alternative"
             }`}
             size={24}
@@ -93,10 +88,17 @@ const ConsoleSideDrawer = () => {
           expanded={expanded}
         />
         <NavigationLink
-          isSelected={router.pathname.startsWith("/monetization")}
-          destination={`/monetization/${router.query.showId}/`}
-          label="Monetization"
-          IconComponent={DollarSign}
+          isSelected={router.pathname.startsWith("/tips")}
+          destination={`/tips/${router.query.showId}/`}
+          label="Tipping"
+          IconComponent={CoinsIcon}
+          expanded={expanded}
+        />
+        <NavigationLink
+          isSelected={router.pathname.startsWith("/subscriptions")}
+          destination={`/subscriptions/${router.query.showId}/`}
+          label="Subscriptions"
+          IconComponent={CrownIcon}
           expanded={expanded}
         />
         {/* <NavigationLink

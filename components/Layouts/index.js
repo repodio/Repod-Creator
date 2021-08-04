@@ -1,6 +1,6 @@
 import ConsoleLayout from "./consoleLayout.tsx";
 import DashboardLayout from "./dashboardLayout.tsx";
 import TeamLayout from "./teamLayout.tsx";
-import MonetizationLayout from "./monetizationLayout.tsx";
+import TipsLayout from "./tipsLayout.tsx";
 
-export { ConsoleLayout, DashboardLayout, TeamLayout, MonetizationLayout };
+export { ConsoleLayout, DashboardLayout, TeamLayout, TipsLayout };

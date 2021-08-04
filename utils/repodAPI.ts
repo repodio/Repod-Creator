@@ -313,7 +313,7 @@ const fetchClaimedShowMonetizesAPI = async ({
   claimedShow;
 }> => {
   const response = await fetch(
-    `${API_DOMAIN}/v1/${ROUTES.claimShow}/${showId}/monetization`,
+    `${API_DOMAIN}/v1/${ROUTES.claimShow}/${showId}/tips`,
     {
       method: "GET",
       headers: await getHeaders(),
