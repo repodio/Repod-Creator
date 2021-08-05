@@ -11,23 +11,16 @@ import { LoadingScreen } from "components/Loading";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
 import * as Badge from "components/Badge";
-import { Button } from "components/Buttons";
 import { SettingsLayout } from "components/Layouts";
 import { useMediaQuery } from "react-responsive";
-import {
-  fetchConnectedAccountOnboardingUrl,
-  removeStripeAccountIdOnShow,
-} from "utils/repodAPI";
+import { removeStripeAccountIdOnShow } from "utils/repodAPI";
 import Link from "next/link";
 import { ArrowUpRight } from "react-feather";
-import { formatCurrency } from "utils/formats";
-import { TipsTable } from "components/Table";
 import StripeConnect from "components/StripeConnect";
 
 const Settings = () => {
   const router = useRouter();
   const [pageLoading, setPageLoading] = useState(true);
-  const [connectButtonLoading, setConnectButtonLoading] = useState(false);
   const { showId } = router.query;
   const showIdString = showId as string;
 
@@ -58,18 +51,6 @@ const Settings = () => {
       setPageLoading(false);
     })();
   }, []);
-
-  const handleConnectAccount = useCallback(async () => {
-    setConnectButtonLoading(true);
-    const onboardingURL = await fetchConnectedAccountOnboardingUrl({
-      showId: showIdString,
-    });
-
-    if (window) {
-      window.location.href = onboardingURL;
-    }
-    setConnectButtonLoading(false);
-  }, [showIdString]);
 
   const removeConnectAccount = useCallback(async () => {
     await removeStripeAccountIdOnShow({

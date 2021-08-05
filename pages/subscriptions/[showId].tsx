@@ -11,7 +11,6 @@ import { LoadingScreen } from "components/Loading";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
 import * as Badge from "components/Badge";
-import { Button } from "components/Buttons";
 import { SubscriptionsLayout } from "components/Layouts";
 import { useMediaQuery } from "react-responsive";
 import {
@@ -27,7 +26,6 @@ import StripeConnect from "components/StripeConnect";
 const Subscriptions = () => {
   const router = useRouter();
   const [pageLoading, setPageLoading] = useState(true);
-  const [connectButtonLoading, setConnectButtonLoading] = useState(false);
   const { showId } = router.query;
   const showIdString = showId as string;
 
@@ -58,18 +56,6 @@ const Subscriptions = () => {
       setPageLoading(false);
     })();
   }, []);
-
-  const handleConnectAccount = useCallback(async () => {
-    setConnectButtonLoading(true);
-    const onboardingURL = await fetchConnectedAccountOnboardingUrl({
-      showId: showIdString,
-    });
-
-    if (window) {
-      window.location.href = onboardingURL;
-    }
-    setConnectButtonLoading(false);
-  }, [showIdString]);
 
   const removeConnectAccount = useCallback(async () => {
     await removeStripeAccountIdOnShow({

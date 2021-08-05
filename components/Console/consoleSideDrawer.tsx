@@ -94,13 +94,13 @@ const ConsoleSideDrawer = () => {
           IconComponent={CoinsIcon}
           expanded={expanded}
         />
-        {/* <NavigationLink
+        <NavigationLink
           isSelected={router.pathname.startsWith("/subscriptions")}
           destination={`/subscriptions/${router.query.showId}/`}
           label="Subscriptions"
           IconComponent={CrownIcon}
           expanded={expanded}
-        /> */}
+        />
         <NavigationLink
           isSelected={router.pathname.startsWith("/settings")}
           destination={`/settings/${router.query.showId}/monetization`}
