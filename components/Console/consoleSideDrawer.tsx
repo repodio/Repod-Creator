@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { BarChart2, ChevronLeft, ChevronRight, Users } from "react-feather";
+import { BarChart2, ChevronLeft, ChevronRight, Sliders } from "react-feather";
 import { ProfileDropdown } from "components/Dropdown";
 import { CrownIcon, CoinsIcon } from "components/Icons";
 import { ShowSelector } from "components/Console";
@@ -99,6 +99,13 @@ const ConsoleSideDrawer = () => {
           destination={`/subscriptions/${router.query.showId}/`}
           label="Subscriptions"
           IconComponent={CrownIcon}
+          expanded={expanded}
+        />
+        <NavigationLink
+          isSelected={router.pathname.startsWith("/settings")}
+          destination={`/settings/${router.query.showId}/monetization`}
+          label="Settings"
+          IconComponent={Sliders}
           expanded={expanded}
         />
         {/* <NavigationLink

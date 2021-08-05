@@ -17,7 +17,9 @@ function MyApp({ Component, pageProps }) {
   const consoleLayout =
     router.pathname.startsWith("/console") ||
     router.pathname.startsWith("/team") ||
-    router.pathname.startsWith("/tips");
+    router.pathname.startsWith("/tips") ||
+    router.pathname.startsWith("/subscriptions") ||
+    router.pathname.startsWith("/settings");
 
   return (
     <Provider store={store}>
