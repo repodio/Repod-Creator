@@ -22,6 +22,7 @@ import Link from "next/link";
 import { ArrowUpRight } from "react-feather";
 import { formatCurrency } from "utils/formats";
 import { TipsTable } from "components/Table";
+import StripeConnect from "components/StripeConnect";
 
 const Tips = () => {
   const router = useRouter();
@@ -163,28 +164,12 @@ const Tips = () => {
           </div>
         </div>
       ) : (
-        <div className="flex flex-col">
-          <div className="flex flex-row items-center  mb-2">
-            <p className="text-lg font-bold text-repod-text-primary mr-2">
-              Connected Account
-            </p>
-            <Badge.Disabled label="Not Connected" />
-          </div>
-          <p className="text-md font-book text-repod-text-secondary mb-8">
-            To enable listeners to send you tips through Repod we must first
-            connect to your Stripe Account. We use Stripe to safely and securely
-            get you your money, setting up an account is quick and easy. Start
-            by pressing the button below.
-          </p>
-          <Button.Medium
-            disabled={connectButtonLoading}
-            className="bg-info text-repod-text-alternative"
-            style={{ minWidth: 300, maxWidth: 300, width: 300 }}
-            onClick={handleConnectAccount}
-          >
-            {connectButtonLoading ? "Loading..." : "Connect Stripe Account"}
-          </Button.Medium>
-        </div>
+        <StripeConnect
+          message="To enable listeners to send you tips through Repod we must first
+        connect to your Stripe Account. We use Stripe to safely and securely
+        get you your money, setting up an account is quick and easy. Start
+        by pressing the button below."
+        />
       )}
     </TipsLayout>
   );

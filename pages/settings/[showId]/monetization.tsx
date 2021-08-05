@@ -22,6 +22,7 @@ import Link from "next/link";
 import { ArrowUpRight } from "react-feather";
 import { formatCurrency } from "utils/formats";
 import { TipsTable } from "components/Table";
+import StripeConnect from "components/StripeConnect";
 
 const Settings = () => {
   const router = useRouter();
@@ -104,8 +105,7 @@ const Settings = () => {
               isMobile ? "text-sm" : "text-md"
             }`}
           >
-            Tipping is enabled for this show! You can change or remove this
-            Stripe Account at anytime.
+            Tipping and Subscribing are both now eligible to be enabled
           </p>
           <div
             className={`flex mb-8 ${
@@ -142,49 +142,9 @@ const Settings = () => {
               </a>
             </div>
           </div>
-          <div className="flex flex-col mb-8 items-start">
-            <p className="text-md font-semibold text-repod-text-primary mb-2">
-              Balance
-            </p>
-            <p className="text-sm font-book text-repod-text-secondary">
-              Lifetime Total Volume
-            </p>
-            <p className="text-lg font-bold text-repod-text-primary">
-              {show.totalTipVolume
-                ? formatCurrency(show.totalTipVolume)
-                : "N/A"}
-            </p>
-          </div>
-          <div className="flex flex-col mb-8 items-start">
-            <p className="text-md font-semibold text-repod-text-primary mb-2">
-              Activity
-            </p>
-            <TipsTable data={show.tips || []} />
-          </div>
         </div>
       ) : (
-        <div className="flex flex-col">
-          <div className="flex flex-row items-center  mb-2">
-            <p className="text-lg font-bold text-repod-text-primary mr-2">
-              Connected Account
-            </p>
-            <Badge.Disabled label="Not Connected" />
-          </div>
-          <p className="text-md font-book text-repod-text-secondary mb-8">
-            To enable listeners to send you tips through Repod we must first
-            connect to your Stripe Account. We use Stripe to safely and securely
-            get you your money, setting up an account is quick and easy. Start
-            by pressing the button below.
-          </p>
-          <Button.Medium
-            disabled={connectButtonLoading}
-            className="bg-info text-repod-text-alternative"
-            style={{ minWidth: 300, maxWidth: 300, width: 300 }}
-            onClick={handleConnectAccount}
-          >
-            {connectButtonLoading ? "Loading..." : "Connect Stripe Account"}
-          </Button.Medium>
-        </div>
+        <StripeConnect />
       )}
     </SettingsLayout>
   );
