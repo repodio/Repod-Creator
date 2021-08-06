@@ -5,6 +5,7 @@ import {
   selectors as showsSelectors,
   updateStripeAccountIdOnShow,
   fetchClaimShowMonetizeStats,
+  createDefaultSubscriptionTiers,
 } from "modules/Shows";
 import { useRouter } from "next/router";
 import { LoadingScreen } from "components/Loading";
@@ -22,10 +23,93 @@ import { ArrowUpRight } from "react-feather";
 import { formatCurrency } from "utils/formats";
 import { TipsTable } from "components/Table";
 import StripeConnect from "components/StripeConnect";
+import { Button } from "components/Buttons";
+
+const TierPlaceholder = ({
+  title,
+  sutitle,
+  benefitTitle,
+  artwork,
+}: {
+  title: string;
+  sutitle: string;
+  benefitTitle: string;
+  artwork: string;
+}) => (
+  <div className="flex flex-col justify-start items-start rounded border border-solid border-repod-border-light p-4 pb-8 mx-4">
+    <img
+      style={{ width: 225, height: 71 }}
+      className="mb-4"
+      src={artwork}
+      alt={title}
+    />
+    <p className="text-base font-semibold text-repod-text-primary">{title}</p>
+    <p className="text-xs font-semibold text-repod-text-secondary uppercase mb-4">
+      {sutitle}
+    </p>
+    <div className="py-1 px-2 rounded bg-repod-border-light w-full">
+      <p className="text-sm font-semibold text-repod-text-primary">
+        {benefitTitle}
+      </p>
+    </div>
+  </div>
+);
+
+const TiersPlaceholder = ({ onPress }) => (
+  <div className="flex flex-col">
+    <div className="flex flex-col items-center w-full mb-12">
+      <p className="text-xl font-bold text-repod-text-primary mb-2">
+        Start by customizing the subscription tiers you want to offer
+      </p>
+      <p className="text-base font-semibold text-repod-text-primary">
+        We’ll start you off with the following tiers but you get to customize
+        everything how you like
+      </p>
+    </div>
+    <div className="flex flex-row justify-center items-center w-full mb-12">
+      <TierPlaceholder
+        title="Member pays $5 per month"
+        sutitle="Includes"
+        benefitTitle="Private Discussions"
+        artwork="/tier-placeholder1.png"
+      />
+      <TierPlaceholder
+        title="Member pays $10 per month"
+        sutitle="All Previous Tiers, Plus"
+        benefitTitle="Early Access to Episodes"
+        artwork="/tier-placeholder1.png"
+      />
+      <TierPlaceholder
+        title="Member pays $20 per month"
+        sutitle="All Previous Tiers, Plus"
+        benefitTitle="Bonus Episodes"
+        artwork="/tier-placeholder1.png"
+      />
+    </div>
+    <div className="flex flex-col items-center w-full">
+      <Button.Medium
+        className="bg-info text-repod-text-alternative"
+        style={{ minWidth: 300, maxWidth: 300, width: 300 }}
+        onClick={onPress}
+      >
+        Customize
+      </Button.Medium>
+    </div>
+  </div>
+);
+
+const SubscriptionTiers = () => (
+  <div className="flex flex-col">
+    <div className="flex flex-col items-center w-full mb-2">
+      <p className="text-lg font-bold text-repod-text-primary">Tiers</p>
+    </div>
+  </div>
+);
 
 const Subscriptions = () => {
   const router = useRouter();
   const [pageLoading, setPageLoading] = useState(true);
+  const [isConfiguringTiers, setConfiguringTiers] = useState(false);
   const { showId } = router.query;
   const showIdString = showId as string;
 
@@ -57,98 +141,28 @@ const Subscriptions = () => {
     })();
   }, []);
 
-  const removeConnectAccount = useCallback(async () => {
-    await removeStripeAccountIdOnShow({
-      showId: showIdString,
-    });
-
-    dispatch(
-      updateStripeAccountIdOnShow({
-        showId: showIdString,
-        stripeAccountId: null,
-      })
-    );
-  }, [showIdString]);
+  const configureTiers = useCallback(() => {
+    dispatch(createDefaultSubscriptionTiers(showIdString));
+    setConfiguringTiers(true);
+  }, []);
 
   if (!show || pageLoading) {
     return <LoadingScreen />;
   }
 
   const stripeAccountId = show.claimedShow && show.claimedShow.stripeAccountId;
+  const subscriptionTierIds =
+    show.claimedShow && show.claimedShow.subscriptionTierIds;
 
   return (
     <SubscriptionsLayout>
       {stripeAccountId ? (
-        <div className="flex flex-col">
-          <div className="flex flex-row items-center  mb-2">
-            <p className="text-lg font-bold text-repod-text-primary mr-2">
-              Connected Account
-            </p>
-            <Badge.Info label="Enabled" />
-          </div>
-          <p
-            className={`font-book text-repod-text-secondary mb-8 ${
-              isMobile ? "text-sm" : "text-md"
-            }`}
-          >
-            Tipping is enabled for this show! You can change or remove this
-            Stripe Account at anytime.
-          </p>
-          <div
-            className={`flex mb-8 ${
-              isMobile ? "flex-col items-start" : "flex-row items-center"
-            }`}
-          >
-            <Link
-              href={`https://dashboard.stripe.com/test/connect/accounts/${stripeAccountId}`}
-            >
-              <a className="flex flex-row items-center text-xl font-bold text-repod-text-primary mr-4 hover:opacity-50 transition underline">
-                {stripeAccountId}
-
-                <ArrowUpRight
-                  className={`stroke-current text-repod-text-primary`}
-                  size={24}
-                />
-              </a>
-            </Link>
-            <div className={`flex flex-col justify-center mr-4`}>
-              <Link
-                href={`https://dashboard.stripe.com/test/connect/accounts/${stripeAccountId}`}
-              >
-                <a className="cursor-pointer flex w-full text-center no-underline text-sm font-bold text-repod-text-secondary hover:opacity-50 transition mt-2">
-                  View on Stripe
-                </a>
-              </Link>
-            </div>
-            <div className={`flex flex-col justify-center`}>
-              <a
-                className="cursor-pointer flex w-full text-center no-underline text-sm font-bold text-danger hover:opacity-50 transition mt-2"
-                onClick={removeConnectAccount}
-              >
-                Remove
-              </a>
-            </div>
-          </div>
-          <div className="flex flex-col mb-8 items-start">
-            <p className="text-md font-semibold text-repod-text-primary mb-2">
-              Balance
-            </p>
-            <p className="text-sm font-book text-repod-text-secondary">
-              Lifetime Total Volume
-            </p>
-            <p className="text-lg font-bold text-repod-text-primary">
-              {show.totalTipVolume
-                ? formatCurrency(show.totalTipVolume)
-                : "N/A"}
-            </p>
-          </div>
-          <div className="flex flex-col mb-8 items-start">
-            <p className="text-md font-semibold text-repod-text-primary mb-2">
-              Activity
-            </p>
-            <TipsTable data={show.tips || []} />
-          </div>
-        </div>
+        isConfiguringTiers ||
+        (subscriptionTierIds && subscriptionTierIds.length) ? (
+          <SubscriptionTiers />
+        ) : (
+          <TiersPlaceholder onPress={configureTiers} />
+        )
       ) : (
         <StripeConnect
           message="To enable listeners to subscribe through Repod we must first

@@ -16,6 +16,10 @@ const SubscriptionsLayout = ({ children }: LayoutProps) => {
         label: "Subscription Tiers",
         url: `/subscriptions/${showId}`,
       },
+      {
+        label: "Benefits",
+        url: `/subscriptions/${showId}/benefits`,
+      },
     ],
     [showId]
   );

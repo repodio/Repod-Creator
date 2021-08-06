@@ -12,6 +12,7 @@ const ROUTES = {
   user: "user",
   claimShow: "claim-show",
   claimShows: "claim-shows",
+  subscriptions: "subscriptions",
 };
 
 const verifyToken = async (token, ctx) => {
@@ -158,6 +159,67 @@ const searchEpisodes = async ({
     {
       method: "GET",
       headers: await getHeaders(),
+    }
+  );
+  return response.json();
+};
+
+const createSubscriptionTier = async ({
+  showId,
+  title,
+  monthlyPrice,
+  description,
+  enableShippingAddress,
+  published,
+  benefitIds,
+}: {
+  showId?: string;
+  title: string;
+  monthlyPrice: number;
+  description?: string;
+  enableShippingAddress?: boolean;
+  published: boolean;
+  benefitIds?: string[];
+}): Promise<string> => {
+  const response = await fetch(
+    `${API_DOMAIN}/v1/${ROUTES.subscriptions}/${showId}`,
+    {
+      method: "POST",
+      headers: await getHeaders(),
+      body: JSON.stringify({
+        title,
+        monthlyPrice,
+        description,
+        enableShippingAddress,
+        published,
+        benefitIds,
+      }),
+    }
+  );
+  return response.json();
+};
+
+const createSubscriptionBenefit = async ({
+  showId,
+  title,
+  type,
+  rssFeed,
+}: {
+  showId?: string;
+  title: string;
+  type: string;
+  rssFeed?: string;
+}): Promise<string> => {
+  const response = await fetch(
+    `${API_DOMAIN}/v1/${ROUTES.subscriptions}/${showId}/benefit`,
+    {
+      method: "POST",
+      headers: await getHeaders(),
+      body: JSON.stringify({
+        title,
+        type,
+        rssFeed,
+      }),
     }
   );
   return response.json();
@@ -353,4 +415,6 @@ export {
   notifySuccessfulStripeAccountRedirect,
   removeStripeAccountIdOnShow,
   fetchClaimedShowMonetizesAPI,
+  createSubscriptionTier,
+  createSubscriptionBenefit,
 };
