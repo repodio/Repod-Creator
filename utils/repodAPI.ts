@@ -196,7 +196,9 @@ const createSubscriptionTier = async ({
       }),
     }
   );
-  return response.json();
+  const json = await response.json();
+
+  return json.data;
 };
 
 const createSubscriptionBenefit = async ({
@@ -211,7 +213,7 @@ const createSubscriptionBenefit = async ({
   rssFeed?: string;
 }): Promise<string> => {
   const response = await fetch(
-    `${API_DOMAIN}/v1/${ROUTES.subscriptions}/${showId}/benefit`,
+    `${API_DOMAIN}/v1/${ROUTES.subscriptions}/${showId}/benefits`,
     {
       method: "POST",
       headers: await getHeaders(),
@@ -222,7 +224,29 @@ const createSubscriptionBenefit = async ({
       }),
     }
   );
-  return response.json();
+  const json = await response.json();
+
+  return json.data;
+};
+
+const getShowSubscriptionTiers = async ({
+  showId,
+}: {
+  showId?: string;
+}): Promise<{
+  subscriptionTiers: SubscriptionTierItem[];
+  subscriptionBenefits: SubscriptionBenefitItem[];
+}> => {
+  const response = await fetch(
+    `${API_DOMAIN}/v1/${ROUTES.subscriptions}/${showId}`,
+    {
+      method: "GET",
+      headers: await getHeaders(),
+    }
+  );
+  const json = await response.json();
+
+  return json.data;
 };
 
 const setUser = async ({
@@ -417,4 +441,5 @@ export {
   fetchClaimedShowMonetizesAPI,
   createSubscriptionTier,
   createSubscriptionBenefit,
+  getShowSubscriptionTiers,
 };

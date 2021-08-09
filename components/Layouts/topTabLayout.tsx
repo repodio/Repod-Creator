@@ -34,6 +34,7 @@ const TopTabsLayout = ({
         <div className={`flex flex-row ${isMobile ? "" : "ml-4"}`}>
           {routes.map((route) => (
             <NavigationLink
+              key={route.label}
               label={route.label}
               isSelected={asPathMinusParams === route.url}
               destination={route.url}

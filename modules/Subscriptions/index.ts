@@ -1,12 +1,13 @@
 import { createSelector } from "reselect";
 import switchcase from "utils/switchcase";
 import { RootState } from "reduxConfig/store";
-import { filter, flow, get, pick, values } from "lodash/fp";
+import { filter, flow, map, values } from "lodash/fp";
 import { Action, ActionCreator } from "redux";
 import { ThunkResult, AsyncDispatch } from "reduxConfig/redux";
 import {
   createSubscriptionBenefit,
   createSubscriptionTier,
+  getShowSubscriptionTiers,
   getTeamMembers,
 } from "utils/repodAPI";
 import { convertArrayToObject } from "utils/normalizing";
@@ -16,12 +17,23 @@ import {
   updateClaimedShowOnShow,
 } from "modules/Shows";
 
+const DEFAULT_SUBSCRIPTION_BENEFIT = {
+  title: "Ad Free Episodes",
+  type: "adFreeEpisodes",
+};
+
+const DEFAULT_SUBSCRIPTION_TIERS = {
+  title: "Awesome Member",
+  monthlyPrice: 500,
+  published: false,
+};
+
 export type StateType = {
   subscriptionTiersById: {
-    [key: string]: UserItem;
+    [key: string]: SubscriptionTierItem;
   };
   benefitsById: {
-    [key: string]: UserItem;
+    [key: string]: SubscriptionBenefitItem;
   };
 };
 
@@ -33,31 +45,31 @@ const INITIAL_STATE: StateType = {
 
 // Selectors
 const baseSelector = (state: RootState) => state.subscriptions;
-
-const getProfilesById = createSelector(
+const getBenefitsByIds = createSelector(
   baseSelector,
-  (subscriptions) => subscriptions.subscriptionTiersById
+  (subscriptions) => subscriptions.benefitsById
 );
 
-// const getTeamMemberProfiles = (showId) =>
-//   createSelector(
-//     getProfilesById,
-//     showSelectors.getShowById(showId),
-//     authSelectors.getUserId,
-//     (allProfilesById, show, authedUserId) => {
-//       const userIds = Object.keys(get("claimedShow.users")(show) || {});
-//       return flow(
-//         pick(userIds),
-//         values,
-//         filter((user) => user.userId !== authedUserId)
-//       )(allProfilesById);
-//     }
-//   );
+const getSubscriptionTiers = (showId) =>
+  createSelector(
+    baseSelector,
+    getBenefitsByIds,
+    (subscriptions, benefitsById) =>
+      flow(
+        values,
+        filter((tier) => tier.showId === showId),
+        map((tier) => ({
+          ...tier,
+          benefits: map((benefitId: string) => benefitsById[benefitId])(
+            tier.benefitIds
+          ),
+        }))
+      )(subscriptions.subscriptionTiersById)
+  );
 
-// export const selectors = {
-//   getProfilesById,
-//   getTeamMemberProfiles,
-// };
+export const selectors = {
+  getSubscriptionTiers,
+};
 
 // Actions
 const UPSERT_SUBSCRIPTION_TIER = "repod/Subscriptions/UPSERT_SUBSCRIPTION_TIER";
@@ -178,6 +190,98 @@ export const createNewSubscriptionBenefit =
       return;
     } catch (error) {
       console.warn("[THUNK ERROR]: createDefaultSubscriptionTiers", error);
+    }
+  };
+
+export const createDefaultBenefitAndTier =
+  ({ showId }: { showId: string }): ThunkResult<Promise<void>> =>
+  async (dispatch: AsyncDispatch) => {
+    try {
+      const benefitData = {
+        title: DEFAULT_SUBSCRIPTION_BENEFIT.title,
+        type: DEFAULT_SUBSCRIPTION_BENEFIT.type,
+      };
+      console.log("createDefaultBenefitAndTier benefitData", benefitData);
+      const benefitId = await createSubscriptionBenefit({
+        showId,
+        ...benefitData,
+      });
+      console.log("createDefaultBenefitAndTier benefitId", benefitId);
+
+      dispatch(
+        upsertSubscriptionBenefit({
+          benefitsById: {
+            [benefitId]: {
+              showId,
+              benefitId,
+              createdOn: new Date(),
+              ...benefitData,
+            },
+          },
+        })
+      );
+
+      const subscriptionTierId = await createSubscriptionTier({
+        showId,
+        title: DEFAULT_SUBSCRIPTION_TIERS.title,
+        monthlyPrice: DEFAULT_SUBSCRIPTION_TIERS.monthlyPrice,
+        published: DEFAULT_SUBSCRIPTION_TIERS.published,
+        benefitIds: [benefitId],
+      });
+      console.log(
+        "createDefaultBenefitAndTier subscriptionTierId",
+        subscriptionTierId
+      );
+
+      dispatch(
+        upsertSubscriptionTier({
+          subscriptionTiersById: {
+            [subscriptionTierId]: {
+              title: DEFAULT_SUBSCRIPTION_TIERS.title,
+              monthlyPrice: DEFAULT_SUBSCRIPTION_TIERS.monthlyPrice,
+              published: DEFAULT_SUBSCRIPTION_TIERS.published,
+              benefitIds: [benefitId],
+              showId,
+              subscriptionTierId,
+              createdOn: new Date(),
+            },
+          },
+        })
+      );
+
+      return;
+    } catch (error) {
+      console.warn("[THUNK ERROR]: createDefaultSubscriptionTiers", error);
+    }
+  };
+
+export const fetchShowSubscriptionTiers =
+  (showId: string): ThunkResult<Promise<void>> =>
+  async (dispatch: AsyncDispatch) => {
+    try {
+      const { subscriptionTiers, subscriptionBenefits } =
+        await getShowSubscriptionTiers({ showId });
+
+      const normalizedBenefits = convertArrayToObject(
+        subscriptionBenefits,
+        "benefitId"
+      );
+      const normalizedTiers = convertArrayToObject(
+        subscriptionTiers,
+        "subscriptionTierId"
+      );
+      dispatch(
+        upsertSubscriptionBenefit({
+          benefitsById: normalizedBenefits,
+        })
+      );
+      dispatch(
+        upsertSubscriptionTier({
+          subscriptionTiersById: normalizedTiers,
+        })
+      );
+    } catch (error) {
+      console.warn("[THUNK ERROR]: fetchShowSubscriptionTiers", error);
     }
   };
 

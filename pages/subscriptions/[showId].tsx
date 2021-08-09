@@ -1,59 +1,24 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { withAuthUser, AuthAction } from "next-firebase-auth";
 import { useSelector, useDispatch } from "react-redux";
+import { selectors as showsSelectors } from "modules/Shows";
 import {
-  selectors as showsSelectors,
-  updateStripeAccountIdOnShow,
-  fetchClaimShowMonetizeStats,
-  createDefaultSubscriptionTiers,
-} from "modules/Shows";
+  selectors as subscriptionsSelectors,
+  fetchShowSubscriptionTiers,
+} from "modules/Subscriptions";
 import { useRouter } from "next/router";
 import { LoadingScreen } from "components/Loading";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
-import * as Badge from "components/Badge";
 import { SubscriptionsLayout } from "components/Layouts";
 import { useMediaQuery } from "react-responsive";
-import {
-  fetchConnectedAccountOnboardingUrl,
-  removeStripeAccountIdOnShow,
-} from "utils/repodAPI";
-import Link from "next/link";
-import { ArrowUpRight } from "react-feather";
-import { formatCurrency } from "utils/formats";
-import { TipsTable } from "components/Table";
 import StripeConnect from "components/StripeConnect";
 import { Button } from "components/Buttons";
-
-const TierPlaceholder = ({
-  title,
-  sutitle,
-  benefitTitle,
-  artwork,
-}: {
-  title: string;
-  sutitle: string;
-  benefitTitle: string;
-  artwork: string;
-}) => (
-  <div className="flex flex-col justify-start items-start rounded border border-solid border-repod-border-light p-4 pb-8 mx-4">
-    <img
-      style={{ width: 225, height: 71 }}
-      className="mb-4"
-      src={artwork}
-      alt={title}
-    />
-    <p className="text-base font-semibold text-repod-text-primary">{title}</p>
-    <p className="text-xs font-semibold text-repod-text-secondary uppercase mb-4">
-      {sutitle}
-    </p>
-    <div className="py-1 px-2 rounded bg-repod-border-light w-full">
-      <p className="text-sm font-semibold text-repod-text-primary">
-        {benefitTitle}
-      </p>
-    </div>
-  </div>
-);
+import { createDefaultBenefitAndTier } from "modules/Subscriptions";
+import {
+  SubscriptionTierPlaceholder,
+  SubscriptionTierSnippit,
+} from "components/SubscriptionComponents";
 
 const TiersPlaceholder = ({ onPress }) => (
   <div className="flex flex-col">
@@ -67,19 +32,19 @@ const TiersPlaceholder = ({ onPress }) => (
       </p>
     </div>
     <div className="flex flex-row justify-center items-center w-full mb-12">
-      <TierPlaceholder
+      <SubscriptionTierPlaceholder
         title="Member pays $5 per month"
         sutitle="Includes"
         benefitTitle="Private Discussions"
         artwork="/tier-placeholder1.png"
       />
-      <TierPlaceholder
+      <SubscriptionTierPlaceholder
         title="Member pays $10 per month"
         sutitle="All Previous Tiers, Plus"
         benefitTitle="Early Access to Episodes"
         artwork="/tier-placeholder1.png"
       />
-      <TierPlaceholder
+      <SubscriptionTierPlaceholder
         title="Member pays $20 per month"
         sutitle="All Previous Tiers, Plus"
         benefitTitle="Bonus Episodes"
@@ -98,10 +63,22 @@ const TiersPlaceholder = ({ onPress }) => (
   </div>
 );
 
-const SubscriptionTiers = () => (
+const SubscriptionTiers = ({
+  subscriptionTiers = [],
+}: {
+  subscriptionTiers: SubscriptionTierItem[];
+}) => (
   <div className="flex flex-col">
     <div className="flex flex-col items-center w-full mb-2">
-      <p className="text-lg font-bold text-repod-text-primary">Tiers</p>
+      <p className="text-lg font-bold text-repod-text-primary mb-2">Tiers</p>
+      <p className="text-md font-semibold text-repod-text-secondary">
+        Choose what to offer your members
+      </p>
+    </div>
+    <div className="flex flex-col items-center w-full rounded border border-solid border-repod-border-light pt-8 pb-12">
+      {subscriptionTiers.map((tier) => (
+        <SubscriptionTierSnippit subscriptionTier={tier} />
+      ))}
     </div>
   </div>
 );
@@ -114,6 +91,9 @@ const Subscriptions = () => {
   const showIdString = showId as string;
 
   const show = useSelector(showsSelectors.getShowById(showIdString));
+  const subscriptionTiers = useSelector(
+    subscriptionsSelectors.getSubscriptionTiers(showIdString)
+  );
   const dispatch = useDispatch<ThunkDispatch<{}, undefined, Action>>();
   const isMobile = useMediaQuery({ query: "(max-width: 600px)" });
 
@@ -122,27 +102,15 @@ const Subscriptions = () => {
       if (!show) {
         router.replace(`/`);
       }
-      const updatedClaimedShow = await dispatch(
-        fetchClaimShowMonetizeStats(showIdString)
-      );
 
-      const updatedStripeAccountId =
-        updatedClaimedShow && updatedClaimedShow.stripeAccountId;
+      await dispatch(fetchShowSubscriptionTiers(showIdString));
 
-      if (!updatedStripeAccountId) {
-        await new Promise((resolve) => {
-          setTimeout(async () => {
-            await dispatch(fetchClaimShowMonetizeStats(showIdString));
-            resolve(0);
-          }, 2000);
-        });
-      }
       setPageLoading(false);
     })();
   }, []);
 
-  const configureTiers = useCallback(() => {
-    dispatch(createDefaultSubscriptionTiers(showIdString));
+  const configureTiers = useCallback(async () => {
+    dispatch(createDefaultBenefitAndTier({ showId: showIdString }));
     setConfiguringTiers(true);
   }, []);
 
@@ -151,15 +119,15 @@ const Subscriptions = () => {
   }
 
   const stripeAccountId = show.claimedShow && show.claimedShow.stripeAccountId;
-  const subscriptionTierIds =
-    show.claimedShow && show.claimedShow.subscriptionTierIds;
+
+  console.log("subscriptionTiers", subscriptionTiers);
 
   return (
     <SubscriptionsLayout>
       {stripeAccountId ? (
         isConfiguringTiers ||
-        (subscriptionTierIds && subscriptionTierIds.length) ? (
-          <SubscriptionTiers />
+        (subscriptionTiers && subscriptionTiers.length) ? (
+          <SubscriptionTiers subscriptionTiers={subscriptionTiers} />
         ) : (
           <TiersPlaceholder onPress={configureTiers} />
         )
