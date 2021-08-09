@@ -25,7 +25,7 @@ const StripeReturn = () => {
         updateStripeAccountIdOnShow({ showId: showIdString, stripeAccountId })
       );
 
-      router.replace(`/settings/${showIdString}`);
+      router.replace(`/${showIdString}/settings`);
     })();
   }, []);
 

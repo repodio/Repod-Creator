@@ -60,8 +60,6 @@ const ConsoleSideDrawer = () => {
   const { showId } = router.query;
   const show = useSelector(showsSelectors.getShowById(showId));
 
-  const route = router.pathname.replace("/console/[showId]", "");
-
   const width = expanded ? 340 : 80;
   const openMenu = () => {
     setExpanded(true);
@@ -81,36 +79,36 @@ const ConsoleSideDrawer = () => {
       <div className="h-0 border border-solid border-t-0 border-repod-border-dark" />
       <div className="w-full flex flex-col mt-12 flex-1">
         <NavigationLink
-          isSelected={router.pathname.startsWith("/console")}
-          destination={`/console/${router.query.showId}/`}
+          isSelected={router.pathname.startsWith("/[showId]/console")}
+          destination={`/${router.query.showId}/console/`}
           label="Dashboard"
           IconComponent={BarChart2}
           expanded={expanded}
         />
         <NavigationLink
-          isSelected={router.pathname.startsWith("/tips")}
-          destination={`/tips/${router.query.showId}/`}
+          isSelected={router.pathname.startsWith("/[showId]/tips")}
+          destination={`/${router.query.showId}/tips/`}
           label="Tipping"
           IconComponent={CoinsIcon}
           expanded={expanded}
         />
         <NavigationLink
-          isSelected={router.pathname.startsWith("/subscriptions")}
-          destination={`/subscriptions/${router.query.showId}/`}
+          isSelected={router.pathname.startsWith("/[showId]/subscriptions")}
+          destination={`/${router.query.showId}/subscriptions/`}
           label="Subscriptions"
           IconComponent={CrownIcon}
           expanded={expanded}
         />
         <NavigationLink
-          isSelected={router.pathname.startsWith("/settings")}
-          destination={`/settings/${router.query.showId}/monetization`}
+          isSelected={router.pathname.startsWith("/[showId]/settings")}
+          destination={`/${router.query.showId}/settings/monetization`}
           label="Settings"
           IconComponent={Sliders}
           expanded={expanded}
         />
         {/* <NavigationLink
           isSelected={router.pathname.startsWith("/team")}
-          destination={`/team/${router.query.showId}`}
+          destination={`/${router.query.showId}/team/`}
           label="Team"
           IconComponent={Users}
           expanded={expanded}

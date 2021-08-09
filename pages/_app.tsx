@@ -15,11 +15,11 @@ function MyApp({ Component, pageProps }) {
   // store.__persistor && store.__persistor.purge();
 
   const consoleLayout =
-    router.pathname.startsWith("/console") ||
-    router.pathname.startsWith("/team") ||
-    router.pathname.startsWith("/tips") ||
-    router.pathname.startsWith("/subscriptions") ||
-    router.pathname.startsWith("/settings");
+    router.pathname.startsWith("/[showId]/console") ||
+    router.pathname.startsWith("/[showId]/team") ||
+    router.pathname.startsWith("/[showId]/tips") ||
+    router.pathname.startsWith("/[showId]/subscriptions") ||
+    router.pathname.startsWith("/[showId]/settings");
 
   return (
     <Provider store={store}>

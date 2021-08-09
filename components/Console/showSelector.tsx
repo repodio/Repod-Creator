@@ -85,7 +85,7 @@ const ShowSelector = ({
         {map((claimedShow: ShowItem) => (
           <a
             key={claimedShow.showId}
-            href={`/console/${claimedShow.showId}`}
+            href={`/${claimedShow.showId}/console`}
             className={
               "rounded bg-repod-canvas hover:bg-repod-canvas-secondary p-2 flex flex-row justify-start items-center"
             }

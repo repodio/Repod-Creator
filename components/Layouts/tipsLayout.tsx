@@ -14,7 +14,7 @@ const TipsLayout = ({ children }: LayoutProps) => {
     () => [
       {
         label: "Tipping",
-        url: `/tips/${showId}`,
+        url: `/${showId}/tips`,
       },
     ],
     [showId]

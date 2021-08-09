@@ -230,7 +230,7 @@ const ClaimSendEmail = ({ show, isMobile }: ClaimSendEmailProps) => {
             })
           );
           dispatch(upsertClaimedShowId(showId));
-          router.replace(`/console/${showId}`);
+          router.replace(`/${showId}/console`);
         } else {
           setError(ERRORS_LOOKUP[response && response.code]);
         }

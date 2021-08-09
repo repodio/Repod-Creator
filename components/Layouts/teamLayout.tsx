@@ -14,7 +14,7 @@ const TeamLayout = ({ children }: LayoutProps) => {
     () => [
       {
         label: "Members",
-        url: `/team/${showId}`,
+        url: `/${showId}/team`,
       },
     ],
     [showId]

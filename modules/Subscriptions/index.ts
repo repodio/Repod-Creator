@@ -45,6 +45,10 @@ const INITIAL_STATE: StateType = {
 
 // Selectors
 const baseSelector = (state: RootState) => state.subscriptions;
+const getSubscriptionTiersById = createSelector(
+  baseSelector,
+  (subscriptions) => subscriptions.subscriptionTiersById
+);
 const getBenefitsByIds = createSelector(
   baseSelector,
   (subscriptions) => subscriptions.benefitsById
@@ -52,9 +56,9 @@ const getBenefitsByIds = createSelector(
 
 const getSubscriptionTiers = (showId) =>
   createSelector(
-    baseSelector,
+    getSubscriptionTiersById,
     getBenefitsByIds,
-    (subscriptions, benefitsById): SubscriptionTierItem[] =>
+    (subscriptionTiersById, benefitsById): SubscriptionTierItem[] =>
       flow(
         values,
         filter((tier) => tier.showId === showId),
@@ -64,11 +68,29 @@ const getSubscriptionTiers = (showId) =>
             tier.benefitIds
           ),
         }))
-      )(subscriptions.subscriptionTiersById)
+      )(subscriptionTiersById)
+  );
+
+const getSubscriptionTier = (subscriptionTierId) =>
+  createSelector(
+    getSubscriptionTiersById,
+    getBenefitsByIds,
+    (subscriptionTiersById, benefitsById): SubscriptionTierItem => {
+      const tier = subscriptionTiersById[subscriptionTierId];
+      return tier
+        ? {
+            ...tier,
+            benefits: map((benefitId: string) => benefitsById[benefitId])(
+              tier.benefitIds
+            ),
+          }
+        : null;
+    }
   );
 
 export const selectors = {
   getSubscriptionTiers,
+  getSubscriptionTier,
 };
 
 // Actions

@@ -14,11 +14,11 @@ const SubscriptionsLayout = ({ children }: LayoutProps) => {
     () => [
       {
         label: "Subscription Tiers",
-        url: `/subscriptions/${showId}`,
+        url: `/${showId}/subscriptions`,
       },
       {
         label: "Benefits",
-        url: `/subscriptions/${showId}/benefits`,
+        url: `/${showId}/subscriptions/benefits`,
       },
     ],
     [showId]

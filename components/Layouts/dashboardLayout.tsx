@@ -14,11 +14,11 @@ const DashboardLayout = ({ children }: LayoutProps) => {
     () => [
       {
         label: "Overview",
-        url: `/console/${showId}`,
+        url: `/${showId}/console`,
       },
       {
         label: "Followers",
-        url: `/console/${showId}/followers`,
+        url: `/${showId}/console/followers`,
       },
     ],
     [showId]

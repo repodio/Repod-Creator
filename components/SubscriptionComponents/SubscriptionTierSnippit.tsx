@@ -19,7 +19,9 @@ const SubscriptionTierSnippit = ({
       ) : (
         <Badge.Disabled label="Unpublished" />
       )}
-      <Link href={`/subscriptions/${subscriptionTier.showId}/edit`}>
+      <Link
+        href={`/${subscriptionTier.showId}/subscriptions/edit/${subscriptionTier.subscriptionTierId}`}
+      >
         <a className="cursor-pointer flex text-center no-underline text-xs font-bold text-info hover:opacity-50 transition">
           EDIT TIER
         </a>

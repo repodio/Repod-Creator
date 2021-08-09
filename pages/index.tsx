@@ -33,7 +33,7 @@ const Home = () => {
 
         router.replace(`/claim`);
       } else {
-        router.replace(`/console/${claimedShows[0]}`);
+        router.replace(`/${claimedShows[0]}/console`);
       }
     })();
   }, []);

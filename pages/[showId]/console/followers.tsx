@@ -46,7 +46,7 @@ const Dashboard = () => {
   const show = useSelector(showsSelectors.getShowById(showIdString));
 
   if (!show) {
-    router.replace(`/console/${showIdString}`);
+    router.replace(`/${showIdString}/console`);
     return null;
   }
 

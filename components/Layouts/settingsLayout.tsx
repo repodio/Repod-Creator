@@ -14,7 +14,7 @@ const SettingsLayout = ({ children }: LayoutProps) => {
     () => [
       {
         label: "Monetization",
-        url: `/settings/${showId}/monetization`,
+        url: `/${showId}/settings/monetization`,
       },
     ],
     [showId]

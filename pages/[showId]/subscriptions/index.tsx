@@ -21,15 +21,25 @@ import {
 } from "components/SubscriptionComponents";
 import Link from "next/link";
 
+const PAGE_COPY = {
+  StripeConnectMessage:
+    "To enable listeners to subscribe through Repod we must first connect to your Stripe Account. We use Stripe to safely and securely get you your money, setting up an account is quick and easy. Start by pressing the button below.",
+  PlaceholderTitle:
+    "Start by customizing the subscription tiers you want to offer",
+  PlaceholderSubTitle:
+    "We’ll start you off with the following tiers but you get to customize everything how you like",
+  OverviewTitle: "Tiers",
+  OverviewSubTitle: "Choose what to offer your members",
+};
+
 const TiersPlaceholder = ({ onPress }) => (
   <div className="flex flex-col">
     <div className="flex flex-col items-center w-full mb-12">
       <p className="text-xl font-bold text-repod-text-primary mb-2">
-        Start by customizing the subscription tiers you want to offer
+        {PAGE_COPY.PlaceholderTitle}
       </p>
       <p className="text-base font-semibold text-repod-text-primary">
-        We’ll start you off with the following tiers but you get to customize
-        everything how you like
+        {PAGE_COPY.PlaceholderSubTitle}
       </p>
     </div>
     <div className="flex flex-row justify-center items-center w-full mb-12">
@@ -71,9 +81,11 @@ const SubscriptionTiers = ({
 }) => (
   <div className="flex flex-col">
     <div className="flex flex-col items-center w-full mb-2">
-      <p className="text-lg font-bold text-repod-text-primary mb-2">Tiers</p>
+      <p className="text-lg font-bold text-repod-text-primary mb-2">
+        {PAGE_COPY.OverviewTitle}
+      </p>
       <p className="text-md font-semibold text-repod-text-secondary">
-        Choose what to offer your members
+        {PAGE_COPY.OverviewSubTitle}
       </p>
     </div>
     <div className="flex flex-col items-center w-full rounded border border-solid border-repod-border-light pt-8 pb-12">
@@ -145,12 +157,7 @@ const Subscriptions = () => {
           <TiersPlaceholder onPress={configureTiers} />
         )
       ) : (
-        <StripeConnect
-          message="To enable listeners to subscribe through Repod we must first
-          connect to your Stripe Account. We use Stripe to safely and securely
-          get you your money, setting up an account is quick and easy. Start
-          by pressing the button below."
-        />
+        <StripeConnect message={PAGE_COPY.StripeConnectMessage} />
       )}
     </SubscriptionsLayout>
   );

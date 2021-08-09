@@ -70,7 +70,7 @@ const Dashboard = () => {
           </p>
           <Button.Tiny
             onClick={() => {
-              router.replace(`/console/${showId}/featuredepisode`);
+              router.replace(`/${showId}/console/featuredepisode`);
             }}
             style={{ minWidth: 200, maxWidth: 200, width: 200 }}
             className={`bg-info text-repod-text-alternative flex-0`}
@@ -111,7 +111,7 @@ const Dashboard = () => {
             Top Episodes
           </p>
           {slicedEpisodes && slicedEpisodes.length ? (
-            <Link href={`/console/${showId}/episodes`}>
+            <Link href={`/${showId}/console/episodes`}>
               <a
                 className={` text-md font-semibold text-repod-tint flex flex-row items-center`}
               >
@@ -132,7 +132,7 @@ const Dashboard = () => {
             Recent Followers
           </p>
           {slicedFollowers && slicedFollowers.length ? (
-            <Link href={`/console/${showId}/followers`}>
+            <Link href={`/${showId}/console/followers`}>
               <a
                 className={` text-md font-semibold text-repod-tint flex flex-row items-center`}
               >

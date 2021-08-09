@@ -114,7 +114,7 @@ const Tips = () => {
             }`}
           >
             <Link
-              href={`https://dashboard.stripe.com/test/connect/accounts/${stripeAccountId}`}
+              href={`https://dashboard.stripe.com/connect/accounts/${stripeAccountId}`}
             >
               <a className="flex flex-row items-center text-xl font-bold text-repod-text-primary mr-4 hover:opacity-50 transition underline">
                 {stripeAccountId}
@@ -127,7 +127,7 @@ const Tips = () => {
             </Link>
             <div className={`flex flex-col justify-center mr-4`}>
               <Link
-                href={`https://dashboard.stripe.com/test/connect/accounts/${stripeAccountId}`}
+                href={`https://dashboard.stripe.com/connect/accounts/${stripeAccountId}`}
               >
                 <a className="cursor-pointer flex w-full text-center no-underline text-sm font-bold text-repod-text-secondary hover:opacity-50 transition mt-2">
                   View on Stripe
