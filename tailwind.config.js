@@ -45,7 +45,7 @@ module.exports = {
 
         "white-100": "rgba(255, 255, 255, 0.1)",
 
-        "badge-info": "rgba(0, 149, 255, 0.16)",
+        "badge-info": "rgba(0, 149, 255, 0.08)",
         "badge-disabled": "rgba(143, 155, 179, 0.16)",
       },
       backgroundImage: (theme) => ({

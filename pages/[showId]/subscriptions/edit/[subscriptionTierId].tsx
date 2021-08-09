@@ -76,6 +76,8 @@ const EditSubscription = () => {
 
   const updateTier = useCallback(async () => {}, []);
 
+  const openAddBenefitModal = () => {};
+
   if (subscriptionTier && subscriptionTier.showId !== showIdString) {
     router.replace(`/${showIdString}/subscriptions`);
   }
@@ -129,6 +131,13 @@ const EditSubscription = () => {
             inputType="text"
             registerInput={register("description", { required: true })}
             error={false}
+          />
+          <ListItem.Benefits
+            label={PAGE_COPY.BenefitsLabel}
+            subLabel={PAGE_COPY.BenefitsSubLabel}
+            benefits={subscriptionTier.benefits}
+            error={false}
+            handleAddBenefit={openAddBenefitModal}
           />
         </div>
       </div>

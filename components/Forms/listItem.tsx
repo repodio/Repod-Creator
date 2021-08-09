@@ -2,11 +2,15 @@ import React from "react";
 import { formatCurrency } from "utils/formats";
 import { Controller } from "react-hook-form";
 import NumberFormat from "react-number-format";
+import { Button } from "components/Buttons";
+import { map } from "lodash/fp";
+import { Menu, X } from "react-feather";
 
 const ListItemTypes = {
   input: "input",
   currency: "currency",
   textarea: "textarea",
+  benefits: "benefits",
 };
 
 const CurrencyFormat = ({ onChange, value, borderColor, ...rest }) => {
@@ -40,6 +44,10 @@ const ListItem = ({
   control,
   inputType,
   registerInput,
+  benefits,
+  handleRemoveBenefit,
+  handleEditBenefit,
+  handleAddBenefit,
 }: {
   label: string;
   subLabel: string;
@@ -51,6 +59,10 @@ const ListItem = ({
   control: any;
   inputType: string;
   registerInput: {};
+  benefits: SubscriptionBenefitItem[];
+  handleAddBenefit: () => void;
+  handleRemoveBenefit: () => void;
+  handleEditBenefit: () => void;
 }) => {
   const borderColor = `focus:border-info ${
     error ? "border-danger" : "border-repod-border-light"
@@ -94,7 +106,7 @@ const ListItem = ({
           />
         ) : type === ListItemTypes.textarea ? (
           <textarea
-            style={{ minHeight: 48, height: 80 }}
+            style={{ minHeight: 80, height: 80 }}
             className={`w-full text-md px-6 pt-4 border-2 font-medium rounded-lg text-repod-text-primary bg-repod-canvas-secondary focus:outline-none 
             ${borderColor}`}
             name={name}
@@ -104,6 +116,46 @@ const ListItem = ({
             placeholder={placeholder}
             {...registerInput}
           />
+        ) : type === ListItemTypes.benefits ? (
+          <div className="flex flex-col items-start justify-start">
+            <Button.Small
+              className="bg-badge-info text-info mb-6"
+              style={{ minWidth: 130, maxWidth: 130, width: 130 }}
+              onClick={handleAddBenefit}
+            >
+              + Add Benefit
+            </Button.Small>
+            {map((benefit: SubscriptionBenefitItem) => (
+              <div className="flex flex-row items-center justify-center w-full py-4 px-4 rounded bg-repod-canvas-secondary">
+                <div className="ml-4">
+                  <Menu
+                    className="stroke-current text-repod-text-primary"
+                    size={24}
+                  />
+                </div>
+                <div className="flex flex-col items-start justify-start px-4">
+                  <p className="text-md font-semibold text-repod-text-primary">
+                    {benefit.title}
+                  </p>
+                  <p className="text-sm font-book text-repod-text-secondary">
+                    {benefit.rssFeed}
+                  </p>
+                </div>
+                <div onClick={handleEditBenefit}>
+                  <a className="cursor-pointer flex text-center no-underline text-xs font-bold text-info hover:opacity-50 transition px-2">
+                    EDIT
+                  </a>
+                </div>
+                <div className="mr-4">
+                  <X
+                    onClick={handleRemoveBenefit}
+                    className="stroke-current text-repod-text-secondary"
+                    size={24}
+                  />
+                </div>
+              </div>
+            ))(benefits)}
+          </div>
         ) : null}
         {/* {isCurrencyInput ? (
           <div
@@ -127,4 +179,8 @@ export const Input = (props) => (
 
 export const Currency = (props) => (
   <ListItem {...props} type={ListItemTypes.currency} />
+);
+
+export const Benefits = (props) => (
+  <ListItem {...props} type={ListItemTypes.benefits} />
 );
