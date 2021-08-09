@@ -112,6 +112,7 @@ const LogIn = ({ handleToggleSignupMode, authError, setAuthError }) => {
     register,
     handleSubmit,
     formState: { errors },
+    control,
   } = useForm<Inputs>();
   const onSubmit = async ({ email, password }) => {
     const response = await signIn({

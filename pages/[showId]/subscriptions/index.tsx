@@ -34,8 +34,8 @@ const PAGE_COPY = {
 
 const TiersPlaceholder = ({ onPress }) => (
   <div className="flex flex-col">
-    <div className="flex flex-col items-center w-full mb-12">
-      <p className="text-xl font-bold text-repod-text-primary mb-2">
+    <div className="flex flex-col items-center w-full mb-8">
+      <p className="text-xl font-bold text-repod-text-primary">
         {PAGE_COPY.PlaceholderTitle}
       </p>
       <p className="text-base font-semibold text-repod-text-primary">
@@ -80,8 +80,8 @@ const SubscriptionTiers = ({
   subscriptionTiers: SubscriptionTierItem[];
 }) => (
   <div className="flex flex-col">
-    <div className="flex flex-col items-center w-full mb-2">
-      <p className="text-lg font-bold text-repod-text-primary mb-2">
+    <div className="flex flex-col items-center w-full mb-8">
+      <p className="text-lg font-bold text-repod-text-primary">
         {PAGE_COPY.OverviewTitle}
       </p>
       <p className="text-md font-semibold text-repod-text-secondary">

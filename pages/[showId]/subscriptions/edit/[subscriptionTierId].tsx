@@ -12,24 +12,32 @@ import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
 import { SubscriptionsLayout } from "components/Layouts";
 import { useMediaQuery } from "react-responsive";
-import StripeConnect from "components/StripeConnect";
-import { Button } from "components/Buttons";
-import { createDefaultBenefitAndTier } from "modules/Subscriptions";
-import {
-  SubscriptionTierPlaceholder,
-  SubscriptionTierSnippit,
-} from "components/SubscriptionComponents";
-import Link from "next/link";
+import { ListItem } from "components/Forms";
+import { useForm } from "react-hook-form";
 
 const PAGE_COPY = {
   EditTitle: "Tiers",
   EditSubTitle: "Choose what to offer your members",
+  TitleLabel: "Tier Title",
+  TitlePlaceholder: "My Tier Title",
+  RequiredSubLabel: "Required",
+  PriceLabel: "Monthly Price",
+  PricePlaceholder: "$5.00",
+  DescriptionLabel: "Description",
+  BenefitsLabel: "Benefits",
+  BenefitsSubLabel: "Must have at least one benefit in each tier",
+};
+
+type FormInputs = {
+  title: string;
+  price: number;
+  description: string;
 };
 
 const EditSubscription = () => {
   const router = useRouter();
   const [pageLoading, setPageLoading] = useState(true);
-  const [isConfiguringTiers, setConfiguringTiers] = useState(false);
+
   const { showId, subscriptionTierId } = router.query;
   const showIdString = showId as string;
   const subscriptionTierIdString = subscriptionTierId as string;
@@ -40,6 +48,18 @@ const EditSubscription = () => {
   );
   const dispatch = useDispatch<ThunkDispatch<{}, undefined, Action>>();
   const isMobile = useMediaQuery({ query: "(max-width: 600px)" });
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    control,
+  } = useForm<FormInputs>({
+    defaultValues: {
+      title: subscriptionTier.title,
+      price: subscriptionTier.monthlyPrice,
+      description: subscriptionTier.description,
+    },
+  });
 
   useEffect(() => {
     (async () => {
@@ -65,16 +85,42 @@ const EditSubscription = () => {
 
   return (
     <SubscriptionsLayout>
-      <div className="flex flex-col">
-        <div className="flex flex-col items-center w-full mb-2">
-          <p className="text-lg font-bold text-repod-text-primary mb-2">
+      <div className="flex flex-col items-center justify-center">
+        <div className="flex flex-col items-center w-full mb-8">
+          <p className="text-lg font-bold text-repod-text-primary">
             {PAGE_COPY.EditTitle}
           </p>
           <p className="text-md font-semibold text-repod-text-secondary">
             {PAGE_COPY.EditSubTitle}
           </p>
         </div>
-        <div className="flex flex-col items-center w-full rounded border border-solid border-repod-border-light pt-8 pb-12"></div>
+        <div
+          style={{ maxWidth: 800 }}
+          className="flex flex-col items-center w-full rounded border border-solid border-repod-border-light pt-8 pb-12 px-4"
+        >
+          <ListItem.Input
+            label={PAGE_COPY.TitleLabel}
+            subLabel={PAGE_COPY.RequiredSubLabel}
+            value={subscriptionTier.title}
+            placeholder={PAGE_COPY.TitlePlaceholder}
+            name="title"
+            inputType="text"
+            registerInput={register("title", { required: true })}
+            error={false}
+          />
+          <ListItem.Input
+            label={PAGE_COPY.PriceLabel}
+            subLabel={PAGE_COPY.RequiredSubLabel}
+            value={subscriptionTier.monthlyPrice}
+            placeholder={PAGE_COPY.PricePlaceholder}
+            name="price"
+            inputType="text"
+            control={control}
+            isCurrencyInput={true}
+            registerInput={register("price", { required: true })}
+            error={false}
+          />
+        </div>
       </div>
     </SubscriptionsLayout>
   );
