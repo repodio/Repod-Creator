@@ -5,6 +5,8 @@ import NumberFormat from "react-number-format";
 
 const ListItemTypes = {
   input: "input",
+  currency: "currency",
+  textarea: "textarea",
 };
 
 const CurrencyFormat = ({ onChange, value, borderColor, ...rest }) => {
@@ -33,7 +35,6 @@ const ListItem = ({
   type,
   value,
   placeholder,
-  isCurrencyInput,
   error,
   name,
   control,
@@ -45,7 +46,6 @@ const ListItem = ({
   type: string;
   value: string;
   placeholder: string;
-  isCurrencyInput: boolean;
   error: boolean;
   name: string;
   control: any;
@@ -62,39 +62,48 @@ const ListItem = ({
         style={{ maxWidth: 200, minWidth: 200 }}
         className="flex flex-col items-start justify-start px-4"
       >
-        <p className="text-md font-medium text-repod-text-primary">{label}</p>
-        <p className="text-sm font-book text-repod-text-secondary">
+        <p className="text-md font-book text-repod-text-primary">{label}</p>
+        <p className="text-xs font-book text-repod-text-secondary">
           {subLabel}
         </p>
       </div>
       <div className="flex-1 flex-col items-center justify-center relative">
         {type === ListItemTypes.input ? (
-          isCurrencyInput ? (
-            <Controller
-              name={name}
-              control={control}
-              render={({ field }) => (
-                <CurrencyFormat
-                  borderColor={borderColor}
-                  placeholder={placeholder}
-                  {...field}
-                />
-              )}
-            />
-          ) : (
-            <input
-              className={`w-full text-lg px-6 h-12 border-2 font-medium rounded-lg text-repod-text-primary bg-repod-canvas-secondary focus:outline-none 
-            ${isCurrencyInput ? " pl-8" : ""}
+          <input
+            className={`w-full text-md px-6 h-12 border-2 font-medium rounded-lg text-repod-text-primary bg-repod-canvas-secondary focus:outline-none 
             ${borderColor}`}
-              type={inputType}
-              name={name}
-              id={name}
-              defaultValue={value}
-              value=""
-              placeholder={placeholder}
-              {...registerInput}
-            />
-          )
+            type={inputType}
+            name={name}
+            id={name}
+            defaultValue={value}
+            // value=""
+            placeholder={placeholder}
+            {...registerInput}
+          />
+        ) : type === ListItemTypes.currency ? (
+          <Controller
+            name={name}
+            control={control}
+            render={({ field }) => (
+              <CurrencyFormat
+                borderColor={borderColor}
+                placeholder={placeholder}
+                {...field}
+              />
+            )}
+          />
+        ) : type === ListItemTypes.textarea ? (
+          <textarea
+            style={{ minHeight: 48, height: 80 }}
+            className={`w-full text-md px-6 pt-4 border-2 font-medium rounded-lg text-repod-text-primary bg-repod-canvas-secondary focus:outline-none 
+            ${borderColor}`}
+            name={name}
+            id={name}
+            defaultValue={value}
+            // value=""
+            placeholder={placeholder}
+            {...registerInput}
+          />
         ) : null}
         {/* {isCurrencyInput ? (
           <div
@@ -108,6 +117,14 @@ const ListItem = ({
   );
 };
 
+export const TextArea = (props) => (
+  <ListItem {...props} type={ListItemTypes.textarea} />
+);
+
 export const Input = (props) => (
   <ListItem {...props} type={ListItemTypes.input} />
+);
+
+export const Currency = (props) => (
+  <ListItem {...props} type={ListItemTypes.currency} />
 );

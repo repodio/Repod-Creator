@@ -24,6 +24,7 @@ const PAGE_COPY = {
   PriceLabel: "Monthly Price",
   PricePlaceholder: "$5.00",
   DescriptionLabel: "Description",
+  DescriptionPlaceholder: "Describe in your own words what this tier offers",
   BenefitsLabel: "Benefits",
   BenefitsSubLabel: "Must have at least one benefit in each tier",
 };
@@ -108,7 +109,7 @@ const EditSubscription = () => {
             registerInput={register("title", { required: true })}
             error={false}
           />
-          <ListItem.Input
+          <ListItem.Currency
             label={PAGE_COPY.PriceLabel}
             subLabel={PAGE_COPY.RequiredSubLabel}
             value={subscriptionTier.monthlyPrice}
@@ -116,8 +117,17 @@ const EditSubscription = () => {
             name="price"
             inputType="text"
             control={control}
-            isCurrencyInput={true}
             registerInput={register("price", { required: true })}
+            error={false}
+          />
+          <ListItem.TextArea
+            label={PAGE_COPY.DescriptionLabel}
+            subLabel=""
+            value={subscriptionTier.description}
+            placeholder={PAGE_COPY.DescriptionPlaceholder}
+            name="description"
+            inputType="text"
+            registerInput={register("description", { required: true })}
             error={false}
           />
         </div>
