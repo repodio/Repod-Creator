@@ -76,6 +76,7 @@ interface SubscriptionTierItem {
   enableShippingAddress?: boolean;
   published: boolean;
   benefitIds?: string[];
+  benefits?: SubscriptionBenefitItem[];
 }
 
 interface SubscriptionBenefitItem {

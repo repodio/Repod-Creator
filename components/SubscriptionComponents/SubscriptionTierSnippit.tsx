@@ -7,11 +7,11 @@ import * as Badge from "components/Badge";
 const SubscriptionTierSnippit = ({
   subscriptionTier,
 }: {
-  subscriptionTier: SubscriptionTierItem & { benefits: { title: string }[] };
+  subscriptionTier: SubscriptionTierItem;
 }) => (
   <div
-    className="flex flex-col justify-start items-start rounded border border-solid border-repod-border-light p-4 pb-8 mx-4"
-    style={{ minWidth: 260, maxWidth: 230 }}
+    className="flex flex-col justify-start items-start rounded border border-solid border-repod-border-light p-4 pb-8 mx-4 mb-8"
+    style={{ minWidth: 260, minHeight: 230 }}
   >
     <div className="flex flex-row justify-between items-center w-full mb-4">
       {subscriptionTier.published ? (

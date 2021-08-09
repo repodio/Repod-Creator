@@ -54,7 +54,7 @@ const getSubscriptionTiers = (showId) =>
   createSelector(
     baseSelector,
     getBenefitsByIds,
-    (subscriptions, benefitsById) =>
+    (subscriptions, benefitsById): SubscriptionTierItem[] =>
       flow(
         values,
         filter((tier) => tier.showId === showId),

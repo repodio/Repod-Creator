@@ -19,6 +19,7 @@ import {
   SubscriptionTierPlaceholder,
   SubscriptionTierSnippit,
 } from "components/SubscriptionComponents";
+import Link from "next/link";
 
 const TiersPlaceholder = ({ onPress }) => (
   <div className="flex flex-col">
@@ -77,8 +78,20 @@ const SubscriptionTiers = ({
     </div>
     <div className="flex flex-col items-center w-full rounded border border-solid border-repod-border-light pt-8 pb-12">
       {subscriptionTiers.map((tier) => (
-        <SubscriptionTierSnippit subscriptionTier={tier} />
+        <SubscriptionTierSnippit
+          key={tier.subscriptionTierId}
+          subscriptionTier={tier}
+        />
       ))}
+
+      <div
+        className="flex flex-col items-center justify-center w-full rounded bg-badge-info cursor-pointer hover:opacity-50 transition py-4"
+        style={{ maxWidth: 260 }}
+      >
+        <Link href={`/subscriptions/new/edit`}>
+          <a className="text-md font-semibold text-info">+ Add Tier</a>
+        </Link>
+      </div>
     </div>
   </div>
 );
