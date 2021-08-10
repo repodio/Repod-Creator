@@ -58,7 +58,7 @@ const MODAL_COPY = {
 type TierBenefitsModalProps = {
   addedBenefits: SubscriptionBenefitItem[];
   isModalOpen: boolean;
-  setIsModalOpen: () => void;
+  setIsModalOpen: (b: boolean) => void;
   initialScreen: string;
 };
 
@@ -96,6 +96,10 @@ const TierBenefitsModal = ({
     setScreenMode(TierBenefitsModal.Types.editBenefit);
   };
 
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
   const selectOptions = useMemo(
     () =>
       map((key: string) => ({
@@ -104,9 +108,6 @@ const TierBenefitsModal = ({
       }))(Object.keys(SubscriptionBenefitCopy)),
     [SubscriptionBenefitCopy]
   );
-
-  console.log("addedBenefitIds", addedBenefitIds);
-  console.log("selectOptions", selectOptions);
 
   const modalTitle = ModalTitleCopy[screenMode];
 
@@ -158,6 +159,24 @@ const TierBenefitsModal = ({
             value={""}
             placeholder={MODAL_COPY.RSSPlaceholder}
           />
+          <div className="w-full h-0 my-2 border border-solid border-t-0 border-repod-border-light mb-6" />
+          <div className="w-full flex flex-row items-center justify-start">
+            <Button.Small
+              className="bg-info text-repod-text-alternative"
+              style={{ minWidth: 130, maxWidth: 130, width: 130 }}
+              // onClick={handleAddBenefit}
+            >
+              Save Tier
+            </Button.Small>
+
+            <Button.Small
+              className="bg-repod-canvas text-repod-text-secondary"
+              style={{ minWidth: 100, maxWidth: 100, width: 100 }}
+              onClick={closeModal}
+            >
+              Cancel
+            </Button.Small>
+          </div>
         </>
       ) : screenMode === TierBenefitsModal.Types.createBenefit ? (
         <>
