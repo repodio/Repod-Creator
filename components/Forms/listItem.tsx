@@ -3,12 +3,14 @@ import { Controller } from "react-hook-form";
 import NumberFormat from "react-number-format";
 import { Button } from "components/Buttons";
 import BenefitsList from "components/BenefitLists";
+import { Switch } from "@headlessui/react";
 
 const ListItemTypes = {
   input: "input",
   currency: "currency",
   textarea: "textarea",
   benefits: "benefits",
+  select: "select",
 };
 
 const CurrencyFormat = ({ onChange, value, borderColor, ...rest }) => {
@@ -42,6 +44,7 @@ const ListItem = ({
   control,
   inputType,
   registerInput,
+  onChange,
   benefits,
   handleRemoveBenefit,
   handleEditBenefit,
@@ -50,13 +53,14 @@ const ListItem = ({
   label: string;
   subLabel: string;
   type: string;
-  value: string;
+  value: string | boolean;
   placeholder: string;
   error: boolean;
   name: string;
   control: any;
   inputType: string;
   registerInput: {};
+  onChange: () => void;
   benefits: SubscriptionBenefitItem[];
   handleAddBenefit: () => void;
   handleRemoveBenefit: () => void;
@@ -73,9 +77,11 @@ const ListItem = ({
         className="flex flex-col items-start justify-start px-4"
       >
         <p className="text-md font-book text-repod-text-primary">{label}</p>
-        <p className="text-xs font-book text-repod-text-secondary">
-          {subLabel}
-        </p>
+        {type !== ListItemTypes.select ? (
+          <p className="text-xs font-book text-repod-text-secondary">
+            {subLabel}
+          </p>
+        ) : null}
       </div>
       <div className="flex-1 flex-col items-center justify-center relative">
         {type === ListItemTypes.input ? (
@@ -124,50 +130,34 @@ const ListItem = ({
               + Add Benefit
             </Button.Small>
             <BenefitsList benefits={benefits} />
-            {/* <div ref={dragPreview} style={{ opacity: isDragging ? 0.5 : 1 }}>
-              {map((benefit: SubscriptionBenefitItem) => (
-                <div
-                  ref={drag}
-                  className="flex flex-row items-center justify-center w-full py-4 px-4 rounded bg-repod-canvas-secondary"
-                >
-                  <div className="ml-4">
-                    <Menu
-                      className="stroke-current text-repod-text-primary"
-                      size={24}
-                    />
-                  </div>
-                  <div className="flex flex-col items-start justify-start px-4">
-                    <p className="text-md font-semibold text-repod-text-primary">
-                      {benefit.title}
-                    </p>
-                    <p className="text-sm font-book text-repod-text-secondary">
-                      {benefit.rssFeed}
-                    </p>
-                  </div>
-                  <div onClick={handleEditBenefit}>
-                    <a className="cursor-pointer flex text-center no-underline text-xs font-bold text-info hover:opacity-50 transition px-2">
-                      EDIT
-                    </a>
-                  </div>
-                  <div className="mr-4">
-                    <X
-                      onClick={handleRemoveBenefit}
-                      className="stroke-current text-repod-text-secondary"
-                      size={24}
-                    />
-                  </div>
-                </div>
-              ))(benefits)}
-            </div> */}
+          </div>
+        ) : type === ListItemTypes.select ? (
+          <div className="w-full flex flex-row justify-end items-center">
+            <p className="text-sm font-book text-repod-text-primary mr-4">
+              {subLabel}
+            </p>
+            <Switch
+              checked={value}
+              onChange={onChange}
+              className={`${
+                value ? "bg-info" : "bg-gray-300"
+              } relative inline-flex items-center h-6 rounded-full w-11 transform all ease-in-out duration-200 focus:outline-none mx-4`}
+            >
+              <span
+                /* Transition the Switch's knob on state change */
+                className={`transform transition ease-in-out duration-200
+              ${value ? "translate-x-9" : "translate-x-0"}
+        `}
+              />
+              <span className="sr-only">Enable notifications</span>
+              <span
+                className={`${
+                  value ? "translate-x-6" : "translate-x-1"
+                } inline-block w-4 h-4 transform bg-white rounded-full transform transition ease-in-out duration-200`}
+              />
+            </Switch>
           </div>
         ) : null}
-        {/* {isCurrencyInput ? (
-          <div
-            className={`absolute top-0 left-0 h-12 pl-4 flex justify-center items-center `}
-          >
-            <p className="font-medium text-repod-text-primary ">$</p>
-          </div>
-        ) : null} */}
       </div>
     </div>
   );
@@ -187,4 +177,8 @@ export const Currency = (props) => (
 
 export const Benefits = (props) => (
   <ListItem {...props} type={ListItemTypes.benefits} />
+);
+
+export const Select = (props) => (
+  <ListItem {...props} type={ListItemTypes.select} />
 );

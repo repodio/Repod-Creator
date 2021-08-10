@@ -16,6 +16,9 @@ import { ListItem } from "components/Forms";
 import { useForm } from "react-hook-form";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
+import Collapsible from "components/Collapsible";
+import { Button } from "components/Buttons";
+import { Trash } from "react-feather";
 
 const PAGE_COPY = {
   EditTitle: "Tiers",
@@ -29,6 +32,9 @@ const PAGE_COPY = {
   DescriptionPlaceholder: "Describe in your own words what this tier offers",
   BenefitsLabel: "Benefits",
   BenefitsSubLabel: "Must have at least one benefit in each tier",
+  AdvancedLabel: "Advanced",
+  ShippingLabel: "Shipping Address",
+  ShippingSubLabel: "Ask for shipping address during checkout",
 };
 
 type FormInputs = {
@@ -85,6 +91,10 @@ const EditSubscription = () => {
     router.replace(`/${showIdString}/subscriptions`);
   }
 
+  const [shippingAddressEnabled, setShippingAddressEnabled] = useState(
+    subscriptionTier.enableShippingAddress
+  );
+
   if (!show || pageLoading) {
     return <LoadingScreen />;
   }
@@ -92,7 +102,7 @@ const EditSubscription = () => {
   return (
     <SubscriptionsLayout>
       <DndProvider backend={HTML5Backend}>
-        <div className="flex flex-col items-center justify-center">
+        <div className="flex flex-col items-center justify-center mb-16">
           <div className="flex flex-col items-center w-full mb-8">
             <p className="text-lg font-bold text-repod-text-primary">
               {PAGE_COPY.EditTitle}
@@ -103,7 +113,7 @@ const EditSubscription = () => {
           </div>
           <div
             style={{ maxWidth: 800 }}
-            className="flex flex-col items-center w-full rounded border border-solid border-repod-border-light pt-8 pb-12 px-4"
+            className="flex flex-col items-center w-full rounded border border-solid border-repod-border-light pb-2 pt-6 px-4"
           >
             <ListItem.Input
               label={PAGE_COPY.TitleLabel}
@@ -143,6 +153,58 @@ const EditSubscription = () => {
               error={false}
               handleAddBenefit={openAddBenefitModal}
             />
+            <div className="w-full h-0 my-2 border border-solid border-t-0 border-repod-border-light" />
+            <Collapsible label="Advanced">
+              <div className="w-full my-6">
+                <ListItem.Select
+                  label={PAGE_COPY.ShippingLabel}
+                  subLabel={PAGE_COPY.ShippingSubLabel}
+                  value={shippingAddressEnabled}
+                  onChange={setShippingAddressEnabled}
+                />
+              </div>
+            </Collapsible>
+            <div className="w-full h-0 my-2 border border-solid border-t-0 border-repod-border-light mb-8" />
+            <div className="w-full flex flex-row items-center justify-between">
+              <div className="flex flex-row items-center justify-start">
+                <Button.Small
+                  className="bg-info text-repod-text-alternative mb-6"
+                  style={{ minWidth: 130, maxWidth: 130, width: 130 }}
+                  // onClick={handleAddBenefit}
+                >
+                  Save Tier
+                </Button.Small>
+
+                <Button.Small
+                  className="bg-repod-canvas text-repod-text-secondary mb-6"
+                  style={{ minWidth: 100, maxWidth: 100, width: 100 }}
+                  // onClick={handleAddBenefit}
+                >
+                  Cancel
+                </Button.Small>
+              </div>
+
+              <div className="flex flex-row items-center justify-end">
+                <Button.Small
+                  className="bg-repod-canvas text-repod-text-secondary mb-6"
+                  style={{ minWidth: 100, maxWidth: 100, width: 100 }}
+                  // onClick={handleAddBenefit}
+                >
+                  Unpublish
+                </Button.Small>
+                <Button.Small
+                  className="bg-repod-canvas text-repod-text-secondary mb-6"
+                  style={{ minWidth: 50, maxWidth: 50, width: 50 }}
+                  // onClick={handleAddBenefit}
+                >
+                  <Trash
+                    // onClick={handleRemoveBenefit}
+                    className="stroke-current text-repod-text-secondary"
+                    size={24}
+                  />
+                </Button.Small>
+              </div>
+            </div>
           </div>
         </div>
       </DndProvider>
