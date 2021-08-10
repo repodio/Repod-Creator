@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { Controller } from "react-hook-form";
 import NumberFormat from "react-number-format";
 import { Button } from "components/Buttons";
 import BenefitsList from "components/BenefitLists";
 import { Switch } from "@headlessui/react";
+import { TierBenefitsModal } from "components/Modals";
 
 const ListItemTypes = {
   input: "input",
@@ -66,6 +67,8 @@ const ListItem = ({
   handleRemoveBenefit: () => void;
   handleEditBenefit: () => void;
 }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const borderColor = `focus:border-info ${
     error ? "border-danger" : "border-repod-border-light"
   }`;
@@ -125,10 +128,15 @@ const ListItem = ({
             <Button.Small
               className="bg-badge-info text-info mb-6"
               style={{ minWidth: 130, maxWidth: 130, width: 130 }}
-              onClick={handleAddBenefit}
+              // onClick={handleAddBenefit}
+              onClick={() => setIsModalOpen(true)}
             >
               + Add Benefit
             </Button.Small>
+            <TierBenefitsModal
+              isModalOpen={isModalOpen}
+              setIsModalOpen={setIsModalOpen}
+            />
             <BenefitsList benefits={benefits} />
           </div>
         ) : type === ListItemTypes.select ? (

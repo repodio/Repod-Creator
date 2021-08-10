@@ -3,13 +3,16 @@ import { useEffect } from "react";
 import { Menu, X } from "react-feather";
 import { useDrag, useDrop } from "react-dnd";
 import update from "immutability-helper";
+import Modal from "components/Modal";
 
 const ItemTypes = {
   CARD: "card",
 };
 
-const Card = ({ id, label, subLabel, index, moveCard }) => {
+const BenefitCard = ({ id, label, subLabel, index, moveCard }) => {
   const ref = useRef(null);
+  const [isOpen, setIsOpen] = useState(false);
+
   const [{ handlerId }, drop] = useDrop({
     accept: ItemTypes.CARD,
     collect(monitor) {
@@ -136,7 +139,7 @@ const BenefitsList = ({ benefits }) => {
 
   const renderCard = (benefit, index) => {
     return (
-      <Card
+      <BenefitCard
         key={benefit.benefitId}
         index={index}
         id={benefit.benefitId}
