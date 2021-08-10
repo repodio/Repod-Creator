@@ -1,3 +1,3 @@
-import TierBenefitsModal from "./tierBenefitsModal";
+import TierBenefitsModal from "./TierBenefitsModal";
 
 export { TierBenefitsModal };

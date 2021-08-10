@@ -8,10 +8,7 @@ const Collapsible = ({ label, children }) => {
       {({ open }) => (
         <div className="w-full">
           <Disclosure.Button className="flex flex-row justify-between w-full px-4 py-2 focus:outline-none">
-            <p>{label}</p>
-            {/*
-              Use the `open` render prop to rotate the icon when the panel is open
-            */}
+            <p className="text-md font-book text-repod-text-primary">{label}</p>
             <ChevronDown className={`${open ? "transform rotate-180" : ""}`} />
           </Disclosure.Button>
 

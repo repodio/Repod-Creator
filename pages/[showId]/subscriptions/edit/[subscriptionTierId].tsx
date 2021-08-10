@@ -113,7 +113,7 @@ const EditSubscription = () => {
           </div>
           <div
             style={{ maxWidth: 800 }}
-            className="flex flex-col items-center w-full rounded border border-solid border-repod-border-light pb-2 pt-6 px-4"
+            className="flex flex-col items-center w-full rounded border border-solid border-repod-border-light pb-2 pt-6 px-8"
           >
             <ListItem.Input
               label={PAGE_COPY.TitleLabel}
@@ -146,7 +146,7 @@ const EditSubscription = () => {
               registerInput={register("description", { required: true })}
               error={false}
             />
-            <ListItem.Benefits
+            <ListItem.BenefitsList
               label={PAGE_COPY.BenefitsLabel}
               subLabel={PAGE_COPY.BenefitsSubLabel}
               benefits={subscriptionTier.benefits}

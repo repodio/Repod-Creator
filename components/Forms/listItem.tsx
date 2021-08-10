@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Controller } from "react-hook-form";
 import NumberFormat from "react-number-format";
 import { Button } from "components/Buttons";
-import BenefitsList from "components/BenefitLists";
+import BenefitsListComponent from "components/BenefitLists";
 import { Switch } from "@headlessui/react";
 import { TierBenefitsModal } from "components/Modals";
 
@@ -10,8 +10,9 @@ const ListItemTypes = {
   input: "input",
   currency: "currency",
   textarea: "textarea",
-  benefits: "benefits",
+  benefitsList: "benefitsList",
   select: "select",
+  addBenefit: "addBenefit",
 };
 
 const CurrencyFormat = ({ onChange, value, borderColor, ...rest }) => {
@@ -77,7 +78,7 @@ const ListItem = ({
     <div className="flex flex-row items-start justify-start w-full py-4">
       <div
         style={{ maxWidth: 200, minWidth: 200 }}
-        className="flex flex-col items-start justify-start px-4"
+        className="flex flex-col items-start justify-start pr-4"
       >
         <p className="text-md font-book text-repod-text-primary">{label}</p>
         {type !== ListItemTypes.select ? (
@@ -123,7 +124,7 @@ const ListItem = ({
             placeholder={placeholder}
             {...registerInput}
           />
-        ) : type === ListItemTypes.benefits ? (
+        ) : type === ListItemTypes.benefitsList ? (
           <div className="flex flex-col items-start justify-start">
             <Button.Small
               className="bg-badge-info text-info mb-6"
@@ -134,10 +135,12 @@ const ListItem = ({
               + Add Benefit
             </Button.Small>
             <TierBenefitsModal
+              addedBenefits={benefits}
               isModalOpen={isModalOpen}
               setIsModalOpen={setIsModalOpen}
+              initialScreen={TierBenefitsModal.Types.tierBenefits}
             />
-            <BenefitsList benefits={benefits} />
+            <BenefitsListComponent benefits={benefits} />
           </div>
         ) : type === ListItemTypes.select ? (
           <div className="w-full flex flex-row justify-end items-center">
@@ -165,6 +168,27 @@ const ListItem = ({
               />
             </Switch>
           </div>
+        ) : type === ListItemTypes.addBenefit ? (
+          <div className="w-full flex flex-row justify-end items-center">
+            {value ? (
+              <Button.Tiny
+                style={{ width: 180 }}
+                className={`py-1 bg-repod-disabled-bg rounded hover:opacity-100 cursor-default uppercase`}
+              >
+                <p className="text-xs font-semibold text-repod-text-primary">
+                  Added to this tier
+                </p>
+              </Button.Tiny>
+            ) : (
+              <Button.Tiny
+                style={{ width: 90 }}
+                onClick={() => {}}
+                className={`py-1  bg-badge-info rounded border-1 border-info uppercase`}
+              >
+                <p className="text-xs font-semibold text-info">+ Add</p>
+              </Button.Tiny>
+            )}
+          </div>
         ) : null}
       </div>
     </div>
@@ -183,10 +207,14 @@ export const Currency = (props) => (
   <ListItem {...props} type={ListItemTypes.currency} />
 );
 
-export const Benefits = (props) => (
-  <ListItem {...props} type={ListItemTypes.benefits} />
+export const BenefitsList = (props) => (
+  <ListItem {...props} type={ListItemTypes.benefitsList} />
 );
 
 export const Select = (props) => (
   <ListItem {...props} type={ListItemTypes.select} />
+);
+
+export const AddBenefit = (props) => (
+  <ListItem {...props} type={ListItemTypes.addBenefit} />
 );

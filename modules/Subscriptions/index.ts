@@ -88,9 +88,18 @@ const getSubscriptionTier = (subscriptionTierId) =>
     }
   );
 
+const getAllShowBenefits = (showId) =>
+  createSelector(getBenefitsByIds, (benefitsById): SubscriptionBenefitItem[] =>
+    flow(
+      values,
+      filter((benefit) => benefit.showId === showId)
+    )(benefitsById)
+  );
+
 export const selectors = {
   getSubscriptionTiers,
   getSubscriptionTier,
+  getAllShowBenefits,
 };
 
 // Actions

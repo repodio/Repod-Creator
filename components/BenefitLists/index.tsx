@@ -3,7 +3,6 @@ import { useEffect } from "react";
 import { Menu, X } from "react-feather";
 import { useDrag, useDrop } from "react-dnd";
 import update from "immutability-helper";
-import Modal from "components/Modal";
 
 const ItemTypes = {
   CARD: "card",
@@ -20,7 +19,7 @@ const BenefitCard = ({ id, label, subLabel, index, moveCard }) => {
         handlerId: monitor.getHandlerId(),
       };
     },
-    hover(item, monitor) {
+    hover(item: { index: number }, monitor) {
       if (!ref.current) {
         return;
       }
