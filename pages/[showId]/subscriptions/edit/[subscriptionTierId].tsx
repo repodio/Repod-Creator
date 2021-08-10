@@ -14,6 +14,8 @@ import { SubscriptionsLayout } from "components/Layouts";
 import { useMediaQuery } from "react-responsive";
 import { ListItem } from "components/Forms";
 import { useForm } from "react-hook-form";
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
 
 const PAGE_COPY = {
   EditTitle: "Tiers",
@@ -49,6 +51,7 @@ const EditSubscription = () => {
   );
   const dispatch = useDispatch<ThunkDispatch<{}, undefined, Action>>();
   const isMobile = useMediaQuery({ query: "(max-width: 600px)" });
+
   const {
     register,
     handleSubmit,
@@ -88,59 +91,61 @@ const EditSubscription = () => {
 
   return (
     <SubscriptionsLayout>
-      <div className="flex flex-col items-center justify-center">
-        <div className="flex flex-col items-center w-full mb-8">
-          <p className="text-lg font-bold text-repod-text-primary">
-            {PAGE_COPY.EditTitle}
-          </p>
-          <p className="text-md font-semibold text-repod-text-secondary">
-            {PAGE_COPY.EditSubTitle}
-          </p>
+      <DndProvider backend={HTML5Backend}>
+        <div className="flex flex-col items-center justify-center">
+          <div className="flex flex-col items-center w-full mb-8">
+            <p className="text-lg font-bold text-repod-text-primary">
+              {PAGE_COPY.EditTitle}
+            </p>
+            <p className="text-md font-semibold text-repod-text-secondary">
+              {PAGE_COPY.EditSubTitle}
+            </p>
+          </div>
+          <div
+            style={{ maxWidth: 800 }}
+            className="flex flex-col items-center w-full rounded border border-solid border-repod-border-light pt-8 pb-12 px-4"
+          >
+            <ListItem.Input
+              label={PAGE_COPY.TitleLabel}
+              subLabel={PAGE_COPY.RequiredSubLabel}
+              value={subscriptionTier.title}
+              placeholder={PAGE_COPY.TitlePlaceholder}
+              name="title"
+              inputType="text"
+              registerInput={register("title", { required: true })}
+              error={false}
+            />
+            <ListItem.Currency
+              label={PAGE_COPY.PriceLabel}
+              subLabel={PAGE_COPY.RequiredSubLabel}
+              value={subscriptionTier.monthlyPrice}
+              placeholder={PAGE_COPY.PricePlaceholder}
+              name="price"
+              inputType="text"
+              control={control}
+              registerInput={register("price", { required: true })}
+              error={false}
+            />
+            <ListItem.TextArea
+              label={PAGE_COPY.DescriptionLabel}
+              subLabel=""
+              value={subscriptionTier.description}
+              placeholder={PAGE_COPY.DescriptionPlaceholder}
+              name="description"
+              inputType="text"
+              registerInput={register("description", { required: true })}
+              error={false}
+            />
+            <ListItem.Benefits
+              label={PAGE_COPY.BenefitsLabel}
+              subLabel={PAGE_COPY.BenefitsSubLabel}
+              benefits={subscriptionTier.benefits}
+              error={false}
+              handleAddBenefit={openAddBenefitModal}
+            />
+          </div>
         </div>
-        <div
-          style={{ maxWidth: 800 }}
-          className="flex flex-col items-center w-full rounded border border-solid border-repod-border-light pt-8 pb-12 px-4"
-        >
-          <ListItem.Input
-            label={PAGE_COPY.TitleLabel}
-            subLabel={PAGE_COPY.RequiredSubLabel}
-            value={subscriptionTier.title}
-            placeholder={PAGE_COPY.TitlePlaceholder}
-            name="title"
-            inputType="text"
-            registerInput={register("title", { required: true })}
-            error={false}
-          />
-          <ListItem.Currency
-            label={PAGE_COPY.PriceLabel}
-            subLabel={PAGE_COPY.RequiredSubLabel}
-            value={subscriptionTier.monthlyPrice}
-            placeholder={PAGE_COPY.PricePlaceholder}
-            name="price"
-            inputType="text"
-            control={control}
-            registerInput={register("price", { required: true })}
-            error={false}
-          />
-          <ListItem.TextArea
-            label={PAGE_COPY.DescriptionLabel}
-            subLabel=""
-            value={subscriptionTier.description}
-            placeholder={PAGE_COPY.DescriptionPlaceholder}
-            name="description"
-            inputType="text"
-            registerInput={register("description", { required: true })}
-            error={false}
-          />
-          <ListItem.Benefits
-            label={PAGE_COPY.BenefitsLabel}
-            subLabel={PAGE_COPY.BenefitsSubLabel}
-            benefits={subscriptionTier.benefits}
-            error={false}
-            handleAddBenefit={openAddBenefitModal}
-          />
-        </div>
-      </div>
+      </DndProvider>
     </SubscriptionsLayout>
   );
 };

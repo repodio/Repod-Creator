@@ -1,10 +1,8 @@
 import React from "react";
-import { formatCurrency } from "utils/formats";
 import { Controller } from "react-hook-form";
 import NumberFormat from "react-number-format";
 import { Button } from "components/Buttons";
-import { map } from "lodash/fp";
-import { Menu, X } from "react-feather";
+import BenefitsList from "components/BenefitLists";
 
 const ListItemTypes = {
   input: "input",
@@ -125,36 +123,42 @@ const ListItem = ({
             >
               + Add Benefit
             </Button.Small>
-            {map((benefit: SubscriptionBenefitItem) => (
-              <div className="flex flex-row items-center justify-center w-full py-4 px-4 rounded bg-repod-canvas-secondary">
-                <div className="ml-4">
-                  <Menu
-                    className="stroke-current text-repod-text-primary"
-                    size={24}
-                  />
+            <BenefitsList benefits={benefits} />
+            {/* <div ref={dragPreview} style={{ opacity: isDragging ? 0.5 : 1 }}>
+              {map((benefit: SubscriptionBenefitItem) => (
+                <div
+                  ref={drag}
+                  className="flex flex-row items-center justify-center w-full py-4 px-4 rounded bg-repod-canvas-secondary"
+                >
+                  <div className="ml-4">
+                    <Menu
+                      className="stroke-current text-repod-text-primary"
+                      size={24}
+                    />
+                  </div>
+                  <div className="flex flex-col items-start justify-start px-4">
+                    <p className="text-md font-semibold text-repod-text-primary">
+                      {benefit.title}
+                    </p>
+                    <p className="text-sm font-book text-repod-text-secondary">
+                      {benefit.rssFeed}
+                    </p>
+                  </div>
+                  <div onClick={handleEditBenefit}>
+                    <a className="cursor-pointer flex text-center no-underline text-xs font-bold text-info hover:opacity-50 transition px-2">
+                      EDIT
+                    </a>
+                  </div>
+                  <div className="mr-4">
+                    <X
+                      onClick={handleRemoveBenefit}
+                      className="stroke-current text-repod-text-secondary"
+                      size={24}
+                    />
+                  </div>
                 </div>
-                <div className="flex flex-col items-start justify-start px-4">
-                  <p className="text-md font-semibold text-repod-text-primary">
-                    {benefit.title}
-                  </p>
-                  <p className="text-sm font-book text-repod-text-secondary">
-                    {benefit.rssFeed}
-                  </p>
-                </div>
-                <div onClick={handleEditBenefit}>
-                  <a className="cursor-pointer flex text-center no-underline text-xs font-bold text-info hover:opacity-50 transition px-2">
-                    EDIT
-                  </a>
-                </div>
-                <div className="mr-4">
-                  <X
-                    onClick={handleRemoveBenefit}
-                    className="stroke-current text-repod-text-secondary"
-                    size={24}
-                  />
-                </div>
-              </div>
-            ))(benefits)}
+              ))(benefits)}
+            </div> */}
           </div>
         ) : null}
         {/* {isCurrencyInput ? (
