@@ -102,10 +102,11 @@ const TierBenefitsModal = ({
         label: SubscriptionBenefitCopy[key].title,
         key,
       }))(Object.keys(SubscriptionBenefitCopy)),
-    [addedBenefits]
+    [SubscriptionBenefitCopy]
   );
 
   console.log("addedBenefitIds", addedBenefitIds);
+  console.log("selectOptions", selectOptions);
 
   const modalTitle = ModalTitleCopy[screenMode];
 

@@ -49,6 +49,7 @@ const ListItem = ({
   inputType,
   registerInput,
   onChange,
+  options,
   benefits,
   handleRemoveBenefit,
   handleEditBenefit,
@@ -197,11 +198,11 @@ const ListItem = ({
             className={`w-full text-md px-6 h-12 border-2 font-medium rounded-lg text-repod-text-primary bg-repod-canvas-secondary focus:outline-none 
           ${borderColor}`}
           >
-            {map((benefit: SubscriptionBenefitItem) => (
-              <option key={benefit.type} value={benefit.type}>
-                {benefit.title}
+            {map((option: { key: string; label: string }) => (
+              <option key={option.key} value={option.key}>
+                {option.label}
               </option>
-            ))(benefits)}
+            ))(options)}
           </select>
         ) : null}
       </div>
