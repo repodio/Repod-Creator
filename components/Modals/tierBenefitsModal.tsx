@@ -10,32 +10,49 @@ import SubscriptionBenefits from "constants/subscriptionBenefitTypes";
 import { Button } from "components/Buttons";
 
 const SubscriptionBenefitCopy = {
-  [SubscriptionBenefits.earlyAccessEpisodes]: {
-    title: "Early Access Episodes",
-    description: "Give your members early episodes of your content",
+  [SubscriptionBenefits.custom]: {
+    type: SubscriptionBenefits.custom,
+    title: "Custom Benefit",
+    description:
+      "You can edit everything about this benefit to provice a unique reward for your members",
   },
   [SubscriptionBenefits.adFreeEpisodes]: {
+    type: SubscriptionBenefits.adFreeEpisodes,
     title: "Ad-free Episodes",
     description: "Provide ad-free versions of your work",
   },
   [SubscriptionBenefits.bonusEpisodes]: {
+    type: SubscriptionBenefits.bonusEpisodes,
     title: "Bonus Episodes",
     description:
       "Provide any extra episodes whether it’s behind the scenes, bloopers, or bonus content",
   },
   [SubscriptionBenefits.digitalDownloads]: {
+    type: SubscriptionBenefits.digitalDownloads,
     title: "Digital Downloads",
     description: "Send your members something special",
   },
-  [SubscriptionBenefits.custom]: {
-    title: "Custom Benefit",
-    description:
-      "You can edit everything about this benefit to provice a unique reward for your members",
+  [SubscriptionBenefits.earlyAccessEpisodes]: {
+    type: SubscriptionBenefits.earlyAccessEpisodes,
+    title: "Early Access Episodes",
+    description: "Give your members early episodes of your content",
   },
   [SubscriptionBenefits.privateDiscussions]: {
+    type: SubscriptionBenefits.privateDiscussions,
     title: "Private Discussion Room",
     description: "Enable a special feed on your show that is members only",
   },
+};
+
+const MODAL_COPY = {
+  EditLabel: "Title",
+  RequiredSubLabel: "Required",
+  EditTitlePlaceholder: "Early Access to Episodes",
+  CategoryLabel: "Category",
+  RSSLabel: "RSS Feed",
+  RSSPlaceholder: "https://feeds.com/myfeed",
+  CreateDescription:
+    "Choose from our list of top benefits for your tier. If you can’t find exactly what you’re looking for then you can make a custom one",
 };
 
 type TierBenefitsModalProps = {
@@ -79,13 +96,16 @@ const TierBenefitsModal = ({
     setScreenMode(TierBenefitsModal.Types.editBenefit);
   };
 
-  console.log("addedBenefitIds", addedBenefitIds);
-  console.log(
-    "Object.keys(SubscriptionBenefitCopy)",
-    Object.keys(SubscriptionBenefitCopy),
-    SubscriptionBenefitCopy,
-    SubscriptionBenefits
+  const selectOptions = useMemo(
+    () =>
+      map((key: string) => ({
+        label: SubscriptionBenefitCopy[key].title,
+        key,
+      }))(Object.keys(SubscriptionBenefitCopy)),
+    [addedBenefits]
   );
+
+  console.log("addedBenefitIds", addedBenefitIds);
 
   const modalTitle = ModalTitleCopy[screenMode];
 
@@ -119,12 +139,29 @@ const TierBenefitsModal = ({
           </button>
         </>
       ) : screenMode === TierBenefitsModal.Types.editBenefit ? (
-        <>sup</>
+        <>
+          <ListItem.Input
+            label={MODAL_COPY.EditLabel}
+            subLabel={MODAL_COPY.RequiredSubLabel}
+            value={""}
+            placeholder={MODAL_COPY.EditTitlePlaceholder}
+          />
+          <ListItem.Select
+            label={MODAL_COPY.CategoryLabel}
+            subLabel={MODAL_COPY.RequiredSubLabel}
+            options={selectOptions}
+          />
+          <ListItem.Input
+            label={MODAL_COPY.RSSLabel}
+            subLabel={MODAL_COPY.RequiredSubLabel}
+            value={""}
+            placeholder={MODAL_COPY.RSSPlaceholder}
+          />
+        </>
       ) : screenMode === TierBenefitsModal.Types.createBenefit ? (
         <>
           <p className="text-sm font-book text-repod-text-primary mb-4">
-            Choose from our list of top benefits for your tier. If you can’t
-            find exactly what you’re looking for then you can make a custom one
+            {MODAL_COPY.CreateDescription}
           </p>
           {map((type: string) => [
             <div className="h-0 border border-solid border-t-0 border-repod-border-light my-2" />,
@@ -140,7 +177,7 @@ const TierBenefitsModal = ({
               <div className="flex-0 flex-col items-center justify-center relative">
                 <Button.Tiny
                   style={{ width: 90 }}
-                  onClick={() => {}}
+                  onClick={navigateToEditBenefit}
                   className={`py-1  bg-badge-info rounded border-1 border-info uppercase`}
                 >
                   <p className="text-xs font-semibold text-info">Add</p>

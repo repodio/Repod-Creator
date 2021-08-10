@@ -156,7 +156,7 @@ const EditSubscription = () => {
             <div className="w-full h-0 my-2 border border-solid border-t-0 border-repod-border-light" />
             <Collapsible label="Advanced">
               <div className="w-full my-6">
-                <ListItem.Select
+                <ListItem.Toggle
                   label={PAGE_COPY.ShippingLabel}
                   subLabel={PAGE_COPY.ShippingSubLabel}
                   value={shippingAddressEnabled}

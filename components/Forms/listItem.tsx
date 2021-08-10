@@ -5,14 +5,16 @@ import { Button } from "components/Buttons";
 import BenefitsListComponent from "components/BenefitLists";
 import { Switch } from "@headlessui/react";
 import { TierBenefitsModal } from "components/Modals";
+import { map } from "lodash/fp";
 
 const ListItemTypes = {
   input: "input",
   currency: "currency",
   textarea: "textarea",
   benefitsList: "benefitsList",
-  select: "select",
+  toggle: "toggle",
   addBenefit: "addBenefit",
+  select: "select",
 };
 
 const CurrencyFormat = ({ onChange, value, borderColor, ...rest }) => {
@@ -55,18 +57,19 @@ const ListItem = ({
   label: string;
   subLabel: string;
   type: string;
-  value: string | boolean;
-  placeholder: string;
-  error: boolean;
-  name: string;
-  control: any;
-  inputType: string;
-  registerInput: {};
-  onChange: () => void;
-  benefits: SubscriptionBenefitItem[];
-  handleAddBenefit: () => void;
-  handleRemoveBenefit: () => void;
-  handleEditBenefit: () => void;
+  value?: string | boolean;
+  placeholder?: string;
+  error?: boolean;
+  name?: string;
+  control?: any;
+  inputType?: string;
+  registerInput?: {};
+  onChange?: () => void;
+  options?: { label: string; key: string }[];
+  benefits?: SubscriptionBenefitItem[];
+  handleAddBenefit?: () => void;
+  handleRemoveBenefit?: () => void;
+  handleEditBenefit?: () => void;
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -81,7 +84,7 @@ const ListItem = ({
         className="flex flex-col items-start justify-start pr-4"
       >
         <p className="text-md font-book text-repod-text-primary">{label}</p>
-        {type !== ListItemTypes.select ? (
+        {type !== ListItemTypes.toggle ? (
           <p className="text-xs font-book text-repod-text-secondary">
             {subLabel}
           </p>
@@ -142,7 +145,7 @@ const ListItem = ({
             />
             <BenefitsListComponent benefits={benefits} />
           </div>
-        ) : type === ListItemTypes.select ? (
+        ) : type === ListItemTypes.toggle ? (
           <div className="w-full flex flex-row justify-end items-center">
             <p className="text-sm font-book text-repod-text-primary mr-4">
               {subLabel}
@@ -189,6 +192,17 @@ const ListItem = ({
               </Button.Tiny>
             )}
           </div>
+        ) : type === ListItemTypes.select ? (
+          <select
+            className={`w-full text-md px-6 h-12 border-2 font-medium rounded-lg text-repod-text-primary bg-repod-canvas-secondary focus:outline-none 
+          ${borderColor}`}
+          >
+            {map((benefit: SubscriptionBenefitItem) => (
+              <option key={benefit.type} value={benefit.type}>
+                {benefit.title}
+              </option>
+            ))(benefits)}
+          </select>
         ) : null}
       </div>
     </div>
@@ -211,10 +225,14 @@ export const BenefitsList = (props) => (
   <ListItem {...props} type={ListItemTypes.benefitsList} />
 );
 
-export const Select = (props) => (
-  <ListItem {...props} type={ListItemTypes.select} />
+export const Toggle = (props) => (
+  <ListItem {...props} type={ListItemTypes.toggle} />
 );
 
 export const AddBenefit = (props) => (
   <ListItem {...props} type={ListItemTypes.addBenefit} />
+);
+
+export const Select = (props) => (
+  <ListItem {...props} type={ListItemTypes.select} />
 );
