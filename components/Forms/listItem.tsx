@@ -17,10 +17,17 @@ const ListItemTypes = {
   select: "select",
 };
 
-const CurrencyFormat = ({ onChange, value, borderColor, ...rest }) => {
+const CurrencyFormat = ({
+  onChange,
+  value,
+  borderColor,
+  registerInput,
+  ...rest
+}) => {
   const [currency, setCurrency] = React.useState(value / 100);
   return (
     <NumberFormat
+      {...registerInput}
       {...rest}
       className={`w-full text-lg px-6 h-12 border-2 font-medium rounded-lg text-repod-text-primary bg-repod-canvas-secondary focus:outline-none
       ${borderColor}`}
@@ -31,8 +38,7 @@ const CurrencyFormat = ({ onChange, value, borderColor, ...rest }) => {
         setCurrency(target.floatValue);
         onChange(target.floatValue * 100);
       }}
-      isNumericString
-      prefix="$ "
+      prefix="$"
     />
   );
 };
@@ -86,7 +92,11 @@ const ListItem = ({
       >
         <p className="text-md font-book text-repod-text-primary">{label}</p>
         {type !== ListItemTypes.toggle ? (
-          <p className="text-xs font-book text-repod-text-secondary">
+          <p
+            className={`text-xs font-book ${
+              error ? "text-danger" : "text-repod-text-secondary"
+            }`}
+          >
             {subLabel}
           </p>
         ) : null}
@@ -112,6 +122,7 @@ const ListItem = ({
               <CurrencyFormat
                 borderColor={borderColor}
                 placeholder={placeholder}
+                registerInput={registerInput}
                 {...field}
               />
             )}

@@ -11,7 +11,7 @@ const SubscriptionTierSnippit = ({
 }) => (
   <div
     className="flex flex-col justify-start items-start rounded border border-solid border-repod-border-light p-4 pb-8 mx-4 mb-8"
-    style={{ minWidth: 260, minHeight: 230 }}
+    style={{ minWidth: 260, maxWidth: 260, minHeight: 230 }}
   >
     <div className="flex flex-row justify-between items-center w-full mb-4">
       {subscriptionTier.published ? (
@@ -34,7 +34,10 @@ const SubscriptionTierSnippit = ({
       {`${formatCurrency(subscriptionTier.monthlyPrice)} PER MONTH`}
     </p>
     {map((benefit: { title: string }) => (
-      <div className="py-1 px-2 rounded bg-repod-border-light w-full">
+      <div
+        key={benefit.title}
+        className="py-1 px-2 rounded bg-repod-border-light w-full mb-1"
+      >
         <p className="text-sm font-semibold text-repod-text-primary">
           {benefit.title}
         </p>

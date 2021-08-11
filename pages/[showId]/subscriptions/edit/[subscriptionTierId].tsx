@@ -5,6 +5,7 @@ import { selectors as showsSelectors } from "modules/Shows";
 import {
   selectors as subscriptionsSelectors,
   fetchShowSubscriptionTiers,
+  saveSubscriptionTier,
 } from "modules/Subscriptions";
 import { useRouter } from "next/router";
 import { LoadingScreen } from "components/Loading";
@@ -19,6 +20,7 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 import Collapsible from "components/Collapsible";
 import { Button } from "components/Buttons";
 import { Trash } from "react-feather";
+import toast from "react-hot-toast";
 
 const PAGE_COPY = {
   EditTitle: "Tiers",
@@ -39,7 +41,7 @@ const PAGE_COPY = {
 
 type FormInputs = {
   title: string;
-  price: number;
+  monthlyPrice: number;
   description: string;
 };
 
@@ -58,6 +60,10 @@ const EditSubscription = () => {
   const dispatch = useDispatch<ThunkDispatch<{}, undefined, Action>>();
   const isMobile = useMediaQuery({ query: "(max-width: 600px)" });
 
+  const [enableShippingAddress, setShippingAddressEnabled] = useState(
+    subscriptionTier.enableShippingAddress
+  );
+
   const {
     register,
     handleSubmit,
@@ -66,7 +72,7 @@ const EditSubscription = () => {
   } = useForm<FormInputs>({
     defaultValues: {
       title: subscriptionTier.title,
-      price: subscriptionTier.monthlyPrice,
+      monthlyPrice: subscriptionTier.monthlyPrice,
       description: subscriptionTier.description,
     },
   });
@@ -83,7 +89,42 @@ const EditSubscription = () => {
     })();
   }, []);
 
-  const updateTier = useCallback(async () => {}, []);
+  useEffect(() => {
+    if (errors && Object.keys(errors).length > 0) {
+      if (errors.title) {
+        toast.error("Valid title required");
+      }
+      if (errors.monthlyPrice) {
+        toast.error("Valid price required");
+      }
+      return;
+    }
+  }, [Object.keys(errors)]);
+
+  const onSave = useCallback(
+    async ({ title, monthlyPrice, description }) => {
+      try {
+        await dispatch(
+          saveSubscriptionTier({
+            showId: showIdString,
+            subscriptionTierId: subscriptionTierIdString,
+            title,
+            monthlyPrice,
+            description,
+            enableShippingAddress,
+          })
+        );
+        toast.success("Subscription Tier Saved!");
+      } catch (error) {
+        console.log("saveSubscriptionTier with error", error);
+      }
+    },
+    [errors]
+  );
+
+  const handleCancel = useCallback(() => {
+    router.back();
+  }, [errors]);
 
   const openAddBenefitModal = () => {};
 
@@ -91,13 +132,11 @@ const EditSubscription = () => {
     router.replace(`/${showIdString}/subscriptions`);
   }
 
-  const [shippingAddressEnabled, setShippingAddressEnabled] = useState(
-    subscriptionTier.enableShippingAddress
-  );
-
   if (!show || pageLoading) {
     return <LoadingScreen />;
   }
+
+  console.log("errors", errors);
 
   return (
     <SubscriptionsLayout>
@@ -123,18 +162,22 @@ const EditSubscription = () => {
               name="title"
               inputType="text"
               registerInput={register("title", { required: true })}
-              error={false}
+              error={errors.title}
             />
             <ListItem.Currency
               label={PAGE_COPY.PriceLabel}
               subLabel={PAGE_COPY.RequiredSubLabel}
               value={subscriptionTier.monthlyPrice}
               placeholder={PAGE_COPY.PricePlaceholder}
-              name="price"
-              inputType="text"
+              name="monthlyPrice"
+              inputType="number"
               control={control}
-              registerInput={register("price", { required: true })}
-              error={false}
+              registerInput={register("monthlyPrice", {
+                required: true,
+                valueAsNumber: true,
+                validate: (value) => typeof value === "number" && !isNaN(value),
+              })}
+              error={errors.monthlyPrice}
             />
             <ListItem.TextArea
               label={PAGE_COPY.DescriptionLabel}
@@ -143,7 +186,7 @@ const EditSubscription = () => {
               placeholder={PAGE_COPY.DescriptionPlaceholder}
               name="description"
               inputType="text"
-              registerInput={register("description", { required: true })}
+              registerInput={register("description", { required: false })}
               error={false}
             />
             <ListItem.BenefitsList
@@ -159,7 +202,7 @@ const EditSubscription = () => {
                 <ListItem.Toggle
                   label={PAGE_COPY.ShippingLabel}
                   subLabel={PAGE_COPY.ShippingSubLabel}
-                  value={shippingAddressEnabled}
+                  value={enableShippingAddress}
                   onChange={setShippingAddressEnabled}
                 />
               </div>
@@ -170,7 +213,7 @@ const EditSubscription = () => {
                 <Button.Small
                   className="bg-info text-repod-text-alternative mb-6"
                   style={{ minWidth: 130, maxWidth: 130, width: 130 }}
-                  // onClick={handleAddBenefit}
+                  onClick={handleSubmit(onSave)}
                 >
                   Save Tier
                 </Button.Small>
@@ -178,7 +221,7 @@ const EditSubscription = () => {
                 <Button.Small
                   className="bg-repod-canvas text-repod-text-secondary mb-6"
                   style={{ minWidth: 100, maxWidth: 100, width: 100 }}
-                  // onClick={handleAddBenefit}
+                  onClick={handleCancel}
                 >
                   Cancel
                 </Button.Small>
@@ -186,7 +229,7 @@ const EditSubscription = () => {
 
               <div className="flex flex-row items-center justify-end">
                 <Button.Small
-                  className="bg-repod-canvas text-repod-text-secondary mb-6"
+                  className="bg-info text-repod-text-alternative mb-6"
                   style={{ minWidth: 100, maxWidth: 100, width: 100 }}
                   // onClick={handleAddBenefit}
                 >

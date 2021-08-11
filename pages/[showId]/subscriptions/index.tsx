@@ -5,6 +5,7 @@ import { selectors as showsSelectors } from "modules/Shows";
 import {
   selectors as subscriptionsSelectors,
   fetchShowSubscriptionTiers,
+  createNewSubscriptionTier,
 } from "modules/Subscriptions";
 import { useRouter } from "next/router";
 import { LoadingScreen } from "components/Loading";
@@ -76,8 +77,10 @@ const TiersPlaceholder = ({ onPress }) => (
 
 const SubscriptionTiers = ({
   subscriptionTiers = [],
+  createNewTier,
 }: {
   subscriptionTiers: SubscriptionTierItem[];
+  createNewTier: () => void;
 }) => (
   <div className="flex flex-col">
     <div className="flex flex-col items-center w-full mb-8">
@@ -89,21 +92,23 @@ const SubscriptionTiers = ({
       </p>
     </div>
     <div className="flex flex-col items-center w-full rounded border border-solid border-repod-border-light pt-8 pb-12">
-      {subscriptionTiers.map((tier) => (
-        <SubscriptionTierSnippit
-          key={tier.subscriptionTierId}
-          subscriptionTier={tier}
-        />
-      ))}
-
-      <div
-        className="flex flex-col items-center justify-center w-full rounded bg-badge-info cursor-pointer hover:opacity-50 transition py-4"
-        style={{ maxWidth: 260 }}
-      >
-        <Link href={`/subscriptions/new/edit`}>
-          <a className="text-md font-semibold text-info">+ Add Tier</a>
-        </Link>
+      <div className="flex flex-wrap items-start justify-center w-full ">
+        {subscriptionTiers.map((tier) => (
+          <SubscriptionTierSnippit
+            key={tier.subscriptionTierId}
+            subscriptionTier={tier}
+          />
+        ))}
       </div>
+
+      <button onClick={createNewTier}>
+        <div
+          className="flex flex-col items-center justify-center w-full rounded bg-badge-info cursor-pointer hover:opacity-50 transition py-4"
+          style={{ maxWidth: 260, minWidth: 260 }}
+        >
+          <p className="text-md font-semibold text-info">+ Add Tier</p>
+        </div>
+      </button>
     </div>
   </div>
 );
@@ -139,6 +144,15 @@ const Subscriptions = () => {
     setConfiguringTiers(true);
   }, []);
 
+  const createNewTier = useCallback(async () => {
+    setPageLoading(true);
+    const subscriptionTierId = await dispatch(
+      createNewSubscriptionTier({ showId: showIdString })
+    );
+
+    router.replace(`/${showId}/subscriptions/edit/${subscriptionTierId}`);
+  }, []);
+
   if (!show || pageLoading) {
     return <LoadingScreen />;
   }
@@ -152,7 +166,10 @@ const Subscriptions = () => {
       {stripeAccountId ? (
         isConfiguringTiers ||
         (subscriptionTiers && subscriptionTiers.length) ? (
-          <SubscriptionTiers subscriptionTiers={subscriptionTiers} />
+          <SubscriptionTiers
+            subscriptionTiers={subscriptionTiers}
+            createNewTier={createNewTier}
+          />
         ) : (
           <TiersPlaceholder onPress={configureTiers} />
         )

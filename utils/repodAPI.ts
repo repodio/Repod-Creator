@@ -201,6 +201,42 @@ const createSubscriptionTier = async ({
   return json.data;
 };
 
+const updateSubscriptionTier = async ({
+  showId,
+  subscriptionTierId,
+  title,
+  monthlyPrice,
+  description,
+  enableShippingAddress,
+  benefitIds,
+}: {
+  showId: string;
+  subscriptionTierId: string;
+  title?: string;
+  monthlyPrice: number;
+  description?: string;
+  enableShippingAddress?: boolean;
+  benefitIds?: string[];
+}): Promise<string> => {
+  const response = await fetch(
+    `${API_DOMAIN}/v1/${ROUTES.subscriptions}/${showId}/${subscriptionTierId}`,
+    {
+      method: "PUT",
+      headers: await getHeaders(),
+      body: JSON.stringify({
+        title,
+        monthlyPrice,
+        description,
+        enableShippingAddress,
+        benefitIds,
+      }),
+    }
+  );
+  const json = await response.json();
+
+  return json.data;
+};
+
 const createSubscriptionBenefit = async ({
   showId,
   title,
@@ -442,4 +478,5 @@ export {
   createSubscriptionTier,
   createSubscriptionBenefit,
   getShowSubscriptionTiers,
+  updateSubscriptionTier,
 };

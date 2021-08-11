@@ -9,6 +9,7 @@ import {
   createSubscriptionTier,
   getShowSubscriptionTiers,
   getTeamMembers,
+  updateSubscriptionTier,
 } from "utils/repodAPI";
 import { convertArrayToObject } from "utils/normalizing";
 import { selectors as authSelectors } from "modules/Auth";
@@ -16,6 +17,7 @@ import {
   selectors as showSelectors,
   updateClaimedShowOnShow,
 } from "modules/Shows";
+import generateUniqTitle from "utils/generateUniqTitle";
 
 const DEFAULT_SUBSCRIPTION_BENEFIT = {
   title: "Ad Free Episodes",
@@ -23,7 +25,7 @@ const DEFAULT_SUBSCRIPTION_BENEFIT = {
 };
 
 const DEFAULT_SUBSCRIPTION_TIERS = {
-  title: "Awesome Member",
+  title: "Custom Subscription Tier",
   monthlyPrice: 500,
   published: false,
 };
@@ -96,6 +98,15 @@ const getAllShowBenefits = (showId) =>
     )(benefitsById)
   );
 
+const getAllSubscriptionTierTitles = (showId) =>
+  createSelector(getSubscriptionTiersById, (subscriptionTiersById): string[] =>
+    flow(
+      values,
+      filter((tier) => tier.showId === showId),
+      map((tier) => tier.title)
+    )(subscriptionTiersById)
+  );
+
 export const selectors = {
   getSubscriptionTiers,
   getSubscriptionTier,
@@ -131,53 +142,124 @@ export const upsertSubscriptionBenefit: ActionCreator<Action> = ({
 
 // Thunk
 export const createNewSubscriptionTier =
-  ({
-    showId,
-    title,
-    monthlyPrice,
-    description,
-    enableShippingAddress,
-    published,
-    benefitIds,
-  }: {
-    showId?: string;
-    title: string;
-    monthlyPrice: number;
-    description?: string;
-    enableShippingAddress?: boolean;
-    published: boolean;
-    benefitIds?: string[];
-  }): ThunkResult<Promise<void>> =>
-  async (dispatch: AsyncDispatch) => {
+  ({ showId }: { showId?: string }): ThunkResult<Promise<string>> =>
+  async (dispatch: AsyncDispatch, getState: () => RootState) => {
     try {
+      const state = getState();
+      const existingSubscriptionTierTitles =
+        getAllSubscriptionTierTitles(showId)(state);
+
+      console.log(
+        "existingSubscriptionTierTitles",
+        existingSubscriptionTierTitles
+      );
+      const uniqTitle = generateUniqTitle(
+        DEFAULT_SUBSCRIPTION_TIERS.title,
+        existingSubscriptionTierTitles
+      );
+
+      console.log("uniqTitle", uniqTitle);
+      // return;
       const subscriptionTierId = await createSubscriptionTier({
         showId,
-        title,
-        monthlyPrice,
-        description,
-        enableShippingAddress,
-        published,
-        benefitIds,
+        title: uniqTitle,
+        monthlyPrice: DEFAULT_SUBSCRIPTION_TIERS.monthlyPrice,
+        published: DEFAULT_SUBSCRIPTION_TIERS.published,
+        benefitIds: [],
       });
 
+      if (!subscriptionTierId) {
+        return;
+      }
+
+      console.log("subscriptionTierId", subscriptionTierId);
       dispatch(
         upsertSubscriptionTier({
           subscriptionTiersById: {
             [subscriptionTierId]: {
-              title,
-              monthlyPrice,
-              description,
-              enableShippingAddress,
-              published,
-              benefitIds,
               showId,
-              subscriptionTierId,
+              title: uniqTitle,
+              monthlyPrice: DEFAULT_SUBSCRIPTION_TIERS.monthlyPrice,
+              published: DEFAULT_SUBSCRIPTION_TIERS.published,
+              benefitIds: [],
+              createdOn: new Date(),
             },
           },
         })
       );
 
-      return;
+      return subscriptionTierId;
+    } catch (error) {
+      console.warn("[THUNK ERROR]: createDefaultSubscriptionTiers", error);
+    }
+  };
+
+export const saveSubscriptionTier =
+  ({
+    showId,
+    subscriptionTierId,
+    title,
+    description,
+    monthlyPrice,
+    benefitIds,
+    enableShippingAddress,
+  }: {
+    showId: string;
+    subscriptionTierId: string;
+    title?: string;
+    description?: string;
+    monthlyPrice?: number;
+    benefitIds?: string[];
+    enableShippingAddress?: boolean;
+  }): ThunkResult<Promise<void>> =>
+  async (dispatch: AsyncDispatch, getState: () => RootState) => {
+    try {
+      // const state = getState();
+      // const existingSubscriptionTierTitles =
+      //   getAllSubscriptionTierTitles(showId)(state);
+
+      // console.log(
+      //   "existingSubscriptionTierTitles",
+      //   existingSubscriptionTierTitles
+      // );
+      // const uniqTitle = generateUniqTitle(
+      //   DEFAULT_SUBSCRIPTION_TIERS.title,
+      //   existingSubscriptionTierTitles
+      // );
+
+      // console.log("uniqTitle", uniqTitle);
+      // return;
+      await updateSubscriptionTier({
+        showId,
+        subscriptionTierId,
+        title,
+        description,
+        monthlyPrice,
+        benefitIds,
+        enableShippingAddress,
+      });
+
+      // if (!subscriptionTierId) {
+      //   return;
+      // }
+
+      // console.log("subscriptionTierId", subscriptionTierId);
+      // dispatch(
+      //   upsertSubscriptionTier({
+      //     subscriptionTiersById: {
+      //       [subscriptionTierId]: {
+      //         showId,
+      //         title: uniqTitle,
+      //         monthlyPrice: DEFAULT_SUBSCRIPTION_TIERS.monthlyPrice,
+      //         published: DEFAULT_SUBSCRIPTION_TIERS.published,
+      //         benefitIds: [],
+      //         createdOn: new Date(),
+      //       },
+      //     },
+      //   })
+      // );
+
+      // return subscriptionTierId;
     } catch (error) {
       console.warn("[THUNK ERROR]: createDefaultSubscriptionTiers", error);
     }

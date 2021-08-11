@@ -5,6 +5,7 @@ import { PersistGate } from "redux-persist/integration/react";
 import { wrapper } from "reduxConfig/store";
 import { ConsoleLayout } from "components/Layouts";
 import { useRouter } from "next/router";
+import { Toaster } from "react-hot-toast";
 
 initAuth();
 
@@ -31,6 +32,16 @@ function MyApp({ Component, pageProps }) {
         ) : (
           <Component {...pageProps} />
         )}
+
+        <Toaster
+          position="top-center"
+          toastOptions={{
+            style: {
+              background: "#111827",
+              color: "#fff",
+            },
+          }}
+        />
       </PersistGate>
     </Provider>
   );
