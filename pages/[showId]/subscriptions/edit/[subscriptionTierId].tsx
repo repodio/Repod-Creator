@@ -136,8 +136,6 @@ const EditSubscription = () => {
     return <LoadingScreen />;
   }
 
-  console.log("errors", errors);
-
   return (
     <SubscriptionsLayout>
       <DndProvider backend={HTML5Backend}>

@@ -142,7 +142,7 @@ const ListItem = ({
         ) : type === ListItemTypes.benefitsList ? (
           <div className="flex flex-col items-start justify-start">
             <Button.Small
-              className="bg-badge-info text-info mb-6"
+              className="bg-bg-info text-info mb-6"
               style={{ minWidth: 130, maxWidth: 130, width: 130 }}
               // onClick={handleAddBenefit}
               onClick={() => setIsModalOpen(true)}
@@ -198,7 +198,7 @@ const ListItem = ({
               <Button.Tiny
                 style={{ width: 90 }}
                 onClick={() => {}}
-                className={`py-1  bg-badge-info rounded border-1 border-info uppercase`}
+                className={`py-1  bg-bg-info rounded border-1 border-info uppercase`}
               >
                 <p className="text-xs font-semibold text-info">+ Add</p>
               </Button.Tiny>

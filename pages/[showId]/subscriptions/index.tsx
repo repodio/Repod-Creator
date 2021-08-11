@@ -103,7 +103,7 @@ const SubscriptionTiers = ({
 
       <button onClick={createNewTier}>
         <div
-          className="flex flex-col items-center justify-center w-full rounded bg-badge-info cursor-pointer hover:opacity-50 transition py-4"
+          className="flex flex-col items-center justify-center w-full rounded bg-bg-info cursor-pointer hover:opacity-50 transition py-4"
           style={{ maxWidth: 260, minWidth: 260 }}
         >
           <p className="text-md font-semibold text-info">+ Add Tier</p>

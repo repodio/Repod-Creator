@@ -198,7 +198,7 @@ const TierBenefitsModal = ({
                 <Button.Tiny
                   style={{ width: 90 }}
                   onClick={navigateToEditBenefit}
-                  className={`py-1  bg-badge-info rounded border-1 border-info uppercase`}
+                  className={`py-1  bg-bg-info rounded border-1 border-info uppercase`}
                 >
                   <p className="text-xs font-semibold text-info">Add</p>
                 </Button.Tiny>
