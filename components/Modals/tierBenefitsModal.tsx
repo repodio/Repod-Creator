@@ -122,7 +122,7 @@ const TierBenefitsModal = ({
           {map((benefit: SubscriptionBenefitItem) => (
             <ListItem.AddBenefit
               label={benefit.title}
-              subLabel={`Included in N?A other tiers`}
+              subLabel={`Included in ${benefit.tiersCount || 0} other tiers`}
               value={addedBenefitIds.includes(benefit.benefitId)}
             />
           ))(allBenefits)}
@@ -163,10 +163,10 @@ const TierBenefitsModal = ({
           <div className="w-full flex flex-row items-center justify-start">
             <Button.Small
               className="bg-info text-repod-text-alternative"
-              style={{ minWidth: 130, maxWidth: 130, width: 130 }}
+              style={{ minWidth: 100, maxWidth: 100, width: 100 }}
               // onClick={handleAddBenefit}
             >
-              Save Tier
+              Save
             </Button.Small>
 
             <Button.Small

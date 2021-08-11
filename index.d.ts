@@ -85,6 +85,7 @@ interface SubscriptionBenefitItem {
   title: string;
   type: string;
   rssFeed?: string;
+  tiersCount?: number;
 }
 
 interface TipData {

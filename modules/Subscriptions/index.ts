@@ -1,7 +1,7 @@
 import { createSelector } from "reselect";
 import switchcase from "utils/switchcase";
 import { RootState } from "reduxConfig/store";
-import { filter, flow, map, values } from "lodash/fp";
+import { filter, flow, map, sumBy, values } from "lodash/fp";
 import { Action, ActionCreator } from "redux";
 import { ThunkResult, AsyncDispatch } from "reduxConfig/redux";
 import {
@@ -91,11 +91,20 @@ const getSubscriptionTier = (subscriptionTierId) =>
   );
 
 const getAllShowBenefits = (showId) =>
-  createSelector(getBenefitsByIds, (benefitsById): SubscriptionBenefitItem[] =>
-    flow(
-      values,
-      filter((benefit) => benefit.showId === showId)
-    )(benefitsById)
+  createSelector(
+    getBenefitsByIds,
+    getSubscriptionTiersById,
+    (benefitsById, tiersById): SubscriptionBenefitItem[] =>
+      flow(
+        values,
+        filter((benefit) => benefit.showId === showId),
+        map((benefit) => ({
+          ...benefit,
+          tiersCount: sumBy((id: string) =>
+            (tiersById[id].benefitIds || []).includes(benefit.benefitId) ? 1 : 0
+          )(Object.keys(tiersById)),
+        }))
+      )(benefitsById)
   );
 
 const getAllSubscriptionTierTitles = (showId) =>
