@@ -3,14 +3,27 @@ import { useEffect } from "react";
 import { PlusSquare, Menu, X } from "react-feather";
 import { useDrag, useDrop } from "react-dnd";
 import update from "immutability-helper";
+import { TierBenefitsModal } from "components/Modals";
+import { useRouter } from "next/router";
+import { removeBenefitFromSubscription } from "modules/Subscriptions";
+import { useDispatch } from "react-redux";
+import { Action } from "redux";
+import { ThunkDispatch } from "redux-thunk";
 
 const ItemTypes = {
   CARD: "card",
 };
 
-const BenefitCard = ({ id, label, subLabel, index, moveCard }) => {
+const BenefitCard = ({
+  id,
+  label,
+  subLabel,
+  index,
+  moveCard,
+  handleEditBenefit,
+  handleRemoveBenefit,
+}) => {
   const ref = useRef(null);
-  const [isOpen, setIsOpen] = useState(false);
 
   const [{ handlerId }, drop] = useDrop({
     accept: ItemTypes.CARD,
@@ -94,31 +107,43 @@ const BenefitCard = ({ id, label, subLabel, index, moveCard }) => {
           {subLabel}
         </p>
       </div>
-      <div
-        className="mr-4"
-        // onClick={handleEditBenefit}
+      <button
+        className="mr-4 hover:opacity-50 transition focus:outline-none"
+        onClick={handleEditBenefit}
       >
-        <a className="cursor-pointer flex text-center no-underline text-xs font-bold text-info hover:opacity-50 transition ">
-          EDIT
-        </a>
-      </div>
-      <div className="mr-4">
+        <p className="uppercase cursor-pointer flex text-center no-underline text-xs font-bold text-info">
+          Edit
+        </p>
+      </button>
+      <button className="mr-4 hover:opacity-50 transition focus:outline-none">
         <X
-          // onClick={handleRemoveBenefit}
+          onClick={handleRemoveBenefit}
           className="stroke-current text-repod-text-secondary"
           size={24}
         />
-      </div>
+      </button>
     </div>
   );
 };
 
 const BenefitsList = ({ benefits }) => {
   const [cards, setCards] = useState(benefits);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedBenefitId, setSelectedBenefitId] = useState(null);
+  const dispatch = useDispatch<ThunkDispatch<{}, undefined, Action>>();
+  const router = useRouter();
+  const { subscriptionTierId } = router.query;
+  const subscriptionTierIdString = subscriptionTierId as string;
 
   useEffect(() => {
     setCards(benefits);
   }, [benefits]);
+
+  useEffect(() => {
+    if (!isModalOpen) {
+      setSelectedBenefitId(null);
+    }
+  }, [isModalOpen]);
 
   const moveCard = useCallback(
     (dragIndex, hoverIndex) => {
@@ -136,16 +161,42 @@ const BenefitsList = ({ benefits }) => {
     [cards]
   );
 
+  const handleEditBenefit = (benefitId) => {
+    setSelectedBenefitId(benefitId);
+    setIsModalOpen(true);
+  };
+
+  const handleRemoveBenefit = (benefitId) => {
+    dispatch(
+      removeBenefitFromSubscription({
+        benefitId,
+        subscriptionTierId: subscriptionTierIdString,
+      })
+    );
+  };
+
   const renderCard = (benefit, index) => {
     return (
-      <BenefitCard
-        key={benefit.benefitId}
-        index={index}
-        id={benefit.benefitId}
-        label={benefit.title}
-        subLabel={benefit.rssFeed}
-        moveCard={moveCard}
-      />
+      <>
+        <BenefitCard
+          key={benefit.benefitId}
+          index={index}
+          id={benefit.benefitId}
+          label={benefit.title}
+          subLabel={benefit.rssFeed}
+          moveCard={moveCard}
+          handleEditBenefit={() => handleEditBenefit(benefit.benefitId)}
+          handleRemoveBenefit={() => handleRemoveBenefit(benefit.benefitId)}
+        />
+        {selectedBenefitId ? (
+          <TierBenefitsModal
+            isModalOpen={isModalOpen}
+            setIsModalOpen={setIsModalOpen}
+            initialBenefitId={selectedBenefitId}
+            initialScreen={TierBenefitsModal.Types.editBenefit}
+          />
+        ) : null}
+      </>
     );
   };
 

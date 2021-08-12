@@ -1,22 +1,26 @@
 import { createSelector } from "reselect";
 import switchcase from "utils/switchcase";
 import { RootState } from "reduxConfig/store";
-import { filter, flow, map, merge, sumBy, values } from "lodash/fp";
+import {
+  filter,
+  flow,
+  map,
+  merge,
+  reject,
+  sumBy,
+  uniq,
+  values,
+} from "lodash/fp";
 import { Action, ActionCreator } from "redux";
 import { ThunkResult, AsyncDispatch } from "reduxConfig/redux";
 import {
   createSubscriptionBenefit,
   createSubscriptionTier,
   getShowSubscriptionTiers,
-  getTeamMembers,
   updateSubscriptionTier,
+  updateSubscriptionBenefit,
 } from "utils/repodAPI";
 import { convertArrayToObject } from "utils/normalizing";
-import { selectors as authSelectors } from "modules/Auth";
-import {
-  selectors as showSelectors,
-  updateClaimedShowOnShow,
-} from "modules/Shows";
 import generateUniqTitle from "utils/generateUniqTitle";
 import SubscriptionBenefits from "constants/subscriptionBenefitTypes";
 
@@ -163,6 +167,10 @@ export const selectors = {
 // Actions
 const UPSERT_SUBSCRIPTION_TIER = "repod/Subscriptions/UPSERT_SUBSCRIPTION_TIER";
 const UPSERT_BENEFIT = "repod/Subscriptions/UPSERT_BENEFIT";
+const UPSERT_BENEFIT_TO_SUBSCRIPTION_TIER =
+  "repod/Subscriptions/UPSERT_BENEFIT_TO_SUBSCRIPTION_TIER";
+const REMOVE_BENEFIT_SUBSCRIPTION_TIER =
+  "repod/Subscriptions/REMOVE_BENEFIT_SUBSCRIPTION_TIER";
 
 // Action Creators
 export const upsertSubscriptionTier: ActionCreator<Action> = ({
@@ -185,6 +193,30 @@ export const upsertSubscriptionBenefit: ActionCreator<Action> = ({
 }) => ({
   type: UPSERT_BENEFIT,
   benefitsById,
+});
+
+export const upsertBenefitToSubscriptionTier: ActionCreator<Action> = ({
+  benefitId,
+  subscriptionTierId,
+}: {
+  benefitId: string;
+  subscriptionTierId: string;
+}) => ({
+  type: UPSERT_BENEFIT_TO_SUBSCRIPTION_TIER,
+  benefitId,
+  subscriptionTierId,
+});
+
+export const removeBenefitFromSubscription: ActionCreator<Action> = ({
+  benefitId,
+  subscriptionTierId,
+}: {
+  benefitId: string;
+  subscriptionTierId: string;
+}) => ({
+  type: REMOVE_BENEFIT_SUBSCRIPTION_TIER,
+  benefitId,
+  subscriptionTierId,
 });
 
 // Thunk
@@ -336,6 +368,47 @@ export const createNewSubscriptionBenefit =
     }
   };
 
+export const saveSubscriptionBenefit =
+  ({
+    showId,
+    benefitId,
+    title,
+    type,
+    rssFeed,
+  }: {
+    showId: string;
+    benefitId: string;
+    title?: string;
+    type?: string;
+    rssFeed?: string;
+  }): ThunkResult<Promise<void>> =>
+  async (dispatch: AsyncDispatch) => {
+    try {
+      await updateSubscriptionBenefit({
+        showId,
+        benefitId,
+        title,
+        type,
+        rssFeed,
+      });
+
+      dispatch(
+        upsertSubscriptionBenefit({
+          benefitsById: {
+            [benefitId]: {
+              title,
+              type,
+              rssFeed,
+              updatedOn: new Date(),
+            },
+          },
+        })
+      );
+    } catch (error) {
+      console.warn("[THUNK ERROR]: saveSubscriptionBenefit", error);
+    }
+  };
+
 export const createDefaultBenefitAndTier =
   ({ showId }: { showId: string }): ThunkResult<Promise<void>> =>
   async (dispatch: AsyncDispatch) => {
@@ -440,6 +513,34 @@ export default (state = INITIAL_STATE, action) =>
     [UPSERT_BENEFIT]: () => ({
       ...state,
       benefitsById: merge(state.benefitsById)(action.benefitsById),
+    }),
+    [UPSERT_BENEFIT_TO_SUBSCRIPTION_TIER]: () => ({
+      ...state,
+      subscriptionTiersById: {
+        ...state.subscriptionTiersById,
+        [action.subscriptionTierId]: {
+          ...(state.subscriptionTiersById[action.subscriptionTierId] || {}),
+          benefitIds: uniq(
+            (
+              state.subscriptionTiersById[action.subscriptionTierId]
+                .benefitIds || []
+            ).concat(action.benefitId)
+          ),
+        },
+      },
+    }),
+    [REMOVE_BENEFIT_SUBSCRIPTION_TIER]: () => ({
+      ...state,
+      subscriptionTiersById: {
+        ...state.subscriptionTiersById,
+        [action.subscriptionTierId]: {
+          ...(state.subscriptionTiersById[action.subscriptionTierId] || {}),
+          benefitIds: reject((id) => id === action.benefitId)(
+            state.subscriptionTiersById[action.subscriptionTierId].benefitIds ||
+              []
+          ),
+        },
+      },
     }),
     LOGOUT: () => ({
       ...INITIAL_STATE,

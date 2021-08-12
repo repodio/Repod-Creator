@@ -56,6 +56,7 @@ const ListItem = ({
   inputType,
   registerInput,
   onChange,
+  onOptionChange,
   initialOption,
   options,
   benefits,
@@ -74,6 +75,7 @@ const ListItem = ({
   inputType?: string;
   registerInput?: {};
   onChange?: () => void;
+  onOptionChange?: (option: string) => void;
   initialOption?: string;
   options?: { label: string; key: string }[];
   benefits?: SubscriptionBenefitItem[];
@@ -90,7 +92,11 @@ const ListItem = ({
   return (
     <div className="flex flex-row items-start justify-start w-full py-4">
       <div
-        style={{ maxWidth: 200, minWidth: 200 }}
+        style={
+          type !== ListItemTypes.addBenefit
+            ? { maxWidth: 200, minWidth: 200 }
+            : {}
+        }
         className="flex flex-col items-start justify-start pr-4"
       >
         <p className="text-md font-book text-repod-text-primary">{label}</p>
@@ -149,7 +155,6 @@ const ListItem = ({
                 <Button.Small
                   className="bg-bg-info text-info mb-6"
                   style={{ minWidth: 130, maxWidth: 130, width: 130 }}
-                  // onClick={handleAddBenefit}
                   onClick={() => setIsModalOpen(true)}
                 >
                   + Add Benefit
@@ -215,7 +220,7 @@ const ListItem = ({
             ) : (
               <Button.Tiny
                 style={{ width: 90 }}
-                onClick={() => {}}
+                onClick={handleAddBenefit}
                 className={`py-1  bg-bg-info rounded border-1 border-info uppercase`}
               >
                 <p className="text-xs font-semibold text-info">+ Add</p>
@@ -224,6 +229,7 @@ const ListItem = ({
           </div>
         ) : type === ListItemTypes.select ? (
           <select
+            onChange={(event) => onOptionChange(event.target.value)}
             className={`w-full text-md px-6 h-12 border-2 font-medium rounded-lg text-repod-text-primary bg-repod-canvas-secondary focus:outline-none 
           ${borderColor}`}
           >

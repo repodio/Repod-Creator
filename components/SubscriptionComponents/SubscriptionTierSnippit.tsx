@@ -22,8 +22,8 @@ const SubscriptionTierSnippit = ({
       <Link
         href={`/${subscriptionTier.showId}/subscriptions/edit/${subscriptionTier.subscriptionTierId}`}
       >
-        <a className="cursor-pointer flex text-center no-underline text-xs font-bold text-info hover:opacity-50 transition">
-          EDIT TIER
+        <a className="uppercase cursor-pointer flex text-center no-underline text-xs font-bold text-info hover:opacity-50 transition">
+          Edit Tier
         </a>
       </Link>
     </div>

@@ -112,14 +112,17 @@ const EditSubscription = () => {
             monthlyPrice,
             description,
             enableShippingAddress,
+            benefitIds: subscriptionTier.benefitIds,
           })
         );
         toast.success("Subscription Tier Saved!");
+
+        router.back();
       } catch (error) {
         console.log("saveSubscriptionTier with error", error);
       }
     },
-    [errors]
+    [errors, subscriptionTier.benefitIds]
   );
 
   const handleCancel = useCallback(() => {

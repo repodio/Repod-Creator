@@ -22,7 +22,7 @@ const Modal = ({ isModalOpen, setIsModalOpen, title, children }) => {
 
         <div
           style={{ minWidth: 650 }}
-          className="bg-repod-canvas rounded-lg max-w-sm mx-auto z-20 p-8"
+          className="bg-repod-canvas rounded-lg max-w-sm mx-auto z-20 p-8 my-8"
         >
           <div className="flex flex-row items-start justify-between w-full">
             <Dialog.Title className="text-lg font-semibold text-repod-text-primary pb-4">
@@ -40,7 +40,9 @@ const Modal = ({ isModalOpen, setIsModalOpen, title, children }) => {
               />
             </button>
           </div>
-          {children}
+          <div className="overflow-y-scroll pr-2" style={{ maxHeight: 700 }}>
+            {children}
+          </div>
         </div>
       </div>
     </Dialog>
