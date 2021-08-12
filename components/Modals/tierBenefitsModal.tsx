@@ -1,43 +1,54 @@
 import { useRouter } from "next/router";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Modal from "./BaseModal";
-import { selectors as subscriptionsSelectors } from "modules/Subscriptions";
+import {
+  createNewSubscriptionBenefit,
+  selectors as subscriptionsSelectors,
+} from "modules/Subscriptions";
 import { map } from "lodash/fp";
 import { useEffect, useMemo, useState } from "react";
 import { ListItem } from "components/Forms";
 import { ArrowRight } from "react-feather";
 import SubscriptionBenefits from "constants/subscriptionBenefitTypes";
 import { Button } from "components/Buttons";
+import { ThunkDispatch } from "redux-thunk";
+import { Action } from "redux";
 
-const SubscriptionBenefitCopy = {
+const SUBSCRIPTION_BENEFITS = {
   [SubscriptionBenefits.custom]: {
+    includesRSS: false,
     type: SubscriptionBenefits.custom,
     title: "Custom Benefit",
     description:
       "You can edit everything about this benefit to provice a unique reward for your members",
   },
   [SubscriptionBenefits.adFreeEpisodes]: {
+    includesRSS: true,
     type: SubscriptionBenefits.adFreeEpisodes,
     title: "Ad-free Episodes",
     description: "Provide ad-free versions of your work",
   },
   [SubscriptionBenefits.bonusEpisodes]: {
+    includesRSS: true,
     type: SubscriptionBenefits.bonusEpisodes,
     title: "Bonus Episodes",
     description:
       "Provide any extra episodes whether it’s behind the scenes, bloopers, or bonus content",
   },
   [SubscriptionBenefits.digitalDownloads]: {
+    includesRSS: false,
     type: SubscriptionBenefits.digitalDownloads,
     title: "Digital Downloads",
     description: "Send your members something special",
   },
   [SubscriptionBenefits.earlyAccessEpisodes]: {
+    includesRSS: true,
     type: SubscriptionBenefits.earlyAccessEpisodes,
     title: "Early Access Episodes",
     description: "Give your members early episodes of your content",
   },
   [SubscriptionBenefits.privateDiscussions]: {
+    includesRSS: false,
     type: SubscriptionBenefits.privateDiscussions,
     title: "Private Discussion Room",
     description: "Enable a special feed on your show that is members only",
@@ -60,20 +71,29 @@ type TierBenefitsModalProps = {
   isModalOpen: boolean;
   setIsModalOpen: (b: boolean) => void;
   initialScreen: string;
+  initialBenefitId: string;
 };
 
 const TierBenefitsModal = ({
   addedBenefits,
   isModalOpen,
   setIsModalOpen,
+  initialBenefitId = null,
   initialScreen = TierBenefitsModal.Types.tierBenefits,
 }: TierBenefitsModalProps) => {
   const [screenMode, setScreenMode] = useState(initialScreen);
+  const [benefitId, setBenefitId] = useState(initialBenefitId);
   const router = useRouter();
   const { showId } = router.query;
+  const showIdString = showId as string;
+
   const allBenefits = useSelector(
     subscriptionsSelectors.getAllShowBenefits(showId)
   );
+  const edittedBenefit = useSelector(
+    subscriptionsSelectors.getBenefit(benefitId)
+  );
+  const dispatch = useDispatch<ThunkDispatch<{}, undefined, Action>>();
   useEffect(() => {
     if (!isModalOpen) {
       setScreenMode(initialScreen);
@@ -92,7 +112,11 @@ const TierBenefitsModal = ({
     setScreenMode(TierBenefitsModal.Types.createBenefit);
   };
 
-  const navigateToEditBenefit = () => {
+  const createNewBenefit = async (type) => {
+    const newBenefitId = await dispatch(
+      createNewSubscriptionBenefit({ showId: showIdString, type })
+    );
+    setBenefitId(newBenefitId);
     setScreenMode(TierBenefitsModal.Types.editBenefit);
   };
 
@@ -103,10 +127,10 @@ const TierBenefitsModal = ({
   const selectOptions = useMemo(
     () =>
       map((key: string) => ({
-        label: SubscriptionBenefitCopy[key].title,
+        label: SUBSCRIPTION_BENEFITS[key].title,
         key,
-      }))(Object.keys(SubscriptionBenefitCopy)),
-    [SubscriptionBenefitCopy]
+      }))(Object.keys(SUBSCRIPTION_BENEFITS)),
+    [SUBSCRIPTION_BENEFITS]
   );
 
   const modalTitle = ModalTitleCopy[screenMode];
@@ -145,18 +169,19 @@ const TierBenefitsModal = ({
           <ListItem.Input
             label={MODAL_COPY.EditLabel}
             subLabel={MODAL_COPY.RequiredSubLabel}
-            value={""}
+            value={edittedBenefit.title}
             placeholder={MODAL_COPY.EditTitlePlaceholder}
           />
           <ListItem.Select
             label={MODAL_COPY.CategoryLabel}
             subLabel={MODAL_COPY.RequiredSubLabel}
             options={selectOptions}
+            initialOption={edittedBenefit.type}
           />
           <ListItem.Input
             label={MODAL_COPY.RSSLabel}
             subLabel={MODAL_COPY.RequiredSubLabel}
-            value={""}
+            value={edittedBenefit.rssFeed}
             placeholder={MODAL_COPY.RSSPlaceholder}
           />
           <div className="w-full h-0 my-2 border border-solid border-t-0 border-repod-border-light mb-6" />
@@ -188,23 +213,23 @@ const TierBenefitsModal = ({
             <div className="flex flex-row items-center justify-start w-full py-4">
               <div className="flex-1 flex-col items-start justify-start pr-4">
                 <p className="text-md font-book text-repod-text-primary">
-                  {SubscriptionBenefitCopy[type].title}
+                  {SUBSCRIPTION_BENEFITS[type].title}
                 </p>
                 <p className="text-xs font-book text-repod-text-secondary">
-                  {SubscriptionBenefitCopy[type].description}
+                  {SUBSCRIPTION_BENEFITS[type].description}
                 </p>
               </div>
               <div className="flex-0 flex-col items-center justify-center relative">
                 <Button.Tiny
                   style={{ width: 90 }}
-                  onClick={navigateToEditBenefit}
+                  onClick={() => createNewBenefit(type)}
                   className={`py-1  bg-bg-info rounded border-1 border-info uppercase`}
                 >
                   <p className="text-xs font-semibold text-info">Add</p>
                 </Button.Tiny>
               </div>
             </div>,
-          ])(Object.keys(SubscriptionBenefitCopy))}
+          ])(Object.keys(SUBSCRIPTION_BENEFITS))}
         </>
       ) : null}
     </Modal>

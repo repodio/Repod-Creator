@@ -6,6 +6,7 @@ import BenefitsListComponent from "components/BenefitLists";
 import { Switch } from "@headlessui/react";
 import { TierBenefitsModal } from "components/Modals";
 import { map } from "lodash/fp";
+import { PlusSquare } from "react-feather";
 
 const ListItemTypes = {
   input: "input",
@@ -55,6 +56,7 @@ const ListItem = ({
   inputType,
   registerInput,
   onChange,
+  initialOption,
   options,
   benefits,
   handleRemoveBenefit,
@@ -72,6 +74,7 @@ const ListItem = ({
   inputType?: string;
   registerInput?: {};
   onChange?: () => void;
+  initialOption?: string;
   options?: { label: string; key: string }[];
   benefits?: SubscriptionBenefitItem[];
   handleAddBenefit?: () => void;
@@ -141,21 +144,36 @@ const ListItem = ({
           />
         ) : type === ListItemTypes.benefitsList ? (
           <div className="flex flex-col items-start justify-start">
-            <Button.Small
-              className="bg-bg-info text-info mb-6"
-              style={{ minWidth: 130, maxWidth: 130, width: 130 }}
-              // onClick={handleAddBenefit}
-              onClick={() => setIsModalOpen(true)}
-            >
-              + Add Benefit
-            </Button.Small>
+            {benefits && benefits.length ? (
+              <>
+                <Button.Small
+                  className="bg-bg-info text-info mb-6"
+                  style={{ minWidth: 130, maxWidth: 130, width: 130 }}
+                  // onClick={handleAddBenefit}
+                  onClick={() => setIsModalOpen(true)}
+                >
+                  + Add Benefit
+                </Button.Small>
+                <BenefitsListComponent benefits={benefits} />
+              </>
+            ) : (
+              <button
+                onClick={() => setIsModalOpen(true)}
+                className="w-full py-8 rounded-lg  bg-bg-info flex flex-row justify-center items-center hover:opacity-50 transition focus:outline-none"
+              >
+                <PlusSquare className="stroke-current text-info" size={28} />
+                <p className="ml-4 text-lg font-semibold text-info">
+                  Add some benefits for your members
+                </p>
+              </button>
+            )}
+
             <TierBenefitsModal
               addedBenefits={benefits}
               isModalOpen={isModalOpen}
               setIsModalOpen={setIsModalOpen}
               initialScreen={TierBenefitsModal.Types.tierBenefits}
             />
-            <BenefitsListComponent benefits={benefits} />
           </div>
         ) : type === ListItemTypes.toggle ? (
           <div className="w-full flex flex-row justify-end items-center">
@@ -210,7 +228,11 @@ const ListItem = ({
           ${borderColor}`}
           >
             {map((option: { key: string; label: string }) => (
-              <option key={option.key} value={option.key}>
+              <option
+                key={option.key}
+                value={option.key}
+                {...(initialOption === option.key ? { selected: true } : {})}
+              >
                 {option.label}
               </option>
             ))(options)}

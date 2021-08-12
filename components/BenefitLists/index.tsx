@@ -1,6 +1,6 @@
 import React, { useCallback, useRef, useState } from "react";
 import { useEffect } from "react";
-import { LifeBuoy, Menu, X } from "react-feather";
+import { PlusSquare, Menu, X } from "react-feather";
 import { useDrag, useDrop } from "react-dnd";
 import update from "immutability-helper";
 
@@ -151,16 +151,7 @@ const BenefitsList = ({ benefits }) => {
 
   return (
     <div className={`flex flex-col w-full`}>
-      {cards && cards.length ? (
-        cards.map((card, i) => renderCard(card, i))
-      ) : (
-        <div className="py-8 rounded-lg border-dashed border border-warning bg-bg-warning flex flex-row justify-center items-center">
-          <LifeBuoy className="stroke-current text-warning" size={28} />
-          <p className="ml-4 text-lg font-semibold text-warning">
-            Add some benefits for your members
-          </p>
-        </div>
-      )}
+      {cards.map((card, i) => renderCard(card, i))}
     </div>
   );
 };
