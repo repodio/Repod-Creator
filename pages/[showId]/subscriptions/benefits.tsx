@@ -98,7 +98,7 @@ const Benefits = () => {
             key={benefit.benefitId}
             className={`flex flex-row items-center justify-start w-full my-2 py-4 rounded border border-solid  border-repod-border-light`}
           >
-            <div className="flex-1 flex-col items-start justify-start mx-2">
+            <div className="flex-1 flex-col items-start justify-start mx-4">
               <p className="truncate text-xs font-book text-repod-text-secondary">
                 {`Included in ${benefit.tiersCount || 0} other tiers`}
               </p>
