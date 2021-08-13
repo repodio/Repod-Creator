@@ -6,6 +6,7 @@ import {
   selectors as subscriptionsSelectors,
   fetchShowSubscriptionTiers,
   createNewSubscriptionTier,
+  deleteBenefit,
 } from "modules/Subscriptions";
 import { useRouter } from "next/router";
 import { LoadingScreen } from "components/Loading";
@@ -23,17 +24,11 @@ import {
 import Link from "next/link";
 import { map } from "lodash/fp";
 import { RemoveBenefitModal, TierBenefitsModal } from "components/Modals";
-import { Trash2 } from "react-feather";
+import { AlertCircle, Trash2 } from "react-feather";
+import { TypesRequiringRSSFeed } from "constants/subscriptionBenefitTypes";
 
 const PAGE_COPY = {
-  StripeConnectMessage:
-    "To enable listeners to subscribe through Repod we must first connect to your Stripe Account. We use Stripe to safely and securely get you your money, setting up an account is quick and easy. Start by pressing the button below.",
-  PlaceholderTitle:
-    "Start by customizing the subscription tiers you want to offer",
-  PlaceholderSubTitle:
-    "We’ll start you off with the following tiers but you get to customize everything how you like",
-  OverviewTitle: "Tiers",
-  OverviewSubTitle: "Choose what to offer your members",
+  NoRSSMessage: "No RSS Feed",
 };
 
 const Subscriptions = () => {
@@ -67,10 +62,6 @@ const Subscriptions = () => {
     })();
   }, []);
 
-  if (!show || pageLoading) {
-    return <LoadingScreen />;
-  }
-
   useEffect(() => {
     if (!isEditBenefitModalOpen) {
       setSelectedBenefitId(null);
@@ -83,33 +74,50 @@ const Subscriptions = () => {
   };
 
   const handleRemoveBenefit = (benefitId) => {
-    dispatch(
-      removeBenefitFromSubscription({
-        benefitId,
-        subscriptionTierId: subscriptionTierIdString,
-      })
-    );
+    setSelectedBenefitId(benefitId);
+    setIsRemoveBenefitModalOpen(true);
   };
+
+  if (!show || pageLoading) {
+    return <LoadingScreen />;
+  }
 
   return (
     <SubscriptionsLayout>
-      <div className="w-full flex flex-col justify-center items-center">
+      <div className="w-full flex flex-col justify-start items-start">
         <h1>{benefits.length} Benefits</h1>
         {map((benefit: SubscriptionBenefitItem) => (
           <div
             key={benefit.benefitId}
-            className={`flex flex-row items-center justify-start w-full my-2 py-4 rounded bg-repod-canvas-secondary ${opacity}`}
+            className={`flex flex-row items-center justify-start w-full my-2 py-4 rounded border border-solid  border-repod-border-light`}
           >
             <div className="flex-1 flex-col items-start justify-start mx-2">
+              <p className="truncate text-xs font-book text-repod-text-secondary">
+                {`Included in ${benefit.tiersCount || 0} other tiers`}
+              </p>
               <p className="truncate text-md font-semibold text-repod-text-primary">
                 {benefit.title}
               </p>
-              <p
-                style={{ width: 300 }}
-                className="truncate text-sm font-book text-repod-text-secondary"
-              >
-                {"sublabel"}
-              </p>
+              {TypesRequiringRSSFeed.includes(benefit.type) ? (
+                benefit.rssFeed ? (
+                  <p
+                    // style={{ width: 300 }}
+                    className="w-full truncate text-sm font-book text-repod-text-secondary"
+                  >
+                    {benefit.rssFeed}
+                  </p>
+                ) : (
+                  <div className="flex flex-row justify-start items-center">
+                    <AlertCircle
+                      className="stroke-current text-danger"
+                      size={18}
+                    />
+                    <p className="truncate text-sm font-book text-danger ml-1">
+                      {PAGE_COPY.NoRSSMessage}
+                    </p>
+                  </div>
+                )
+              ) : null}
             </div>
             <button
               className="mr-4 hover:opacity-50 transition focus:outline-none"
@@ -119,9 +127,11 @@ const Subscriptions = () => {
                 Edit
               </p>
             </button>
-            <button className="mr-4 hover:opacity-50 transition focus:outline-none">
+            <button
+              onClick={handleRemoveBenefit}
+              className="mr-4 hover:opacity-50 transition focus:outline-none"
+            >
               <Trash2
-                onClick={handleRemoveBenefit}
                 className="stroke-current text-repod-text-secondary"
                 size={24}
               />
@@ -138,6 +148,7 @@ const Subscriptions = () => {
                 initialScreen={TierBenefitsModal.Types.editBenefit}
               />,
               <RemoveBenefitModal
+                benefitId={selectedBenefitId}
                 isModalOpen={isRemoveBenefitModalOpen}
                 setIsModalOpen={setIsRemoveBenefitModalOpen}
               />,

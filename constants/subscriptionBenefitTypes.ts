@@ -7,4 +7,10 @@ const SubscriptionBenefits = {
   privateDiscussions: "privateDiscussions",
 };
 
+export const TypesRequiringRSSFeed = [
+  SubscriptionBenefits.earlyAccessEpisodes,
+  SubscriptionBenefits.bonusEpisodes,
+  SubscriptionBenefits.adFreeEpisodes,
+];
+
 export default SubscriptionBenefits;

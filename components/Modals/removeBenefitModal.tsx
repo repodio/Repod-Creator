@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Modal from "./baseModal";
 import {
   createNewSubscriptionBenefit,
+  deleteBenefit,
   removeSubscriptionTier,
   saveSubscriptionBenefit,
   selectors as subscriptionsSelectors,
@@ -22,6 +23,7 @@ import toast from "react-hot-toast";
 type RemoveBenefitModalProps = {
   isModalOpen: boolean;
   setIsModalOpen: (b: boolean) => void;
+  benefitId: string;
 };
 
 const MODAL_COPY = {
@@ -31,6 +33,7 @@ const MODAL_COPY = {
 const RemoveBenefitModal = ({
   isModalOpen,
   setIsModalOpen,
+  benefitId,
 }: RemoveBenefitModalProps) => {
   const dispatch = useDispatch<ThunkDispatch<{}, undefined, Action>>();
   const router = useRouter();
@@ -45,9 +48,9 @@ const RemoveBenefitModal = ({
   const removeTier = async () => {
     try {
       await dispatch(
-        removeSubscriptionTier({
+        deleteBenefit({
+          benefitId,
           showId: showIdString,
-          subscriptionTierId: subscriptionTierIdString,
         })
       );
 
@@ -68,6 +71,10 @@ const RemoveBenefitModal = ({
       setIsModalOpen={setIsModalOpen}
       minWidth={100}
     >
+      {/* <p>
+        Remove this benefit will unpublish any Subscription Tiers if this was
+        the only benefit
+      </p> */}
       <div className="w-full flex flex-row items-center justify-between">
         <Button.Small
           className="bg-repod-canvas text-repod-text-secondary"

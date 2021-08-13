@@ -11,7 +11,9 @@ import { map } from "lodash/fp";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { ListItem } from "components/Forms";
 import { ArrowRight } from "react-feather";
-import SubscriptionBenefits from "constants/subscriptionBenefitTypes";
+import SubscriptionBenefits, {
+  TypesRequiringRSSFeed,
+} from "constants/subscriptionBenefitTypes";
 import { Button } from "components/Buttons";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
@@ -58,12 +60,6 @@ const SUBSCRIPTION_BENEFITS = {
     description: "Enable a special feed on your show that is members only",
   },
 };
-
-const TypesRequiringRSSFeed = [
-  SubscriptionBenefits.earlyAccessEpisodes,
-  SubscriptionBenefits.bonusEpisodes,
-  SubscriptionBenefits.adFreeEpisodes,
-];
 
 const MODAL_COPY = {
   EditLabel: "Title",
