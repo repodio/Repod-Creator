@@ -257,7 +257,7 @@ const ListItem = ({
               ))(options)}
             </select>
             <ChevronDown
-              className="absolute right-4 stroke-current text-repod-text-secondary"
+              className="absolute right-4 stroke-current text-repod-text-secondary cursor-pointer pointer-events-none"
               size={20}
             />
           </div>
