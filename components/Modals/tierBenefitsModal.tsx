@@ -158,8 +158,7 @@ const EditBenefits = ({
   closeModal: () => void;
 }) => {
   const router = useRouter();
-  const { showId, subscriptionTierId } = router.query;
-  const subscriptionTierIdString = subscriptionTierId as string;
+  const { showId } = router.query;
   const showIdString = showId as string;
   const dispatch = useDispatch<ThunkDispatch<{}, undefined, Action>>();
 
@@ -183,21 +182,16 @@ const EditBenefits = ({
     },
   });
 
-  const saveAndAddBenefit = useCallback(
+  const saveBenefit = useCallback(
     async ({ title, rssFeed }) => {
       try {
         console.log(
-          "saveAndAddBenefit edittedBenefitType, title, rssFeed",
+          "saveBenefit edittedBenefitType, title, rssFeed",
           edittedBenefitType,
           title,
           rssFeed
         );
-        dispatch(
-          upsertBenefitToSubscriptionTier({
-            benefitId,
-            subscriptionTierId: subscriptionTierIdString,
-          })
-        );
+
         await dispatch(
           saveSubscriptionBenefit({
             showId: showIdString,
@@ -211,7 +205,8 @@ const EditBenefits = ({
         toast.success("Benefit Saved");
         closeModal();
       } catch (error) {
-        console.log("saveAndAddBenefit with error", error);
+        console.error("saveBenefit with error", error);
+        toast.error("Something went wrong, try again later");
       }
     },
     [edittedBenefitType]
@@ -261,7 +256,7 @@ const EditBenefits = ({
         <Button.Small
           className="bg-info text-repod-text-alternative"
           style={{ minWidth: 100, maxWidth: 100, width: 100 }}
-          onClick={handleSubmit(saveAndAddBenefit)}
+          onClick={handleSubmit(saveBenefit)}
         >
           Save
         </Button.Small>
@@ -287,6 +282,7 @@ const CreateBenefit = ({
 }) => {
   const router = useRouter();
   const { showId, subscriptionTierId } = router.query;
+  const subscriptionTierIdString = subscriptionTierId as string;
   const showIdString = showId as string;
   const dispatch = useDispatch<ThunkDispatch<{}, undefined, Action>>();
 
@@ -294,6 +290,14 @@ const CreateBenefit = ({
     const newBenefitId = await dispatch(
       createNewSubscriptionBenefit({ showId: showIdString, type })
     );
+
+    dispatch(
+      upsertBenefitToSubscriptionTier({
+        benefitId: newBenefitId,
+        subscriptionTierId: subscriptionTierIdString,
+      })
+    );
+    toast.success("Benefit Created");
     setBenefitId(newBenefitId);
     setScreenMode(TierBenefitsModal.Types.editBenefit);
   };

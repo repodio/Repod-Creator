@@ -121,14 +121,14 @@ const Subscriptions = () => {
             </div>
             <button
               className="mr-4 hover:opacity-50 transition focus:outline-none"
-              onClick={handleEditBenefit}
+              onClick={() => handleEditBenefit(benefit.benefitId)}
             >
               <p className="uppercase cursor-pointer flex text-center no-underline text-xs font-bold text-info">
                 Edit
               </p>
             </button>
             <button
-              onClick={handleRemoveBenefit}
+              onClick={() => handleRemoveBenefit(benefit.benefitId)}
               className="mr-4 hover:opacity-50 transition focus:outline-none"
             >
               <Trash2
