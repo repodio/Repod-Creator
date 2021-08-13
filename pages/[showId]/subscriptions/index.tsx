@@ -78,20 +78,28 @@ const TiersPlaceholder = ({ onPress }) => (
 const SubscriptionTiers = ({
   subscriptionTiers = [],
   createNewTier,
+  isMobile,
 }: {
   subscriptionTiers: SubscriptionTierItem[];
   createNewTier: () => void;
+  isMobile: boolean;
 }) => (
   <div className="flex flex-col">
     <div className="flex flex-col items-center w-full mb-8">
-      <p className="text-lg font-bold text-repod-text-primary">
+      <p className="text-lg font-bold text-repod-text-primary text-center">
         {PAGE_COPY.OverviewTitle}
       </p>
-      <p className="text-md font-semibold text-repod-text-secondary">
+      <p className="text-md font-semibold text-repod-text-secondary text-center">
         {PAGE_COPY.OverviewSubTitle}
       </p>
     </div>
-    <div className="flex flex-col items-center w-full rounded border border-solid border-repod-border-light pt-8 pb-12">
+    <div
+      className={
+        isMobile
+          ? "flex flex-col items-center w-full pb-12"
+          : "flex flex-col items-center w-full rounded border border-solid border-repod-border-light pt-8 pb-12"
+      }
+    >
       <div className="flex flex-wrap items-start justify-center w-full ">
         {subscriptionTiers.map((tier) => (
           <SubscriptionTierSnippit
@@ -165,6 +173,7 @@ const Subscriptions = () => {
         isConfiguringTiers ||
         (subscriptionTiers && subscriptionTiers.length) ? (
           <SubscriptionTiers
+            isMobile={isMobile}
             subscriptionTiers={subscriptionTiers}
             createNewTier={createNewTier}
           />

@@ -10,6 +10,7 @@ import { useDispatch } from "react-redux";
 import { Action } from "redux";
 import { ThunkDispatch } from "redux-thunk";
 import { TypesRequiringRSSFeed } from "constants/subscriptionBenefitTypes";
+import { useMediaQuery } from "react-responsive";
 
 const ItemTypes = {
   CARD: "card",
@@ -30,6 +31,7 @@ const BenefitCard = ({
   handleRemoveBenefit,
 }) => {
   const ref = useRef(null);
+  const isMobile = useMediaQuery({ query: "(max-width: 815px)" });
 
   const [{ handlerId }, drop] = useDrop({
     accept: ItemTypes.CARD,
@@ -97,11 +99,17 @@ const BenefitCard = ({
       key={id}
       ref={ref}
       data-handler-id={handlerId}
-      className={`flex flex-row items-center justify-start w-full my-2 py-4 rounded bg-repod-canvas-secondary ${opacity}`}
+      className={
+        isMobile
+          ? `flex flex-col items-center justify-start w-full my-2 py-4 rounded bg-repod-canvas-secondary ${opacity}`
+          : `flex flex-row items-center justify-start w-full my-2 py-4 rounded bg-repod-canvas-secondary ${opacity}`
+      }
     >
-      <div className="ml-4 cursor-move">
-        <Menu className="stroke-current text-repod-text-primary" size={24} />
-      </div>
+      {!isMobile ? (
+        <div className="ml-4 cursor-move">
+          <Menu className="stroke-current text-repod-text-primary" size={24} />
+        </div>
+      ) : null}
       <div className="flex-1 flex-col items-start justify-start mx-2">
         <p className="truncate text-md font-semibold text-repod-text-primary">
           {label}
@@ -124,21 +132,23 @@ const BenefitCard = ({
           )
         ) : null}
       </div>
-      <button
-        className="mr-4 hover:opacity-50 transition focus:outline-none"
-        onClick={handleEditBenefit}
-      >
-        <p className="uppercase cursor-pointer flex text-center no-underline text-xs font-bold text-info">
-          Edit
-        </p>
-      </button>
-      <button className="mr-4 hover:opacity-50 transition focus:outline-none">
-        <X
-          onClick={handleRemoveBenefit}
-          className="stroke-current text-repod-text-secondary"
-          size={24}
-        />
-      </button>
+      <div className={"flex flex-row items-center justify-center my-2"}>
+        <button
+          className="mr-4 hover:opacity-50 transition focus:outline-none"
+          onClick={handleEditBenefit}
+        >
+          <p className="uppercase cursor-pointer flex text-center no-underline text-xs font-bold text-info">
+            Edit
+          </p>
+        </button>
+        <button className="mr-4 hover:opacity-50 transition focus:outline-none">
+          <X
+            onClick={handleRemoveBenefit}
+            className="stroke-current text-repod-text-secondary"
+            size={24}
+          />
+        </button>
+      </div>
     </div>
   );
 };

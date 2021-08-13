@@ -82,8 +82,6 @@ const Benefits = () => {
     return <LoadingScreen />;
   }
 
-  console.log("isMobile", isMobile);
-
   return (
     <SubscriptionsLayout>
       <div className="w-full flex flex-col justify-start items-start pb-8">

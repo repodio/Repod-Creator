@@ -1,6 +1,7 @@
 import { Dialog } from "@headlessui/react";
 import { useRef } from "react";
 import { X } from "react-feather";
+import { useMediaQuery } from "react-responsive";
 
 const Modal = ({
   isModalOpen,
@@ -10,6 +11,7 @@ const Modal = ({
   minWidth = 650,
 }) => {
   let completeButtonRef = useRef(null);
+  const isMobile = useMediaQuery({ query: "(max-width: 815px)" });
 
   return (
     <Dialog
@@ -22,8 +24,10 @@ const Modal = ({
         <Dialog.Overlay className="fixed inset-0 bg-black opacity-30 z-10" />
 
         <div
-          style={{ minWidth }}
-          className="bg-repod-canvas rounded-lg max-w-sm mx-auto z-20 p-8 my-8"
+          style={isMobile ? {} : { minWidth }}
+          className={`bg-repod-canvas rounded-lg max-w-sm mx-auto z-20 my-8 ${
+            isMobile ? "p-6" : "p-8 "
+          }`}
         >
           <div className="flex flex-row items-start justify-between w-full">
             <Dialog.Title className="text-lg font-semibold text-repod-text-primary pb-4">

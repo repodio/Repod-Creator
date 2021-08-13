@@ -35,7 +35,7 @@ const PAGE_COPY = {
   DescriptionLabel: "Description",
   DescriptionPlaceholder: "Describe in your own words what this tier offers",
   BenefitsLabel: "Benefits",
-  BenefitsSubLabel: "Must have at least one benefit in each tier",
+  BenefitsSubLabel: "Must have at least one benefit",
   AdvancedLabel: "Advanced",
   ShippingLabel: "Shipping Address",
   ShippingSubLabel: "Ask for shipping address during checkout",
@@ -216,7 +216,11 @@ const EditSubscription = () => {
           </div>
           <div
             style={{ maxWidth: 800 }}
-            className="flex flex-col items-center w-full rounded border border-solid border-repod-border-light pb-2 pt-6 px-8"
+            className={
+              isMobile
+                ? "flex flex-col items-center w-full "
+                : "flex flex-col items-center w-full rounded border border-solid border-repod-border-light pb-2 pt-6 px-8"
+            }
           >
             <ListItem.Input
               label={PAGE_COPY.TitleLabel}
@@ -273,7 +277,13 @@ const EditSubscription = () => {
               </div>
             </Collapsible>
             <div className="w-full h-0 my-2 border border-solid border-t-0 border-repod-border-light mb-8" />
-            <div className="w-full flex flex-row items-center justify-between">
+            <div
+              className={
+                isMobile
+                  ? "w-full flex flex-col items-center justify-center"
+                  : "w-full flex flex-row items-center justify-between"
+              }
+            >
               <div className="flex flex-row items-center justify-start">
                 <Button.Small
                   className="bg-info text-repod-text-alternative mb-6"

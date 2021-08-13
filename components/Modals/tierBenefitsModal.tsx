@@ -126,13 +126,39 @@ const ListedTierBenefits = ({
   return (
     <>
       {map((benefit: SubscriptionBenefitItem) => (
-        <ListItem.AddBenefit
-          key={benefit.benefitId}
-          label={benefit.title}
-          subLabel={`Included in ${benefit.tiersCount || 0} other tiers`}
-          value={addedBenefitIds.includes(benefit.benefitId)}
-          handleAddBenefit={() => handleAddBenefit(benefit.benefitId)}
-        />
+        <div key={benefit.benefitId}>
+          <div className="h-0 border border-solid border-t-0 border-repod-border-light my-2" />
+          <div className="flex flex-row items-center justify-start w-full py-4">
+            <div className="flex-1 flex-col items-start justify-start pr-4">
+              <p className="text-md font-book text-repod-text-primary">
+                {benefit.title}
+              </p>
+              <p className="text-xs font-book text-repod-text-secondary">
+                {`Included in ${benefit.tiersCount || 0} other tiers`}
+              </p>
+            </div>
+            <div className="flex-0 flex-col items-center justify-center relative">
+              {addedBenefitIds.includes(benefit.benefitId) ? (
+                <Button.Tiny
+                  style={{ width: 180 }}
+                  className={`py-1 bg-repod-disabled-bg rounded hover:opacity-100 cursor-default uppercase`}
+                >
+                  <p className="text-xs font-semibold text-repod-text-primary">
+                    Added to this tier
+                  </p>
+                </Button.Tiny>
+              ) : (
+                <Button.Tiny
+                  style={{ width: 90 }}
+                  onClick={() => handleAddBenefit(benefit.benefitId)}
+                  className={`py-1  bg-bg-info rounded border-1 border-info uppercase`}
+                >
+                  <p className="text-xs font-semibold text-info">+ Add</p>
+                </Button.Tiny>
+              )}
+            </div>
+          </div>
+        </div>
       ))(allBenefits)}
       <div className="w-full h-0 my-2 border border-solid border-t-0 border-repod-border-light mb-8" />
       <button

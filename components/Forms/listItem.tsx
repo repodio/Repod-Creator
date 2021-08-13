@@ -7,6 +7,7 @@ import { Switch } from "@headlessui/react";
 import { TierBenefitsModal } from "components/Modals";
 import { map } from "lodash/fp";
 import { ChevronDown } from "react-feather";
+import { useMediaQuery } from "react-responsive";
 
 const ListItemTypes = {
   input: "input",
@@ -14,7 +15,6 @@ const ListItemTypes = {
   textarea: "textarea",
   benefitsList: "benefitsList",
   toggle: "toggle",
-  addBenefit: "addBenefit",
   select: "select",
 };
 
@@ -63,7 +63,6 @@ const ListItem = ({
   options,
   setBenefits,
   benefits,
-  handleAddBenefit,
 }: {
   label: string;
   subLabel: string;
@@ -82,36 +81,42 @@ const ListItem = ({
   options?: { label: string; key: string }[];
   setBenefits?: (benefits: SubscriptionBenefitItem[]) => {};
   benefits?: SubscriptionBenefitItem[];
-  handleAddBenefit?: () => void;
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const isMobile = useMediaQuery({ query: "(max-width: 815px)" });
 
   const borderColor = `focus:border-info ${
     error ? "border-danger" : "border-repod-border-light"
   }`;
 
   return (
-    <div className="flex flex-row items-start justify-start w-full py-4">
+    <div
+      className={
+        isMobile
+          ? "flex flex-col items-start justify-start w-full py-4"
+          : "flex flex-row items-start justify-start w-full py-4"
+      }
+    >
       <div
-        style={
-          type !== ListItemTypes.addBenefit
-            ? { maxWidth: 200, minWidth: 200 }
-            : {}
+        style={isMobile ? {} : { maxWidth: 200, minWidth: 200 }}
+        className={
+          isMobile
+            ? "flex flex-row items-center justify-start"
+            : "flex flex-col items-start justify-start pr-4"
         }
-        className="flex flex-col items-start justify-start pr-4"
       >
         <p className="text-md font-book text-repod-text-primary">{label}</p>
         {type !== ListItemTypes.toggle ? (
           <p
             className={`text-xs font-book ${
               error ? "text-danger" : "text-repod-text-secondary"
-            }`}
+            } ${isMobile ? " ml-1" : ""}`}
           >
             {subLabel}
           </p>
         ) : null}
       </div>
-      <div className="flex-1 flex-col items-center justify-center relative">
+      <div className="w-full flex-1 flex-col items-center justify-center relative">
         {type === ListItemTypes.input ? (
           <input
             className={`w-full text-md px-6 h-12 border-2 font-medium rounded-lg text-repod-text-primary bg-repod-canvas-secondary focus:outline-none 
@@ -174,7 +179,13 @@ const ListItem = ({
                 onClick={() => setIsModalOpen(true)}
                 className="w-full py-8 rounded-lg  bg-bg-info flex flex-row justify-center items-center hover:opacity-50 transition focus:outline-none"
               >
-                <p className="ml-4 text-lg font-semibold text-info">
+                <p
+                  className={
+                    isMobile
+                      ? "text-sm font-semibold text-info"
+                      : "ml-4 text-lg font-semibold text-info"
+                  }
+                >
                   + Add some benefits for your members
                 </p>
               </button>
@@ -193,6 +204,7 @@ const ListItem = ({
               {subLabel}
             </p>
             <Switch
+              style={{ minWidth: 44 }}
               checked={boolValue}
               onChange={onChange}
               className={`${
@@ -212,27 +224,6 @@ const ListItem = ({
                 } inline-block w-4 h-4 transform bg-white rounded-full transform transition ease-in-out duration-200`}
               />
             </Switch>
-          </div>
-        ) : type === ListItemTypes.addBenefit ? (
-          <div className="w-full flex flex-row justify-end items-center">
-            {value ? (
-              <Button.Tiny
-                style={{ width: 180 }}
-                className={`py-1 bg-repod-disabled-bg rounded hover:opacity-100 cursor-default uppercase`}
-              >
-                <p className="text-xs font-semibold text-repod-text-primary">
-                  Added to this tier
-                </p>
-              </Button.Tiny>
-            ) : (
-              <Button.Tiny
-                style={{ width: 90 }}
-                onClick={handleAddBenefit}
-                className={`py-1  bg-bg-info rounded border-1 border-info uppercase`}
-              >
-                <p className="text-xs font-semibold text-info">+ Add</p>
-              </Button.Tiny>
-            )}
           </div>
         ) : type === ListItemTypes.select ? (
           <div className="flex items-center justify-center w-full relative">
@@ -277,10 +268,6 @@ export const BenefitsList = (props) => (
 
 export const Toggle = (props) => (
   <ListItem {...props} type={ListItemTypes.toggle} />
-);
-
-export const AddBenefit = (props) => (
-  <ListItem {...props} type={ListItemTypes.addBenefit} />
 );
 
 export const Select = (props) => (
