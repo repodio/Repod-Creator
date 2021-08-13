@@ -45,7 +45,7 @@ const RemoveBenefitModal = ({
     setIsModalOpen(false);
   };
 
-  const removeTier = async () => {
+  const removeBenefit = async () => {
     try {
       await dispatch(
         deleteBenefit({
@@ -54,12 +54,10 @@ const RemoveBenefitModal = ({
         })
       );
 
-      router.replace(`/${showIdString}/subscriptions`);
-
-      toast.success("Subscription Tier Deleted");
+      toast.success("Benefit Deleted");
       setIsModalOpen(false);
     } catch (error) {
-      console.error("removeTier error", error);
+      console.error("removeBenefit error", error);
       toast.error("Something went wrong, try again later");
     }
   };
@@ -87,7 +85,7 @@ const RemoveBenefitModal = ({
         <Button.Small
           className="bg-danger text-repod-text-alternative"
           style={{ minWidth: 100, maxWidth: 100, width: 100 }}
-          // onClick={removeTier}
+          onClick={removeBenefit}
         >
           Remove
         </Button.Small>
