@@ -206,7 +206,7 @@ const EditBenefits = ({
           })
         );
 
-        toast.success("Benefit Saved!");
+        toast.success("Benefit Saved");
         closeModal();
       } catch (error) {
         console.log("saveAndAddBenefit with error", error);

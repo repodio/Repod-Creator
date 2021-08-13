@@ -12,6 +12,7 @@ import {
   sumBy,
   uniq,
   values,
+  omit,
 } from "lodash/fp";
 import { Action, ActionCreator } from "redux";
 import { ThunkResult, AsyncDispatch } from "reduxConfig/redux";
@@ -21,6 +22,7 @@ import {
   getShowSubscriptionTiers,
   updateSubscriptionTier,
   updateSubscriptionBenefit,
+  deleteSubscriptionTier,
 } from "utils/repodAPI";
 import { convertArrayToObject } from "utils/normalizing";
 import generateUniqTitle from "utils/generateUniqTitle";
@@ -167,12 +169,14 @@ export const selectors = {
 };
 
 // Actions
+const UPDATE_SUBSCRIPTION_TIER = "repod/Subscriptions/UPDATE_SUBSCRIPTION_TIER";
 const UPSERT_SUBSCRIPTION_TIER = "repod/Subscriptions/UPSERT_SUBSCRIPTION_TIER";
 const UPSERT_BENEFIT = "repod/Subscriptions/UPSERT_BENEFIT";
 const UPSERT_BENEFIT_TO_SUBSCRIPTION_TIER =
   "repod/Subscriptions/UPSERT_BENEFIT_TO_SUBSCRIPTION_TIER";
 const REMOVE_BENEFIT_SUBSCRIPTION_TIER =
   "repod/Subscriptions/REMOVE_BENEFIT_SUBSCRIPTION_TIER";
+const REMOVE_SUBSCRIPTION_TIER = "repod/Subscriptions/REMOVE_SUBSCRIPTION_TIER";
 
 // Action Creators
 export const upsertSubscriptionTier: ActionCreator<Action> = ({
@@ -183,6 +187,17 @@ export const upsertSubscriptionTier: ActionCreator<Action> = ({
   };
 }) => ({
   type: UPSERT_SUBSCRIPTION_TIER,
+  subscriptionTiersById,
+});
+
+const updateSubscriptionTiers: ActionCreator<Action> = ({
+  subscriptionTiersById,
+}: {
+  subscriptionTiersById: {
+    [key: string]: SubscriptionTierItem;
+  };
+}) => ({
+  type: UPDATE_SUBSCRIPTION_TIER,
   subscriptionTiersById,
 });
 
@@ -218,6 +233,15 @@ export const removeBenefitFromSubscription: ActionCreator<Action> = ({
 }) => ({
   type: REMOVE_BENEFIT_SUBSCRIPTION_TIER,
   benefitId,
+  subscriptionTierId,
+});
+
+export const clearSubscriptionTier: ActionCreator<Action> = ({
+  subscriptionTierId,
+}: {
+  subscriptionTierId: string;
+}) => ({
+  type: REMOVE_SUBSCRIPTION_TIER,
   subscriptionTierId,
 });
 
@@ -318,6 +342,27 @@ export const saveSubscriptionTier =
           },
         })
       );
+    } catch (error) {
+      console.warn("[THUNK ERROR]: createDefaultSubscriptionTiers", error);
+    }
+  };
+
+export const removeSubscriptionTier =
+  ({
+    showId,
+    subscriptionTierId,
+  }: {
+    showId: string;
+    subscriptionTierId: string;
+  }): ThunkResult<Promise<void>> =>
+  async (dispatch: AsyncDispatch) => {
+    try {
+      await deleteSubscriptionTier({
+        showId,
+        subscriptionTierId,
+      });
+
+      dispatch(clearSubscriptionTier({ subscriptionTierId }));
     } catch (error) {
       console.warn("[THUNK ERROR]: createDefaultSubscriptionTiers", error);
     }
@@ -498,7 +543,7 @@ export const fetchShowSubscriptionTiers =
         })
       );
       dispatch(
-        upsertSubscriptionTier({
+        updateSubscriptionTiers({
           subscriptionTiersById: normalizedTiers,
         })
       );
@@ -510,6 +555,10 @@ export const fetchShowSubscriptionTiers =
 // Reducer
 export default (state = INITIAL_STATE, action) =>
   switchcase({
+    [UPDATE_SUBSCRIPTION_TIER]: () => ({
+      ...state,
+      subscriptionTiersById: action.subscriptionTiersById,
+    }),
     [UPSERT_SUBSCRIPTION_TIER]: () => ({
       ...state,
       subscriptionTiersById: merge(state.subscriptionTiersById)(
@@ -547,6 +596,12 @@ export default (state = INITIAL_STATE, action) =>
           ),
         },
       },
+    }),
+    [REMOVE_SUBSCRIPTION_TIER]: () => ({
+      ...state,
+      subscriptionTiersById: omit([action.subscriptionTierId])(
+        state.subscriptionTiersById
+      ),
     }),
     LOGOUT: () => ({
       ...INITIAL_STATE,

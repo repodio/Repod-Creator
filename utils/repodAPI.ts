@@ -240,6 +240,22 @@ const updateSubscriptionTier = async ({
   return json.data;
 };
 
+const deleteSubscriptionTier = async ({
+  showId,
+  subscriptionTierId,
+}: {
+  showId: string;
+  subscriptionTierId: string;
+}): Promise<void> => {
+  await fetch(
+    `${API_DOMAIN}/v1/${ROUTES.subscriptions}/${showId}/${subscriptionTierId}`,
+    {
+      method: "DELETE",
+      headers: await getHeaders(),
+    }
+  );
+};
+
 const updateSubscriptionBenefit = async ({
   showId,
   benefitId,
@@ -513,4 +529,5 @@ export {
   getShowSubscriptionTiers,
   updateSubscriptionTier,
   updateSubscriptionBenefit,
+  deleteSubscriptionTier,
 };

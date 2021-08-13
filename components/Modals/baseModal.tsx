@@ -2,15 +2,16 @@ import { Dialog } from "@headlessui/react";
 import { useRef } from "react";
 import { X } from "react-feather";
 
-const Modal = ({ isModalOpen, setIsModalOpen, title, children }) => {
+const Modal = ({
+  isModalOpen,
+  setIsModalOpen,
+  title,
+  children,
+  minWidth = 650,
+}) => {
   let completeButtonRef = useRef(null);
 
   return (
-    /*
-      Pass `isModalOpen` to the `open` prop, and use `onClose` to set
-      the state back to `false` when the user clicks outside of
-      the dialog or presses the escape key.
-    */
     <Dialog
       initialFocus={completeButtonRef}
       open={isModalOpen}
@@ -21,7 +22,7 @@ const Modal = ({ isModalOpen, setIsModalOpen, title, children }) => {
         <Dialog.Overlay className="fixed inset-0 bg-black opacity-30 z-10" />
 
         <div
-          style={{ minWidth: 650 }}
+          style={{ minWidth }}
           className="bg-repod-canvas rounded-lg max-w-sm mx-auto z-20 p-8 my-8"
         >
           <div className="flex flex-row items-start justify-between w-full">

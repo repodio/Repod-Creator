@@ -22,6 +22,7 @@ import { Button } from "components/Buttons";
 import { Trash } from "react-feather";
 import toast from "react-hot-toast";
 import { map } from "lodash/fp";
+import { RemoveTierModal } from "components/Modals";
 
 const PAGE_COPY = {
   EditTitle: "Tiers",
@@ -49,6 +50,7 @@ type FormInputs = {
 const EditSubscription = () => {
   const router = useRouter();
   const [pageLoading, setPageLoading] = useState(true);
+  const [removeTierModalOpen, setRemoveTierModalOpen] = useState(false);
 
   const { showId, subscriptionTierId } = router.query;
   const showIdString = showId as string;
@@ -57,7 +59,17 @@ const EditSubscription = () => {
   const show = useSelector(showsSelectors.getShowById(showIdString));
   const subscriptionTier = useSelector(
     subscriptionsSelectors.getSubscriptionTier(subscriptionTierIdString)
-  );
+  ) || {
+    title: "",
+    monthlyPrice: 0,
+    description: "",
+    enableShippingAddress: false,
+    published: false,
+    benefits: [],
+    showId,
+    subscriptionTierId,
+  };
+
   const dispatch = useDispatch<ThunkDispatch<{}, undefined, Action>>();
   const isMobile = useMediaQuery({ query: "(max-width: 600px)" });
 
@@ -121,7 +133,7 @@ const EditSubscription = () => {
             published: subscriptionTier.published,
           })
         );
-        toast.success("Subscription Tier Saved!");
+        toast.success("Subscription Tier Saved");
       } catch (error) {
         console.log("onSave with error", error);
       }
@@ -142,7 +154,7 @@ const EditSubscription = () => {
           published: false,
         })
       );
-      toast.success("Subscription Tier Unpublished!");
+      toast.success("Subscription Tier Unpublished");
     } catch (error) {
       console.log("handleUnpublish with error", error);
     }
@@ -164,13 +176,17 @@ const EditSubscription = () => {
           published: true,
         })
       );
-      toast.success("Subscription Tier Published!");
+      toast.success("Subscription Tier Published");
     } catch (error) {
       console.log("saveSubscriptionTier with error", error);
     }
   };
 
   const openAddBenefitModal = () => {};
+
+  const handleRemovePressed = () => {
+    setRemoveTierModalOpen(true);
+  };
 
   if (subscriptionTier && subscriptionTier.showId !== showIdString) {
     router.replace(`/${showIdString}/subscriptions`);
@@ -291,15 +307,18 @@ const EditSubscription = () => {
                 <Button.Small
                   className="bg-repod-canvas text-repod-text-secondary mb-6"
                   style={{ minWidth: 50, maxWidth: 50, width: 50 }}
-                  // onClick={handleAddBenefit}
+                  onClick={handleRemovePressed}
                 >
                   <Trash
-                    // onClick={handleRemoveBenefit}
                     className="stroke-current text-repod-text-secondary"
                     size={24}
                   />
                 </Button.Small>
               </div>
+              <RemoveTierModal
+                isModalOpen={removeTierModalOpen}
+                setIsModalOpen={setRemoveTierModalOpen}
+              />
             </div>
           </div>
         </div>
