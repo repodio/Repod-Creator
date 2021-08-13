@@ -6,7 +6,7 @@ import BenefitsListComponent from "components/BenefitLists";
 import { Switch } from "@headlessui/react";
 import { TierBenefitsModal } from "components/Modals";
 import { map } from "lodash/fp";
-import { ChevronDown, PlusSquare } from "react-feather";
+import { ChevronDown } from "react-feather";
 
 const ListItemTypes = {
   input: "input",
@@ -237,16 +237,13 @@ const ListItem = ({
         ) : type === ListItemTypes.select ? (
           <div className="flex items-center justify-center w-full relative">
             <select
+              defaultValue={initialOption}
               onChange={(event) => onOptionChange(event.target.value)}
               className={`appearance-none cursor-pointer  w-full text-md px-6 h-12 border-2 font-medium rounded-lg text-repod-text-primary bg-repod-canvas-secondary focus:outline-none 
           ${borderColor}`}
             >
               {map((option: { key: string; label: string }) => (
-                <option
-                  key={option.key}
-                  value={option.key}
-                  {...(initialOption === option.key ? { selected: true } : {})}
-                >
+                <option key={option.key} value={option.key}>
                   {option.label}
                 </option>
               ))(options)}

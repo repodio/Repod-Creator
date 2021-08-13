@@ -1,23 +1,10 @@
 import { useRouter } from "next/router";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import Modal from "./baseModal";
-import {
-  createNewSubscriptionBenefit,
-  deleteBenefit,
-  removeSubscriptionTier,
-  saveSubscriptionBenefit,
-  selectors as subscriptionsSelectors,
-  upsertBenefitToSubscriptionTier,
-} from "modules/Subscriptions";
-import { map } from "lodash/fp";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { ListItem } from "components/Forms";
-import { ArrowRight } from "react-feather";
-import SubscriptionBenefits from "constants/subscriptionBenefitTypes";
+import { deleteBenefit } from "modules/Subscriptions";
 import { Button } from "components/Buttons";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
-import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 
 type RemoveBenefitModalProps = {
@@ -37,8 +24,7 @@ const RemoveBenefitModal = ({
 }: RemoveBenefitModalProps) => {
   const dispatch = useDispatch<ThunkDispatch<{}, undefined, Action>>();
   const router = useRouter();
-  const { subscriptionTierId, showId } = router.query;
-  const subscriptionTierIdString = subscriptionTierId as string;
+  const { showId } = router.query;
   const showIdString = showId as string;
 
   const closeModal = () => {
@@ -69,10 +55,6 @@ const RemoveBenefitModal = ({
       setIsModalOpen={setIsModalOpen}
       minWidth={100}
     >
-      {/* <p>
-        Remove this benefit will unpublish any Subscription Tiers if this was
-        the only benefit
-      </p> */}
       <div className="w-full flex flex-row items-center justify-between">
         <Button.Small
           className="bg-repod-canvas text-repod-text-secondary"

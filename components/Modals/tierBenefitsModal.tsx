@@ -127,6 +127,7 @@ const ListedTierBenefits = ({
     <>
       {map((benefit: SubscriptionBenefitItem) => (
         <ListItem.AddBenefit
+          key={benefit.benefitId}
           label={benefit.title}
           subLabel={`Included in ${benefit.tiersCount || 0} other tiers`}
           value={addedBenefitIds.includes(benefit.benefitId)}
@@ -223,6 +224,7 @@ const EditBenefits = ({
   return (
     <>
       <ListItem.Input
+        key="title"
         label={MODAL_COPY.EditLabel}
         subLabel={MODAL_COPY.RequiredSubLabel}
         value={edittedBenefit.title}
@@ -233,6 +235,7 @@ const EditBenefits = ({
         error={errors.title}
       />
       <ListItem.Select
+        key="select"
         label={MODAL_COPY.CategoryLabel}
         subLabel={MODAL_COPY.RequiredSubLabel}
         options={selectOptions}
@@ -241,6 +244,7 @@ const EditBenefits = ({
       />
       {TypesRequiringRSSFeed.includes(edittedBenefitType) ? (
         <ListItem.Input
+          key="rss"
           label={MODAL_COPY.RSSLabel}
           subLabel={MODAL_COPY.RequiredSubLabel}
           value={edittedBenefit.rssFeed}
@@ -291,12 +295,14 @@ const CreateBenefit = ({
       createNewSubscriptionBenefit({ showId: showIdString, type })
     );
 
-    dispatch(
-      upsertBenefitToSubscriptionTier({
-        benefitId: newBenefitId,
-        subscriptionTierId: subscriptionTierIdString,
-      })
-    );
+    if (subscriptionTierId) {
+      dispatch(
+        upsertBenefitToSubscriptionTier({
+          benefitId: newBenefitId,
+          subscriptionTierId: subscriptionTierIdString,
+        })
+      );
+    }
     toast.success("Benefit Created");
     setBenefitId(newBenefitId);
     setScreenMode(TierBenefitsModal.Types.editBenefit);
@@ -307,28 +313,30 @@ const CreateBenefit = ({
       <p className="text-sm font-book text-repod-text-primary mb-4">
         {MODAL_COPY.CreateDescription}
       </p>
-      {map((type: string) => [
-        <div className="h-0 border border-solid border-t-0 border-repod-border-light my-2" />,
-        <div className="flex flex-row items-center justify-start w-full py-4">
-          <div className="flex-1 flex-col items-start justify-start pr-4">
-            <p className="text-md font-book text-repod-text-primary">
-              {SUBSCRIPTION_BENEFITS[type].title}
-            </p>
-            <p className="text-xs font-book text-repod-text-secondary">
-              {SUBSCRIPTION_BENEFITS[type].description}
-            </p>
+      {map((type: string) => (
+        <div key={type}>
+          <div className="h-0 border border-solid border-t-0 border-repod-border-light my-2" />
+          <div className="flex flex-row items-center justify-start w-full py-4">
+            <div className="flex-1 flex-col items-start justify-start pr-4">
+              <p className="text-md font-book text-repod-text-primary">
+                {SUBSCRIPTION_BENEFITS[type].title}
+              </p>
+              <p className="text-xs font-book text-repod-text-secondary">
+                {SUBSCRIPTION_BENEFITS[type].description}
+              </p>
+            </div>
+            <div className="flex-0 flex-col items-center justify-center relative">
+              <Button.Tiny
+                style={{ width: 90 }}
+                onClick={() => createNewBenefit(type)}
+                className={`py-1  bg-bg-info rounded border-1 border-info uppercase`}
+              >
+                <p className="text-xs font-semibold text-info">Add</p>
+              </Button.Tiny>
+            </div>
           </div>
-          <div className="flex-0 flex-col items-center justify-center relative">
-            <Button.Tiny
-              style={{ width: 90 }}
-              onClick={() => createNewBenefit(type)}
-              className={`py-1  bg-bg-info rounded border-1 border-info uppercase`}
-            >
-              <p className="text-xs font-semibold text-info">Add</p>
-            </Button.Tiny>
-          </div>
-        </div>,
-      ])(Object.keys(SUBSCRIPTION_BENEFITS))}
+        </div>
+      ))(Object.keys(SUBSCRIPTION_BENEFITS))}
     </>
   );
 };
@@ -363,14 +371,20 @@ const TierBenefitsModal = ({
     >
       {screenMode === TierBenefitsModal.Types.tierBenefits ? (
         <ListedTierBenefits
+          key={TierBenefitsModal.Types.tierBenefits}
           addedBenefits={addedBenefits}
           setScreenMode={setScreenMode}
           closeModal={closeModal}
         />
       ) : screenMode === TierBenefitsModal.Types.editBenefit ? (
-        <EditBenefits benefitId={benefitId} closeModal={closeModal} />
+        <EditBenefits
+          key={TierBenefitsModal.Types.editBenefit}
+          benefitId={benefitId}
+          closeModal={closeModal}
+        />
       ) : screenMode === TierBenefitsModal.Types.createBenefit ? (
         <CreateBenefit
+          key={TierBenefitsModal.Types.createBenefit}
           setScreenMode={setScreenMode}
           setBenefitId={setBenefitId}
         />

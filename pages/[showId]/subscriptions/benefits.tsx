@@ -1,12 +1,10 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { withAuthUser, AuthAction } from "next-firebase-auth";
 import { useSelector, useDispatch } from "react-redux";
 import { selectors as showsSelectors } from "modules/Shows";
 import {
   selectors as subscriptionsSelectors,
   fetchShowSubscriptionTiers,
-  createNewSubscriptionTier,
-  deleteBenefit,
 } from "modules/Subscriptions";
 import { useRouter } from "next/router";
 import { LoadingScreen } from "components/Loading";
@@ -14,27 +12,23 @@ import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
 import { SubscriptionsLayout } from "components/Layouts";
 import { useMediaQuery } from "react-responsive";
-import StripeConnect from "components/StripeConnect";
-import { Button } from "components/Buttons";
-import { createDefaultBenefitAndTier } from "modules/Subscriptions";
-import {
-  SubscriptionTierPlaceholder,
-  SubscriptionTierSnippit,
-} from "components/SubscriptionComponents";
-import Link from "next/link";
 import { map } from "lodash/fp";
 import { RemoveBenefitModal, TierBenefitsModal } from "components/Modals";
 import { AlertCircle, Trash2 } from "react-feather";
 import { TypesRequiringRSSFeed } from "constants/subscriptionBenefitTypes";
+import { Button } from "components/Buttons";
 
 const PAGE_COPY = {
   NoRSSMessage: "No RSS Feed",
 };
 
-const Subscriptions = () => {
+const Benefits = () => {
   const router = useRouter();
   const [pageLoading, setPageLoading] = useState(true);
-  const [isEditBenefitModalOpen, setIsEditBenefitModalOpen] = useState(false);
+  const [isBenefitModalOpen, setBenefitModalOpen] = useState(false);
+  const [modalScreenMode, setModalScreenMode] = useState(
+    TierBenefitsModal.Types.editBenefit
+  );
   const [isRemoveBenefitModalOpen, setIsRemoveBenefitModalOpen] =
     useState(false);
 
@@ -63,19 +57,25 @@ const Subscriptions = () => {
   }, []);
 
   useEffect(() => {
-    if (!isEditBenefitModalOpen) {
+    if (!isBenefitModalOpen) {
       setSelectedBenefitId(null);
     }
-  }, [isEditBenefitModalOpen]);
+  }, [isBenefitModalOpen]);
 
   const handleEditBenefit = (benefitId) => {
+    setModalScreenMode(TierBenefitsModal.Types.editBenefit);
     setSelectedBenefitId(benefitId);
-    setIsEditBenefitModalOpen(true);
+    setBenefitModalOpen(true);
   };
 
   const handleRemoveBenefit = (benefitId) => {
     setSelectedBenefitId(benefitId);
     setIsRemoveBenefitModalOpen(true);
+  };
+
+  const handleStartNewBenefit = () => {
+    setModalScreenMode(TierBenefitsModal.Types.createBenefit);
+    setBenefitModalOpen(true);
   };
 
   if (!show || pageLoading) {
@@ -86,6 +86,13 @@ const Subscriptions = () => {
     <SubscriptionsLayout>
       <div className="w-full flex flex-col justify-start items-start">
         <h1>{benefits.length} Benefits</h1>
+        <Button.Small
+          className="bg-bg-info text-info my-2"
+          style={{ minWidth: 130, maxWidth: 130, width: 130 }}
+          onClick={() => handleStartNewBenefit()}
+        >
+          + New Benefit
+        </Button.Small>
         {map((benefit: SubscriptionBenefitItem) => (
           <div
             key={benefit.benefitId}
@@ -139,21 +146,22 @@ const Subscriptions = () => {
           </div>
         ))(benefits)}
 
-        {selectedBenefitId
-          ? [
-              <TierBenefitsModal
-                isModalOpen={isEditBenefitModalOpen}
-                setIsModalOpen={setIsEditBenefitModalOpen}
-                initialBenefitId={selectedBenefitId}
-                initialScreen={TierBenefitsModal.Types.editBenefit}
-              />,
-              <RemoveBenefitModal
-                benefitId={selectedBenefitId}
-                isModalOpen={isRemoveBenefitModalOpen}
-                setIsModalOpen={setIsRemoveBenefitModalOpen}
-              />,
-            ]
-          : null}
+        {isBenefitModalOpen ? (
+          <TierBenefitsModal
+            isModalOpen={isBenefitModalOpen}
+            setIsModalOpen={setBenefitModalOpen}
+            initialBenefitId={selectedBenefitId}
+            initialScreen={modalScreenMode}
+          />
+        ) : null}
+
+        {isRemoveBenefitModalOpen ? (
+          <RemoveBenefitModal
+            benefitId={selectedBenefitId}
+            isModalOpen={isRemoveBenefitModalOpen}
+            setIsModalOpen={setIsRemoveBenefitModalOpen}
+          />
+        ) : null}
       </div>
     </SubscriptionsLayout>
   );
@@ -163,4 +171,4 @@ export default withAuthUser({
   whenUnauthedBeforeInit: AuthAction.SHOW_LOADER,
   whenUnauthedAfterInit: AuthAction.REDIRECT_TO_LOGIN,
   LoaderComponent: LoadingScreen,
-})(Subscriptions);
+})(Benefits);

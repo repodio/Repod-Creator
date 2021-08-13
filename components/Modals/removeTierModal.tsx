@@ -1,22 +1,10 @@
 import { useRouter } from "next/router";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import Modal from "./baseModal";
-import {
-  createNewSubscriptionBenefit,
-  removeSubscriptionTier,
-  saveSubscriptionBenefit,
-  selectors as subscriptionsSelectors,
-  upsertBenefitToSubscriptionTier,
-} from "modules/Subscriptions";
-import { map } from "lodash/fp";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { ListItem } from "components/Forms";
-import { ArrowRight } from "react-feather";
-import SubscriptionBenefits from "constants/subscriptionBenefitTypes";
+import { removeSubscriptionTier } from "modules/Subscriptions";
 import { Button } from "components/Buttons";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
-import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 
 type RemoveTierModalProps = {
