@@ -116,7 +116,11 @@ const Tips = () => {
             <Link
               href={`https://dashboard.stripe.com/connect/accounts/${stripeAccountId}`}
             >
-              <a className="flex flex-row items-center text-xl font-bold text-repod-text-primary mr-4 hover:opacity-50 transition underline">
+              <a
+                className={`flex flex-row items-center font-bold text-repod-text-primary mr-4 hover:opacity-50 transition underline ${
+                  isMobile ? "text-lg" : "text-xl"
+                }`}
+              >
                 {stripeAccountId}
 
                 <ArrowUpRight
