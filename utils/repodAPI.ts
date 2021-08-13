@@ -209,6 +209,7 @@ const updateSubscriptionTier = async ({
   description,
   enableShippingAddress,
   benefitIds,
+  published,
 }: {
   showId: string;
   subscriptionTierId: string;
@@ -217,6 +218,7 @@ const updateSubscriptionTier = async ({
   description?: string;
   enableShippingAddress?: boolean;
   benefitIds?: string[];
+  published?: boolean;
 }): Promise<string> => {
   const response = await fetch(
     `${API_DOMAIN}/v1/${ROUTES.subscriptions}/${showId}/${subscriptionTierId}`,
@@ -229,6 +231,7 @@ const updateSubscriptionTier = async ({
         description,
         enableShippingAddress,
         benefitIds,
+        published,
       }),
     }
   );

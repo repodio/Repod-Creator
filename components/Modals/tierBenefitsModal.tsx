@@ -16,6 +16,7 @@ import { Button } from "components/Buttons";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
 import { useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 
 const SUBSCRIPTION_BENEFITS = {
   [SubscriptionBenefits.custom]: {
@@ -204,6 +205,8 @@ const EditBenefits = ({
             rssFeed,
           })
         );
+
+        toast.success("Benefit Saved!");
         closeModal();
       } catch (error) {
         console.log("saveAndAddBenefit with error", error);

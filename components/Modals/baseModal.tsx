@@ -40,7 +40,7 @@ const Modal = ({ isModalOpen, setIsModalOpen, title, children }) => {
               />
             </button>
           </div>
-          <div className="overflow-y-scroll pr-2" style={{ maxHeight: 700 }}>
+          <div className="overflow-y-scroll pr-2" style={{ maxHeight: 550 }}>
             {children}
           </div>
         </div>

@@ -159,8 +159,6 @@ const Subscriptions = () => {
 
   const stripeAccountId = show.claimedShow && show.claimedShow.stripeAccountId;
 
-  console.log("subscriptionTiers", subscriptionTiers);
-
   return (
     <SubscriptionsLayout>
       {stripeAccountId ? (

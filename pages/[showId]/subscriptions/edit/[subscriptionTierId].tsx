@@ -21,6 +21,7 @@ import Collapsible from "components/Collapsible";
 import { Button } from "components/Buttons";
 import { Trash } from "react-feather";
 import toast from "react-hot-toast";
+import { map } from "lodash/fp";
 
 const PAGE_COPY = {
   EditTitle: "Tiers",
@@ -63,6 +64,8 @@ const EditSubscription = () => {
   const [enableShippingAddress, setShippingAddressEnabled] = useState(
     subscriptionTier.enableShippingAddress
   );
+
+  const [benefits, setBenefits] = useState(subscriptionTier.benefits);
 
   const {
     register,
@@ -112,22 +115,60 @@ const EditSubscription = () => {
             monthlyPrice,
             description,
             enableShippingAddress,
-            benefitIds: subscriptionTier.benefitIds,
+            benefitIds: map(
+              (benefit: SubscriptionBenefitItem) => benefit.benefitId
+            )(benefits),
+            published: subscriptionTier.published,
           })
         );
         toast.success("Subscription Tier Saved!");
-
-        router.back();
       } catch (error) {
-        console.log("saveSubscriptionTier with error", error);
+        console.log("onSave with error", error);
       }
     },
-    [errors, subscriptionTier.benefitIds]
+    [errors, benefits]
   );
 
-  const handleCancel = useCallback(() => {
+  const handleCancel = () => {
     router.back();
-  }, [errors]);
+  };
+
+  const handleUnpublish = async () => {
+    try {
+      await dispatch(
+        saveSubscriptionTier({
+          showId: showIdString,
+          subscriptionTierId: subscriptionTierIdString,
+          published: false,
+        })
+      );
+      toast.success("Subscription Tier Unpublished!");
+    } catch (error) {
+      console.log("handleUnpublish with error", error);
+    }
+  };
+
+  const handlePublish = async ({ title, monthlyPrice, description }) => {
+    try {
+      await dispatch(
+        saveSubscriptionTier({
+          showId: showIdString,
+          subscriptionTierId: subscriptionTierIdString,
+          title,
+          monthlyPrice,
+          description,
+          enableShippingAddress,
+          benefitIds: map(
+            (benefit: SubscriptionBenefitItem) => benefit.benefitId
+          )(benefits),
+          published: true,
+        })
+      );
+      toast.success("Subscription Tier Published!");
+    } catch (error) {
+      console.log("saveSubscriptionTier with error", error);
+    }
+  };
 
   const openAddBenefitModal = () => {};
 
@@ -193,7 +234,8 @@ const EditSubscription = () => {
             <ListItem.BenefitsList
               label={PAGE_COPY.BenefitsLabel}
               subLabel={PAGE_COPY.BenefitsSubLabel}
-              benefits={subscriptionTier.benefits}
+              benefits={benefits}
+              setBenefits={setBenefits}
               error={false}
               handleAddBenefit={openAddBenefitModal}
             />
@@ -229,13 +271,23 @@ const EditSubscription = () => {
               </div>
 
               <div className="flex flex-row items-center justify-end">
-                <Button.Small
-                  className="bg-info text-repod-text-alternative mb-6"
-                  style={{ minWidth: 100, maxWidth: 100, width: 100 }}
-                  // onClick={handleAddBenefit}
-                >
-                  Unpublish
-                </Button.Small>
+                {subscriptionTier.published ? (
+                  <Button.Small
+                    className="bg-repod-canvas text-repod-text-secondary mb-6"
+                    style={{ minWidth: 100, maxWidth: 100, width: 100 }}
+                    onClick={handleUnpublish}
+                  >
+                    Unpublish
+                  </Button.Small>
+                ) : (
+                  <Button.Small
+                    className="bg-repod-canvas text-info mb-6"
+                    style={{ minWidth: 100, maxWidth: 100, width: 100 }}
+                    onClick={handleSubmit(handlePublish)}
+                  >
+                    Publish
+                  </Button.Small>
+                )}
                 <Button.Small
                   className="bg-repod-canvas text-repod-text-secondary mb-6"
                   style={{ minWidth: 50, maxWidth: 50, width: 50 }}

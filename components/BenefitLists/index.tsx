@@ -92,6 +92,7 @@ const BenefitCard = ({
     // </div>
 
     <div
+      key={id}
       ref={ref}
       data-handler-id={handlerId}
       className={`flex flex-row items-center justify-start w-full my-2 py-4 rounded bg-repod-canvas-secondary ${opacity}`}
@@ -126,8 +127,7 @@ const BenefitCard = ({
   );
 };
 
-const BenefitsList = ({ benefits }) => {
-  const [cards, setCards] = useState(benefits);
+const BenefitsList = ({ benefits, setBenefits }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedBenefitId, setSelectedBenefitId] = useState(null);
   const dispatch = useDispatch<ThunkDispatch<{}, undefined, Action>>();
@@ -136,7 +136,7 @@ const BenefitsList = ({ benefits }) => {
   const subscriptionTierIdString = subscriptionTierId as string;
 
   useEffect(() => {
-    setCards(benefits);
+    setBenefits(benefits);
   }, [benefits]);
 
   useEffect(() => {
@@ -147,10 +147,10 @@ const BenefitsList = ({ benefits }) => {
 
   const moveCard = useCallback(
     (dragIndex, hoverIndex) => {
-      const dragCard = cards[dragIndex];
+      const dragCard = benefits[dragIndex];
 
-      setCards(
-        update(cards, {
+      setBenefits(
+        update(benefits, {
           $splice: [
             [dragIndex, 1],
             [hoverIndex, 0, dragCard],
@@ -158,7 +158,7 @@ const BenefitsList = ({ benefits }) => {
         })
       );
     },
-    [cards]
+    [benefits]
   );
 
   const handleEditBenefit = (benefitId) => {
@@ -177,32 +177,31 @@ const BenefitsList = ({ benefits }) => {
 
   const renderCard = (benefit, index) => {
     return (
-      <>
-        <BenefitCard
-          key={benefit.benefitId}
-          index={index}
-          id={benefit.benefitId}
-          label={benefit.title}
-          subLabel={benefit.rssFeed}
-          moveCard={moveCard}
-          handleEditBenefit={() => handleEditBenefit(benefit.benefitId)}
-          handleRemoveBenefit={() => handleRemoveBenefit(benefit.benefitId)}
-        />
-        {selectedBenefitId ? (
-          <TierBenefitsModal
-            isModalOpen={isModalOpen}
-            setIsModalOpen={setIsModalOpen}
-            initialBenefitId={selectedBenefitId}
-            initialScreen={TierBenefitsModal.Types.editBenefit}
-          />
-        ) : null}
-      </>
+      <BenefitCard
+        key={benefit.benefitId}
+        index={index}
+        id={benefit.benefitId}
+        label={benefit.title}
+        subLabel={benefit.rssFeed}
+        moveCard={moveCard}
+        handleEditBenefit={() => handleEditBenefit(benefit.benefitId)}
+        handleRemoveBenefit={() => handleRemoveBenefit(benefit.benefitId)}
+      />
     );
   };
 
   return (
     <div className={`flex flex-col w-full`}>
-      {cards.map((card, i) => renderCard(card, i))}
+      {benefits.map((card, i) => renderCard(card, i))}
+
+      {selectedBenefitId ? (
+        <TierBenefitsModal
+          isModalOpen={isModalOpen}
+          setIsModalOpen={setIsModalOpen}
+          initialBenefitId={selectedBenefitId}
+          initialScreen={TierBenefitsModal.Types.editBenefit}
+        />
+      ) : null}
     </div>
   );
 };

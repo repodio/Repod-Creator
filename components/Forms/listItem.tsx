@@ -26,6 +26,7 @@ const CurrencyFormat = ({
   ...rest
 }) => {
   const [currency, setCurrency] = React.useState(value / 100);
+
   return (
     <NumberFormat
       {...registerInput}
@@ -59,6 +60,7 @@ const ListItem = ({
   onOptionChange,
   initialOption,
   options,
+  setBenefits,
   benefits,
   handleRemoveBenefit,
   handleEditBenefit,
@@ -78,6 +80,7 @@ const ListItem = ({
   onOptionChange?: (option: string) => void;
   initialOption?: string;
   options?: { label: string; key: string }[];
+  setBenefits?: (benefits: SubscriptionBenefitItem[]) => {};
   benefits?: SubscriptionBenefitItem[];
   handleAddBenefit?: () => void;
   handleRemoveBenefit?: () => void;
@@ -127,14 +130,21 @@ const ListItem = ({
           <Controller
             name={name}
             control={control}
-            render={({ field }) => (
-              <CurrencyFormat
-                borderColor={borderColor}
-                placeholder={placeholder}
-                registerInput={registerInput}
-                {...field}
-              />
-            )}
+            render={({ field: { ref, name, onBlur, onChange, value } }) => {
+              return (
+                <CurrencyFormat
+                  borderColor={borderColor}
+                  placeholder={placeholder}
+                  registerInput={registerInput}
+                  innerRef={ref}
+                  name={name}
+                  onBlur={onBlur}
+                  onChange={onChange}
+                  value={value}
+                  // {...field}
+                />
+              );
+            }}
           />
         ) : type === ListItemTypes.textarea ? (
           <textarea
@@ -159,16 +169,18 @@ const ListItem = ({
                 >
                   + Add Benefit
                 </Button.Small>
-                <BenefitsListComponent benefits={benefits} />
+                <BenefitsListComponent
+                  setBenefits={setBenefits}
+                  benefits={benefits}
+                />
               </>
             ) : (
               <button
                 onClick={() => setIsModalOpen(true)}
                 className="w-full py-8 rounded-lg  bg-bg-info flex flex-row justify-center items-center hover:opacity-50 transition focus:outline-none"
               >
-                <PlusSquare className="stroke-current text-info" size={28} />
                 <p className="ml-4 text-lg font-semibold text-info">
-                  Add some benefits for your members
+                  + Add some benefits for your members
                 </p>
               </button>
             )}

@@ -4,6 +4,8 @@ import { RootState } from "reduxConfig/store";
 import {
   filter,
   flow,
+  isNil,
+  omitBy,
   map,
   merge,
   reject,
@@ -276,6 +278,7 @@ export const saveSubscriptionTier =
     monthlyPrice,
     benefitIds,
     enableShippingAddress,
+    published,
   }: {
     showId: string;
     subscriptionTierId: string;
@@ -284,6 +287,7 @@ export const saveSubscriptionTier =
     monthlyPrice?: number;
     benefitIds?: string[];
     enableShippingAddress?: boolean;
+    published?: boolean;
   }): ThunkResult<Promise<void>> =>
   async (dispatch: AsyncDispatch) => {
     try {
@@ -295,12 +299,13 @@ export const saveSubscriptionTier =
         monthlyPrice,
         benefitIds,
         enableShippingAddress,
+        published,
       });
 
       dispatch(
         upsertSubscriptionTier({
           subscriptionTiersById: {
-            [subscriptionTierId]: {
+            [subscriptionTierId]: omitBy(isNil)({
               showId,
               title,
               description,
@@ -308,7 +313,8 @@ export const saveSubscriptionTier =
               benefitIds,
               enableShippingAddress,
               updatedOn: new Date(),
-            },
+              published,
+            }),
           },
         })
       );
