@@ -84,7 +84,7 @@ const Benefits = () => {
 
   return (
     <SubscriptionsLayout>
-      <div className="w-full flex flex-col justify-start items-start">
+      <div className="w-full flex flex-col justify-start items-start pb-8">
         <h1>{benefits.length} Benefits</h1>
         <Button.Small
           className="bg-bg-info text-info my-2"

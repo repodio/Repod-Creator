@@ -21,7 +21,7 @@ import Collapsible from "components/Collapsible";
 import { Button } from "components/Buttons";
 import { Trash2 } from "react-feather";
 import toast from "react-hot-toast";
-import { map } from "lodash/fp";
+import { find, map } from "lodash/fp";
 import { RemoveTierModal } from "components/Modals";
 
 const PAGE_COPY = {
@@ -115,6 +115,12 @@ const EditSubscription = () => {
       return;
     }
   }, [Object.keys(errors)]);
+
+  useEffect(() => {
+    if (benefits.length !== subscriptionTier.benefits.length) {
+      setBenefits(subscriptionTier.benefits);
+    }
+  }, [subscriptionTier.benefits]);
 
   const onSave = useCallback(
     async ({ title, monthlyPrice, description }) => {
