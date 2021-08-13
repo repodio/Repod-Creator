@@ -59,6 +59,12 @@ const SUBSCRIPTION_BENEFITS = {
   },
 };
 
+const TypesRequiringRSSFeed = [
+  SubscriptionBenefits.earlyAccessEpisodes,
+  SubscriptionBenefits.bonusEpisodes,
+  SubscriptionBenefits.adFreeEpisodes,
+];
+
 const MODAL_COPY = {
   EditLabel: "Title",
   RequiredSubLabel: "Required",
@@ -242,16 +248,18 @@ const EditBenefits = ({
         onOptionChange={setEdittedBenefitType}
         initialOption={edittedBenefit.type}
       />
-      <ListItem.Input
-        label={MODAL_COPY.RSSLabel}
-        subLabel={MODAL_COPY.RequiredSubLabel}
-        value={edittedBenefit.rssFeed}
-        placeholder={MODAL_COPY.RSSPlaceholder}
-        name="rssFeed"
-        inputType="text"
-        registerInput={register("rssFeed", { required: false })}
-        error={errors.rssFeed}
-      />
+      {TypesRequiringRSSFeed.includes(edittedBenefitType) ? (
+        <ListItem.Input
+          label={MODAL_COPY.RSSLabel}
+          subLabel={MODAL_COPY.RequiredSubLabel}
+          value={edittedBenefit.rssFeed}
+          placeholder={MODAL_COPY.RSSPlaceholder}
+          name="rssFeed"
+          inputType="text"
+          registerInput={register("rssFeed", { required: false })}
+          error={errors.rssFeed}
+        />
+      ) : null}
       <div className="w-full h-0 my-2 border border-solid border-t-0 border-repod-border-light mb-6" />
       <div className="w-full flex flex-row items-center justify-start">
         <Button.Small
