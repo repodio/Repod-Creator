@@ -6,7 +6,7 @@ import BenefitsListComponent from "components/BenefitLists";
 import { Switch } from "@headlessui/react";
 import { TierBenefitsModal } from "components/Modals";
 import { map } from "lodash/fp";
-import { PlusSquare } from "react-feather";
+import { ChevronDown, PlusSquare } from "react-feather";
 
 const ListItemTypes = {
   input: "input",
@@ -240,21 +240,27 @@ const ListItem = ({
             )}
           </div>
         ) : type === ListItemTypes.select ? (
-          <select
-            onChange={(event) => onOptionChange(event.target.value)}
-            className={`w-full text-md px-6 h-12 border-2 font-medium rounded-lg text-repod-text-primary bg-repod-canvas-secondary focus:outline-none 
+          <div className="flex items-center justify-center w-full relative">
+            <select
+              onChange={(event) => onOptionChange(event.target.value)}
+              className={`appearance-none cursor-pointer  w-full text-md px-6 h-12 border-2 font-medium rounded-lg text-repod-text-primary bg-repod-canvas-secondary focus:outline-none 
           ${borderColor}`}
-          >
-            {map((option: { key: string; label: string }) => (
-              <option
-                key={option.key}
-                value={option.key}
-                {...(initialOption === option.key ? { selected: true } : {})}
-              >
-                {option.label}
-              </option>
-            ))(options)}
-          </select>
+            >
+              {map((option: { key: string; label: string }) => (
+                <option
+                  key={option.key}
+                  value={option.key}
+                  {...(initialOption === option.key ? { selected: true } : {})}
+                >
+                  {option.label}
+                </option>
+              ))(options)}
+            </select>
+            <ChevronDown
+              className="absolute right-4 stroke-current text-repod-text-secondary"
+              size={20}
+            />
+          </div>
         ) : null}
       </div>
     </div>
