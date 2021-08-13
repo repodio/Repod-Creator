@@ -33,7 +33,7 @@ const PAGE_COPY = {
   OverviewSubTitle: "Choose what to offer your members",
 };
 
-const TiersPlaceholder = ({ onPress }) => (
+const TiersPlaceholder = ({ isMobile, onPress }) => (
   <div className="flex flex-col">
     <div className="flex flex-col items-center w-full mb-8">
       <p className="text-xl font-bold text-repod-text-primary">
@@ -50,23 +50,27 @@ const TiersPlaceholder = ({ onPress }) => (
         benefitTitle="Private Discussions"
         artwork="/tier-placeholder1.png"
       />
-      <SubscriptionTierPlaceholder
-        title="Member pays $10 per month"
-        sutitle="All Previous Tiers, Plus"
-        benefitTitle="Early Access to Episodes"
-        artwork="/tier-placeholder1.png"
-      />
-      <SubscriptionTierPlaceholder
-        title="Member pays $20 per month"
-        sutitle="All Previous Tiers, Plus"
-        benefitTitle="Bonus Episodes"
-        artwork="/tier-placeholder1.png"
-      />
+      {!isMobile ? (
+        <SubscriptionTierPlaceholder
+          title="Member pays $10 per month"
+          sutitle="All Previous Tiers, Plus"
+          benefitTitle="Early Access to Episodes"
+          artwork="/tier-placeholder1.png"
+        />
+      ) : null}
+      {!isMobile ? (
+        <SubscriptionTierPlaceholder
+          title="Member pays $20 per month"
+          sutitle="All Previous Tiers, Plus"
+          benefitTitle="Bonus Episodes"
+          artwork="/tier-placeholder1.png"
+        />
+      ) : null}
     </div>
     <div className="flex flex-col items-center w-full">
       <Button.Medium
         className="bg-info text-repod-text-alternative"
-        style={{ minWidth: 300, maxWidth: 300, width: 300 }}
+        style={isMobile ? {} : { minWidth: 300, maxWidth: 300, width: 300 }}
         onClick={onPress}
       >
         Customize
@@ -178,7 +182,7 @@ const Subscriptions = () => {
             createNewTier={createNewTier}
           />
         ) : (
-          <TiersPlaceholder onPress={configureTiers} />
+          <TiersPlaceholder isMobile={isMobile} onPress={configureTiers} />
         )
       ) : (
         <StripeConnect message={PAGE_COPY.StripeConnectMessage} />
