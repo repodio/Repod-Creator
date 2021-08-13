@@ -104,7 +104,10 @@ const BenefitCard = ({
         <p className="truncate text-md font-semibold text-repod-text-primary">
           {label}
         </p>
-        <p className="truncate text-sm font-book text-repod-text-secondary">
+        <p
+          style={{ width: 300 }}
+          className="truncate text-sm font-book text-repod-text-secondary"
+        >
           {subLabel}
         </p>
       </div>
