@@ -50,6 +50,7 @@ const ListItem = ({
   subLabel,
   type,
   value,
+  boolValue,
   placeholder,
   error,
   name,
@@ -62,14 +63,13 @@ const ListItem = ({
   options,
   setBenefits,
   benefits,
-  handleRemoveBenefit,
-  handleEditBenefit,
   handleAddBenefit,
 }: {
   label: string;
   subLabel: string;
   type: string;
-  value?: string | boolean;
+  value?: string;
+  boolValue?: boolean;
   placeholder?: string;
   error?: boolean;
   name?: string;
@@ -83,8 +83,6 @@ const ListItem = ({
   setBenefits?: (benefits: SubscriptionBenefitItem[]) => {};
   benefits?: SubscriptionBenefitItem[];
   handleAddBenefit?: () => void;
-  handleRemoveBenefit?: () => void;
-  handleEditBenefit?: () => void;
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -122,7 +120,6 @@ const ListItem = ({
             name={name}
             id={name}
             defaultValue={value}
-            // value=""
             placeholder={placeholder}
             {...registerInput}
           />
@@ -141,7 +138,6 @@ const ListItem = ({
                   onBlur={onBlur}
                   onChange={onChange}
                   value={value}
-                  // {...field}
                 />
               );
             }}
@@ -154,7 +150,6 @@ const ListItem = ({
             name={name}
             id={name}
             defaultValue={value}
-            // value=""
             placeholder={placeholder}
             {...registerInput}
           />
@@ -198,7 +193,7 @@ const ListItem = ({
               {subLabel}
             </p>
             <Switch
-              checked={value}
+              checked={boolValue}
               onChange={onChange}
               className={`${
                 value ? "bg-info" : "bg-gray-300"

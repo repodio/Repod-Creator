@@ -87,10 +87,6 @@ const BenefitCard = ({
   drag(drop(ref));
 
   return (
-    // <div style={{ ...style, opacity }} ref={ref} data-handler-id={handlerId}>
-    //   {text}
-    // </div>
-
     <div
       key={id}
       ref={ref}

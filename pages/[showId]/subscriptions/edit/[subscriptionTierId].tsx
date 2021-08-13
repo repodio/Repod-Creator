@@ -19,7 +19,7 @@ import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import Collapsible from "components/Collapsible";
 import { Button } from "components/Buttons";
-import { Trash } from "react-feather";
+import { Trash2 } from "react-feather";
 import toast from "react-hot-toast";
 import { map } from "lodash/fp";
 import { RemoveTierModal } from "components/Modals";
@@ -261,7 +261,7 @@ const EditSubscription = () => {
                 <ListItem.Toggle
                   label={PAGE_COPY.ShippingLabel}
                   subLabel={PAGE_COPY.ShippingSubLabel}
-                  value={enableShippingAddress}
+                  boolValue={enableShippingAddress}
                   onChange={setShippingAddressEnabled}
                 />
               </div>
@@ -309,7 +309,7 @@ const EditSubscription = () => {
                   style={{ minWidth: 50, maxWidth: 50, width: 50 }}
                   onClick={handleRemovePressed}
                 >
-                  <Trash
+                  <Trash2
                     className="stroke-current text-repod-text-secondary"
                     size={24}
                   />

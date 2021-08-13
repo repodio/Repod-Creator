@@ -23,6 +23,7 @@ import {
   updateSubscriptionTier,
   updateSubscriptionBenefit,
   deleteSubscriptionTier,
+  deleteSubscriptionBenefit,
 } from "utils/repodAPI";
 import { convertArrayToObject } from "utils/normalizing";
 import generateUniqTitle from "utils/generateUniqTitle";
@@ -90,7 +91,7 @@ const getBenefitsByIds = createSelector(
 );
 
 const getBenefit = (benefitId) =>
-  createSelector(getBenefitsByIds, (benefitsByIds) => benefitsByIds[benefitId]);
+  createSelector(getBenefitsByIds, (benefitsById) => benefitsById[benefitId]);
 
 const getSubscriptionTiers = (showId) =>
   createSelector(
@@ -177,6 +178,8 @@ const UPSERT_BENEFIT_TO_SUBSCRIPTION_TIER =
 const REMOVE_BENEFIT_SUBSCRIPTION_TIER =
   "repod/Subscriptions/REMOVE_BENEFIT_SUBSCRIPTION_TIER";
 const REMOVE_SUBSCRIPTION_TIER = "repod/Subscriptions/REMOVE_SUBSCRIPTION_TIER";
+const REMOVE_SUBSCRIPTION_BENEFIT =
+  "repod/Subscriptions/REMOVE_SUBSCRIPTION_BENEFIT";
 
 // Action Creators
 export const upsertSubscriptionTier: ActionCreator<Action> = ({
@@ -236,13 +239,22 @@ export const removeBenefitFromSubscription: ActionCreator<Action> = ({
   subscriptionTierId,
 });
 
-export const clearSubscriptionTier: ActionCreator<Action> = ({
+const clearSubscriptionTier: ActionCreator<Action> = ({
   subscriptionTierId,
 }: {
   subscriptionTierId: string;
 }) => ({
   type: REMOVE_SUBSCRIPTION_TIER,
   subscriptionTierId,
+});
+
+const clearSubscriptionBenefit: ActionCreator<Action> = ({
+  benefitId,
+}: {
+  benefitId: string;
+}) => ({
+  type: REMOVE_SUBSCRIPTION_BENEFIT,
+  benefitId,
 });
 
 // Thunk
@@ -289,7 +301,7 @@ export const createNewSubscriptionTier =
 
       return subscriptionTierId;
     } catch (error) {
-      console.warn("[THUNK ERROR]: createDefaultSubscriptionTiers", error);
+      console.warn("[THUNK ERROR]: createNewSubscriptionTier", error);
     }
   };
 
@@ -343,7 +355,7 @@ export const saveSubscriptionTier =
         })
       );
     } catch (error) {
-      console.warn("[THUNK ERROR]: createDefaultSubscriptionTiers", error);
+      console.warn("[THUNK ERROR]: saveSubscriptionTier", error);
     }
   };
 
@@ -364,7 +376,28 @@ export const removeSubscriptionTier =
 
       dispatch(clearSubscriptionTier({ subscriptionTierId }));
     } catch (error) {
-      console.warn("[THUNK ERROR]: createDefaultSubscriptionTiers", error);
+      console.warn("[THUNK ERROR]: removeSubscriptionTier", error);
+    }
+  };
+
+export const deleteBenefit =
+  ({
+    showId,
+    benefitId,
+  }: {
+    showId: string;
+    benefitId: string;
+  }): ThunkResult<Promise<void>> =>
+  async (dispatch: AsyncDispatch) => {
+    try {
+      await deleteSubscriptionBenefit({
+        showId,
+        benefitId,
+      });
+
+      dispatch(clearSubscriptionBenefit({ benefitId }));
+    } catch (error) {
+      console.warn("[THUNK ERROR]: deleteBenefit", error);
     }
   };
 
@@ -415,7 +448,7 @@ export const createNewSubscriptionBenefit =
 
       return benefitId;
     } catch (error) {
-      console.warn("[THUNK ERROR]: createDefaultSubscriptionTiers", error);
+      console.warn("[THUNK ERROR]: createNewSubscriptionBenefit", error);
     }
   };
 
@@ -468,12 +501,11 @@ export const createDefaultBenefitAndTier =
         title: DEFAULT_SUBSCRIPTION_BENEFIT[DEFAULT_BENEFIT_TYPE].title,
         type: DEFAULT_BENEFIT_TYPE,
       };
-      console.log("createDefaultBenefitAndTier benefitData", benefitData);
+
       const benefitId = await createSubscriptionBenefit({
         showId,
         ...benefitData,
       });
-      console.log("createDefaultBenefitAndTier benefitId", benefitId);
 
       dispatch(
         upsertSubscriptionBenefit({
@@ -495,10 +527,6 @@ export const createDefaultBenefitAndTier =
         published: DEFAULT_SUBSCRIPTION_TIERS.published,
         benefitIds: [benefitId],
       });
-      console.log(
-        "createDefaultBenefitAndTier subscriptionTierId",
-        subscriptionTierId
-      );
 
       dispatch(
         upsertSubscriptionTier({
@@ -602,6 +630,10 @@ export default (state = INITIAL_STATE, action) =>
       subscriptionTiersById: omit([action.subscriptionTierId])(
         state.subscriptionTiersById
       ),
+    }),
+    [REMOVE_SUBSCRIPTION_BENEFIT]: () => ({
+      ...state,
+      benefitsById: omit([action.benefitId])(state.benefitsById),
     }),
     LOGOUT: () => ({
       ...INITIAL_STATE,
