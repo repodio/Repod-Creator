@@ -42,7 +42,7 @@ const Benefits = () => {
     subscriptionsSelectors.getAllShowBenefits(showIdString)
   );
   const dispatch = useDispatch<ThunkDispatch<{}, undefined, Action>>();
-  const isMobile = useMediaQuery({ query: "(max-width: 600px)" });
+  const isMobile = useMediaQuery({ query: "(max-width: 815px)" });
 
   useEffect(() => {
     (async () => {
@@ -82,6 +82,8 @@ const Benefits = () => {
     return <LoadingScreen />;
   }
 
+  console.log("isMobile", isMobile);
+
   return (
     <SubscriptionsLayout>
       <div className="w-full flex flex-col justify-start items-start pb-8">
@@ -96,7 +98,11 @@ const Benefits = () => {
         {map((benefit: SubscriptionBenefitItem) => (
           <div
             key={benefit.benefitId}
-            className={`flex flex-row items-center justify-start w-full my-2 py-4 rounded border border-solid  border-repod-border-light`}
+            className={
+              isMobile
+                ? `flex flex-col items-start justify-center w-full my-2 py-4 rounded border border-solid  border-repod-border-light`
+                : `flex flex-row items-center justify-start w-full my-2 py-4 rounded border border-solid  border-repod-border-light`
+            }
           >
             <div className="flex-1 flex-col items-start justify-start mx-4">
               <p className="truncate text-xs font-book text-repod-text-secondary">
@@ -107,12 +113,14 @@ const Benefits = () => {
               </p>
               {TypesRequiringRSSFeed.includes(benefit.type) ? (
                 benefit.rssFeed ? (
-                  <p
-                    // style={{ width: 300 }}
-                    className="w-full truncate text-sm font-book text-repod-text-secondary"
-                  >
-                    {benefit.rssFeed}
-                  </p>
+                  !isMobile ? (
+                    <p
+                      style={{ width: 300 }}
+                      className="w-full truncate text-sm font-book text-repod-text-secondary"
+                    >
+                      {benefit.rssFeed}
+                    </p>
+                  ) : null
                 ) : (
                   <div className="flex flex-row justify-start items-center">
                     <AlertCircle
@@ -126,23 +134,31 @@ const Benefits = () => {
                 )
               ) : null}
             </div>
-            <button
-              className="mr-4 hover:opacity-50 transition focus:outline-none"
-              onClick={() => handleEditBenefit(benefit.benefitId)}
+            <div
+              className={
+                isMobile
+                  ? "flex flex-row px-4 mt-2 w-full justify-between"
+                  : "flex flex-row"
+              }
             >
-              <p className="uppercase cursor-pointer flex text-center no-underline text-xs font-bold text-info">
-                Edit
-              </p>
-            </button>
-            <button
-              onClick={() => handleRemoveBenefit(benefit.benefitId)}
-              className="mr-4 hover:opacity-50 transition focus:outline-none"
-            >
-              <Trash2
-                className="stroke-current text-repod-text-secondary"
-                size={24}
-              />
-            </button>
+              <button
+                className="mr-4 hover:opacity-50 transition focus:outline-none"
+                onClick={() => handleEditBenefit(benefit.benefitId)}
+              >
+                <p className="uppercase cursor-pointer flex text-center no-underline text-xs font-bold text-info">
+                  Edit
+                </p>
+              </button>
+              <button
+                onClick={() => handleRemoveBenefit(benefit.benefitId)}
+                className="mr-4 hover:opacity-50 transition focus:outline-none"
+              >
+                <Trash2
+                  className="stroke-current text-repod-text-secondary"
+                  size={24}
+                />
+              </button>
+            </div>
           </div>
         ))(benefits)}
 
