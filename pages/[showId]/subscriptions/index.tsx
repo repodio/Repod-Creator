@@ -137,7 +137,7 @@ const Subscriptions = () => {
     subscriptionsSelectors.getSubscriptionTiers(showIdString)
   );
   const dispatch = useDispatch<ThunkDispatch<{}, undefined, Action>>();
-  const isMobile = useMediaQuery({ query: "(max-width: 600px)" });
+  const isMobile = useMediaQuery({ query: "(max-width: 900px)" });
 
   useEffect(() => {
     (async () => {
