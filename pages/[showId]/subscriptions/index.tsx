@@ -147,6 +147,11 @@ const Subscriptions = () => {
 
       await dispatch(fetchShowSubscriptionTiers(showIdString));
 
+      setTimeout(
+        () => dispatch(fetchShowSubscriptionTiers(showIdString)),
+        3000
+      );
+
       setPageLoading(false);
     })();
   }, []);
