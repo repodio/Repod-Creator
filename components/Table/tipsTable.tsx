@@ -83,7 +83,7 @@ const TipsTable = ({ data }) => {
   return data && data.length ? (
     <Table data={data} columns={columns} isMobile={isMobile} />
   ) : (
-    <EmptyTable message="No team members yet" />
+    <EmptyTable message="No tips yet" />
   );
 };
 
