@@ -597,34 +597,41 @@ export default (state = INITIAL_STATE, action) =>
       ...state,
       benefitsById: merge(state.benefitsById)(action.benefitsById),
     }),
-    [UPSERT_BENEFIT_TO_SUBSCRIPTION_TIER]: () => ({
-      ...state,
-      subscriptionTiersById: {
-        ...state.subscriptionTiersById,
-        [action.subscriptionTierId]: {
-          ...(state.subscriptionTiersById[action.subscriptionTierId] || {}),
-          benefitIds: uniq(
-            (
-              state.subscriptionTiersById[action.subscriptionTierId]
-                .benefitIds || []
-            ).concat(action.benefitId)
-          ),
+    [UPSERT_BENEFIT_TO_SUBSCRIPTION_TIER]: () => {
+      const subscriptionTier = state.subscriptionTiersById[
+        action.subscriptionTierId
+      ] || { benefitIds: [] };
+      return {
+        ...state,
+        subscriptionTiersById: {
+          ...state.subscriptionTiersById,
+          [action.subscriptionTierId]: {
+            ...subscriptionTier,
+            benefitIds: uniq(
+              (subscriptionTier.benefitIds || []).concat(action.benefitId)
+            ),
+          },
         },
-      },
-    }),
-    [REMOVE_BENEFIT_SUBSCRIPTION_TIER]: () => ({
-      ...state,
-      subscriptionTiersById: {
-        ...state.subscriptionTiersById,
-        [action.subscriptionTierId]: {
-          ...(state.subscriptionTiersById[action.subscriptionTierId] || {}),
-          benefitIds: reject((id) => id === action.benefitId)(
-            state.subscriptionTiersById[action.subscriptionTierId].benefitIds ||
-              []
-          ),
+      };
+    },
+    [REMOVE_BENEFIT_SUBSCRIPTION_TIER]: () => {
+      const subscriptionTier = state.subscriptionTiersById[
+        action.subscriptionTierId
+      ] || { benefitIds: [] };
+
+      return {
+        ...state,
+        subscriptionTiersById: {
+          ...state.subscriptionTiersById,
+          [action.subscriptionTierId]: {
+            ...subscriptionTier,
+            benefitIds: reject((id) => id === action.benefitId)(
+              subscriptionTier.benefitIds || []
+            ),
+          },
         },
-      },
-    }),
+      };
+    },
     [REMOVE_SUBSCRIPTION_TIER]: () => ({
       ...state,
       subscriptionTiersById: omit([action.subscriptionTierId])(
