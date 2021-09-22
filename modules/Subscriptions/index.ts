@@ -29,16 +29,16 @@ import { convertArrayToObject } from "utils/normalizing";
 import generateUniqTitle from "utils/generateUniqTitle";
 import SubscriptionBenefits from "constants/subscriptionBenefitTypes";
 
-const DEFAULT_BENEFIT_TYPE = SubscriptionBenefits.adFreeEpisodes;
+const DEFAULT_BENEFIT_TYPE = SubscriptionBenefits.bonusEpisodes;
 
 const DEFAULT_SUBSCRIPTION_BENEFIT = {
   [SubscriptionBenefits.custom]: {
     title: "Custom Benefit",
     type: SubscriptionBenefits.custom,
   },
-  [SubscriptionBenefits.adFreeEpisodes]: {
+  [SubscriptionBenefits.bonusEpisodes]: {
     title: "Ad Free Episodes",
-    type: SubscriptionBenefits.adFreeEpisodes,
+    type: SubscriptionBenefits.bonusEpisodes,
   },
   [SubscriptionBenefits.bonusEpisodes]: {
     title: "Bonus Episodes",

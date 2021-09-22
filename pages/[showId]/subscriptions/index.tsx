@@ -28,7 +28,7 @@ const PAGE_COPY = {
   PlaceholderTitle:
     "Start by customizing the subscription tiers you want to offer",
   PlaceholderSubTitle:
-    "We’ll start you off with the following tiers but you get to customize everything how you like",
+    "We'll start you off with the following tier but you get to customize however you'd like",
   OverviewTitle: "Tiers",
   OverviewSubTitle: "Choose what to offer your members",
 };
@@ -47,25 +47,10 @@ const TiersPlaceholder = ({ isMobile, onPress }) => (
       <SubscriptionTierPlaceholder
         title="Member pays $5 per month"
         sutitle="Includes"
-        benefitTitle="Private Discussions"
+        benefitTitleOne="Private Discussions"
+        benefitTitleTwo="Bonus Episodes"
         artwork="/tier-placeholder1.png"
       />
-      {!isMobile ? (
-        <SubscriptionTierPlaceholder
-          title="Member pays $10 per month"
-          sutitle="All Previous Tiers, Plus"
-          benefitTitle="Early Access to Episodes"
-          artwork="/tier-placeholder1.png"
-        />
-      ) : null}
-      {!isMobile ? (
-        <SubscriptionTierPlaceholder
-          title="Member pays $20 per month"
-          sutitle="All Previous Tiers, Plus"
-          benefitTitle="Bonus Episodes"
-          artwork="/tier-placeholder1.png"
-        />
-      ) : null}
     </div>
     <div className="flex flex-col items-center w-full">
       <Button.Medium
