@@ -219,7 +219,7 @@ const EditBenefits = ({
           rssFeed
         );
 
-        await dispatch(
+        dispatch(
           saveSubscriptionBenefit({
             showId: showIdString,
             benefitId,

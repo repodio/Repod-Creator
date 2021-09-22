@@ -61,8 +61,8 @@ const ListItem = ({
   onOptionChange,
   initialOption,
   options,
-  setBenefits,
-  benefits,
+  setBenefitIds,
+  benefitIds,
 }: {
   label: string;
   subLabel: string;
@@ -79,8 +79,8 @@ const ListItem = ({
   onOptionChange?: (option: string) => void;
   initialOption?: string;
   options?: { label: string; key: string }[];
-  setBenefits?: (benefits: SubscriptionBenefitItem[]) => {};
-  benefits?: SubscriptionBenefitItem[];
+  setBenefitIds?: (benefitIds: string[]) => {};
+  benefitIds?: string[];
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const isMobile = useMediaQuery({ query: "(max-width: 815px)" });
@@ -160,7 +160,7 @@ const ListItem = ({
           />
         ) : type === ListItemTypes.benefitsList ? (
           <div className="flex flex-col items-start justify-start">
-            {benefits && benefits.length ? (
+            {benefitIds && benefitIds.length ? (
               <>
                 <Button.Small
                   className="bg-bg-info text-info mb-6"
@@ -170,8 +170,8 @@ const ListItem = ({
                   + Add Benefit
                 </Button.Small>
                 <BenefitsListComponent
-                  setBenefits={setBenefits}
-                  benefits={benefits}
+                  setBenefitIds={setBenefitIds}
+                  benefitIds={benefitIds}
                 />
               </>
             ) : (
@@ -192,7 +192,7 @@ const ListItem = ({
             )}
 
             <TierBenefitsModal
-              addedBenefits={benefits}
+              addedBenefits={benefitIds}
               isModalOpen={isModalOpen}
               setIsModalOpen={setIsModalOpen}
               initialScreen={TierBenefitsModal.Types.tierBenefits}

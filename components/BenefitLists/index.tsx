@@ -5,8 +5,11 @@ import { useDrag, useDrop } from "react-dnd";
 import update from "immutability-helper";
 import { TierBenefitsModal } from "components/Modals";
 import { useRouter } from "next/router";
-import { removeBenefitFromSubscription } from "modules/Subscriptions";
-import { useDispatch } from "react-redux";
+import {
+  selectors as subscriptionsSelectors,
+  removeBenefitFromSubscription,
+} from "modules/Subscriptions";
+import { useDispatch, useSelector } from "react-redux";
 import { Action } from "redux";
 import { ThunkDispatch } from "redux-thunk";
 import { TypesRequiringRSSFeed } from "constants/subscriptionBenefitTypes";
@@ -153,7 +156,7 @@ const BenefitCard = ({
   );
 };
 
-const BenefitsList = ({ benefits, setBenefits }) => {
+const BenefitsList = ({ benefitIds, setBenefitIds }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedBenefitId, setSelectedBenefitId] = useState(null);
   const dispatch = useDispatch<ThunkDispatch<{}, undefined, Action>>();
@@ -162,8 +165,8 @@ const BenefitsList = ({ benefits, setBenefits }) => {
   const subscriptionTierIdString = subscriptionTierId as string;
 
   useEffect(() => {
-    setBenefits(benefits);
-  }, [benefits]);
+    setBenefitIds(benefitIds);
+  }, [benefitIds]);
 
   useEffect(() => {
     if (!isModalOpen) {
@@ -173,10 +176,10 @@ const BenefitsList = ({ benefits, setBenefits }) => {
 
   const moveCard = useCallback(
     (dragIndex, hoverIndex) => {
-      const dragCard = benefits[dragIndex];
+      const dragCard = benefitIds[dragIndex];
 
-      setBenefits(
-        update(benefits, {
+      setBenefitIds(
+        update(benefitIds, {
           $splice: [
             [dragIndex, 1],
             [hoverIndex, 0, dragCard],
@@ -184,7 +187,7 @@ const BenefitsList = ({ benefits, setBenefits }) => {
         })
       );
     },
-    [benefits]
+    [benefitIds]
   );
 
   const handleEditBenefit = (benefitId) => {
@@ -201,7 +204,11 @@ const BenefitsList = ({ benefits, setBenefits }) => {
     );
   };
 
-  const renderCard = (benefit, index) => {
+  const renderCard = (benefitId, index) => {
+    const benefit = useSelector(
+      subscriptionsSelectors.getBenefit(benefitId)
+    ) || { benefitId: "", title: "", rssFeed: "", type: "" };
+
     return (
       <BenefitCard
         key={benefit.benefitId}
@@ -219,7 +226,7 @@ const BenefitsList = ({ benefits, setBenefits }) => {
 
   return (
     <div className={`flex flex-col w-full`}>
-      {benefits.map((card, i) => renderCard(card, i))}
+      {benefitIds.map((card, i) => renderCard(card, i))}
 
       {selectedBenefitId ? (
         <TierBenefitsModal

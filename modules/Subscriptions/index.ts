@@ -113,18 +113,8 @@ const getSubscriptionTiers = (showId) =>
 const getSubscriptionTier = (subscriptionTierId) =>
   createSelector(
     getSubscriptionTiersById,
-    getBenefitsByIds,
-    (subscriptionTiersById, benefitsById): SubscriptionTierItem => {
-      const tier = subscriptionTiersById[subscriptionTierId];
-      return tier
-        ? {
-            ...tier,
-            benefits: map((benefitId: string) => benefitsById[benefitId])(
-              tier.benefitIds
-            ),
-          }
-        : null;
-    }
+    (subscriptionTiersById): SubscriptionTierItem =>
+      subscriptionTiersById[subscriptionTierId]
   );
 
 const getAllShowBenefits = (showId) =>

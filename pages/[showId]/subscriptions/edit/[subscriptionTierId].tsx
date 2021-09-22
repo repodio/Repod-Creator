@@ -65,7 +65,7 @@ const EditSubscription = () => {
     description: "",
     enableShippingAddress: false,
     published: false,
-    benefits: [],
+    benefitIds: [],
     showId,
     subscriptionTierId,
   };
@@ -77,7 +77,7 @@ const EditSubscription = () => {
     subscriptionTier.enableShippingAddress
   );
 
-  const [benefits, setBenefits] = useState(subscriptionTier.benefits);
+  const [benefitIds, setBenefitIds] = useState(subscriptionTier.benefitIds);
 
   const {
     register,
@@ -117,10 +117,10 @@ const EditSubscription = () => {
   }, [Object.keys(errors)]);
 
   useEffect(() => {
-    if (benefits.length !== subscriptionTier.benefits.length) {
-      setBenefits(subscriptionTier.benefits);
+    if (benefitIds.length !== subscriptionTier.benefitIds.length) {
+      setBenefitIds(subscriptionTier.benefitIds);
     }
-  }, [subscriptionTier.benefits]);
+  }, [subscriptionTier.benefitIds]);
 
   const onSave = useCallback(
     async ({ title, monthlyPrice, description }) => {
@@ -133,9 +133,7 @@ const EditSubscription = () => {
             monthlyPrice,
             description,
             enableShippingAddress,
-            benefitIds: map(
-              (benefit: SubscriptionBenefitItem) => benefit.benefitId
-            )(benefits),
+            benefitIds,
             published: subscriptionTier.published,
           })
         );
@@ -144,7 +142,7 @@ const EditSubscription = () => {
         console.log("onSave with error", error);
       }
     },
-    [errors, benefits]
+    [errors, benefitIds]
   );
 
   const handleCancel = () => {
@@ -176,9 +174,7 @@ const EditSubscription = () => {
           monthlyPrice,
           description,
           enableShippingAddress,
-          benefitIds: map(
-            (benefit: SubscriptionBenefitItem) => benefit.benefitId
-          )(benefits),
+          benefitIds,
           published: true,
         })
       );
@@ -260,8 +256,8 @@ const EditSubscription = () => {
             <ListItem.BenefitsList
               label={PAGE_COPY.BenefitsLabel}
               subLabel={PAGE_COPY.BenefitsSubLabel}
-              benefits={benefits}
-              setBenefits={setBenefits}
+              benefitIds={benefitIds}
+              setBenefitIds={setBenefitIds}
               error={false}
               handleAddBenefit={openAddBenefitModal}
             />
