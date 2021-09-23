@@ -71,12 +71,14 @@ export type StateType = {
   benefitsById: {
     [key: string]: SubscriptionBenefitItem;
   };
+  deletedSubscriptionTierIds: string[];
 };
 
 // Initial State
 const INITIAL_STATE: StateType = {
   subscriptionTiersById: {},
   benefitsById: {},
+  deletedSubscriptionTierIds: [],
 };
 
 // Selectors
@@ -93,14 +95,28 @@ const getBenefitsByIds = createSelector(
 const getBenefit = (benefitId) =>
   createSelector(getBenefitsByIds, (benefitsById) => benefitsById[benefitId]);
 
+const getDeletedSubscriptionTierIds = createSelector(
+  baseSelector,
+  (subscriptions) => subscriptions.deletedSubscriptionTierIds || []
+);
+
 const getSubscriptionTiers = (showId) =>
   createSelector(
     getSubscriptionTiersById,
     getBenefitsByIds,
-    (subscriptionTiersById, benefitsById): SubscriptionTierItem[] =>
+    getDeletedSubscriptionTierIds,
+    (
+      subscriptionTiersById,
+      benefitsById,
+      deletedSubscriptionTierIds
+    ): SubscriptionTierItem[] =>
       flow(
         values,
-        filter((tier) => tier.showId === showId),
+        filter(
+          (tier) =>
+            tier.showId === showId &&
+            !deletedSubscriptionTierIds.includes(tier.subscriptionTierId)
+        ),
         map((tier) => ({
           ...tier,
           benefits: map((benefitId: string) => benefitsById[benefitId])(
@@ -624,6 +640,10 @@ export default (state = INITIAL_STATE, action) =>
     },
     [REMOVE_SUBSCRIPTION_TIER]: () => ({
       ...state,
+      deletedSubscriptionTierIds: [
+        ...(state.deletedSubscriptionTierIds || []),
+        action.subscriptionTierId,
+      ],
       subscriptionTiersById: omit([action.subscriptionTierId])(
         state.subscriptionTiersById
       ),
