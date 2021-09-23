@@ -139,10 +139,11 @@ const EditSubscription = () => {
         );
         toast.success("Subscription Tier Saved");
       } catch (error) {
-        console.log("onSave with error", error);
+        toast.success("Something went wrong");
+        console.log("onSave error", error);
       }
     },
-    [errors, benefitIds]
+    [errors, benefitIds, subscriptionTier.published]
   );
 
   const handleCancel = () => {
