@@ -21,6 +21,7 @@ import {
   SubscriptionTierSnippit,
 } from "components/SubscriptionComponents";
 import Link from "next/link";
+import LoaderComponent, { LOADER_COLORS } from "components/Loading/loader";
 
 const PAGE_COPY = {
   StripeConnectMessage:
@@ -72,43 +73,48 @@ const SubscriptionTiers = ({
   subscriptionTiers: SubscriptionTierItem[];
   createNewTier: () => void;
   isMobile: boolean;
-}) => (
-  <div className="flex flex-col">
-    <div className="flex flex-col items-center w-full mb-8">
-      <p className="text-lg font-bold text-repod-text-primary text-center">
-        {PAGE_COPY.OverviewTitle}
-      </p>
-      <p className="text-md font-semibold text-repod-text-secondary text-center">
-        {PAGE_COPY.OverviewSubTitle}
-      </p>
-    </div>
-    <div
-      className={
-        isMobile
-          ? "flex flex-col items-center w-full pb-12"
-          : "flex flex-col items-center w-full rounded border border-solid border-repod-border-light pt-8 pb-12"
-      }
-    >
-      <div className="flex flex-wrap items-start justify-center w-full ">
-        {subscriptionTiers.map((tier) => (
-          <SubscriptionTierSnippit
-            key={tier.subscriptionTierId}
-            subscriptionTier={tier}
-          />
-        ))}
+}) => {
+  return (
+    <div className="flex flex-col">
+      <div className="flex flex-col items-center w-full mb-8">
+        <p className="text-lg font-bold text-repod-text-primary text-center">
+          {PAGE_COPY.OverviewTitle}
+        </p>
+        <p className="text-md font-semibold text-repod-text-secondary text-center">
+          {PAGE_COPY.OverviewSubTitle}
+        </p>
       </div>
-
-      <button onClick={createNewTier}>
-        <div
-          className="flex flex-col items-center justify-center w-full rounded bg-bg-info cursor-pointer hover:opacity-50 transition py-4"
-          style={{ maxWidth: 260, minWidth: 260 }}
-        >
-          <p className="text-md font-semibold text-info">+ Add Tier</p>
+      <div
+        className={
+          isMobile
+            ? "flex flex-col items-center w-full pb-12"
+            : "flex flex-col items-center w-full rounded border border-solid border-repod-border-light pt-8 pb-12"
+        }
+      >
+        <div className="flex flex-wrap items-start justify-center w-full ">
+          {subscriptionTiers.map((tier) => (
+            <SubscriptionTierSnippit
+              key={tier.subscriptionTierId}
+              subscriptionTier={tier}
+            />
+          ))}
         </div>
-      </button>
+        {subscriptionTiers && subscriptionTiers.length ? (
+          <button onClick={createNewTier}>
+            <div
+              className="flex flex-col items-center justify-center w-full rounded bg-bg-info cursor-pointer hover:opacity-50 transition py-4"
+              style={{ maxWidth: 260, minWidth: 260 }}
+            >
+              <p className="text-md font-semibold text-info">+ Add Tier</p>
+            </div>
+          </button>
+        ) : (
+          <LoaderComponent color={LOADER_COLORS.dark} />
+        )}
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 const Subscriptions = () => {
   const router = useRouter();
