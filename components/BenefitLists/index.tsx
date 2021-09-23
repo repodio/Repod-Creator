@@ -24,10 +24,7 @@ const PAGE_COPY = {
 };
 
 const BenefitCard = ({
-  id,
-  label,
-  rssFeed,
-  type,
+  benefitId,
   index,
   moveCard,
   handleEditBenefit,
@@ -35,6 +32,14 @@ const BenefitCard = ({
 }) => {
   const ref = useRef(null);
   const isMobile = useMediaQuery({ query: "(max-width: 815px)" });
+  const benefit = useSelector(subscriptionsSelectors.getBenefit(benefitId)) || {
+    benefitId: "",
+    title: "",
+    rssFeed: "",
+    type: "",
+  };
+
+  const { title, rssFeed, type } = benefit;
 
   const [{ handlerId }, drop] = useDrop({
     accept: ItemTypes.CARD,
@@ -86,7 +91,7 @@ const BenefitCard = ({
   const [{ isDragging }, drag] = useDrag({
     type: ItemTypes.CARD,
     item: () => {
-      return { id, index };
+      return { benefitId, index };
     },
     collect: (monitor) => ({
       isDragging: monitor.isDragging(),
@@ -99,7 +104,7 @@ const BenefitCard = ({
 
   return (
     <div
-      key={id}
+      key={benefitId}
       ref={ref}
       data-handler-id={handlerId}
       className={
@@ -115,7 +120,7 @@ const BenefitCard = ({
       ) : null}
       <div className="flex-1 flex-col items-start justify-start mx-2">
         <p className="truncate text-md font-semibold text-repod-text-primary">
-          {label}
+          {title}
         </p>
         {TypesRequiringRSSFeed.includes(type) ? (
           rssFeed ? (
@@ -205,21 +210,14 @@ const BenefitsList = ({ benefitIds, setBenefitIds }) => {
   };
 
   const renderCard = (benefitId, index) => {
-    const benefit = useSelector(
-      subscriptionsSelectors.getBenefit(benefitId)
-    ) || { benefitId: "", title: "", rssFeed: "", type: "" };
-
     return (
       <BenefitCard
-        key={benefit.benefitId}
+        key={benefitId}
         index={index}
-        id={benefit.benefitId}
-        label={benefit.title}
-        rssFeed={benefit.rssFeed}
-        type={benefit.type}
+        benefitId={benefitId}
         moveCard={moveCard}
-        handleEditBenefit={() => handleEditBenefit(benefit.benefitId)}
-        handleRemoveBenefit={() => handleRemoveBenefit(benefit.benefitId)}
+        handleEditBenefit={() => handleEditBenefit(benefitId)}
+        handleRemoveBenefit={() => handleRemoveBenefit(benefitId)}
       />
     );
   };
