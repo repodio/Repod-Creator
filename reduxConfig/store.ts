@@ -3,6 +3,9 @@ import logger from "redux-logger";
 import shows, { StateType as ShowsStateType } from "modules/Shows";
 import auth, { StateType as AuthStateType } from "modules/Auth";
 import profile, { StateType as ProfileStateType } from "modules/Profile";
+import subscriptions, {
+  StateType as SubscriptionsStateType,
+} from "modules/Subscriptions";
 
 import { createStore, applyMiddleware, combineReducers, Store } from "redux";
 import { createWrapper } from "next-redux-wrapper";
@@ -15,12 +18,14 @@ export type RootState = {
   profile: ProfileStateType;
   auth: AuthStateType;
   shows: ShowsStateType;
+  subscriptions: SubscriptionsStateType;
 };
 
 const combinedReducer = combineReducers({
   shows,
   auth,
   profile,
+  subscriptions,
 });
 
 const bindMiddleware = (middleware) => {
@@ -44,7 +49,7 @@ const makeStore = () => {
 
     const persistConfig = {
       key: "nextjs",
-      whitelist: ["shows", "auth", "profile"],
+      whitelist: ["shows", "auth", "profile", "subscriptions"],
       storage,
     };
 

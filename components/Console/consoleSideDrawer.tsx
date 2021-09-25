@@ -1,13 +1,8 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import {
-  BarChart2,
-  ChevronLeft,
-  ChevronRight,
-  Users,
-  DollarSign,
-} from "react-feather";
+import { BarChart2, ChevronLeft, ChevronRight, Sliders } from "react-feather";
 import { ProfileDropdown } from "components/Dropdown";
+import { CrownIcon, CoinsIcon } from "components/Icons";
 import { ShowSelector } from "components/Console";
 import { useRouter } from "next/router";
 import { useSelector } from "react-redux";
@@ -30,7 +25,7 @@ const NavigationLink = ({
       {expanded ? (
         <div className="w-full p-3 flex flex-row">
           <IconComponent
-            className={`mr-2 stroke-current transition ${
+            className={`mr-2 fill-current transition ${
               isSelected ? "text-repod-tint" : "text-repod-text-alternative"
             }`}
             size={24}
@@ -47,7 +42,7 @@ const NavigationLink = ({
       ) : (
         <div className="w-full m-3 flex flex-row">
           <IconComponent
-            className={`mr-2 stroke-current transition ${
+            className={`mr-2 fill-current transition ${
               isSelected ? "text-repod-tint" : "text-repod-text-alternative"
             }`}
             size={24}
@@ -64,8 +59,6 @@ const ConsoleSideDrawer = () => {
   const router = useRouter();
   const { showId } = router.query;
   const show = useSelector(showsSelectors.getShowById(showId));
-
-  const route = router.pathname.replace("/console/[showId]", "");
 
   const width = expanded ? 340 : 80;
   const openMenu = () => {
@@ -86,22 +79,36 @@ const ConsoleSideDrawer = () => {
       <div className="h-0 border border-solid border-t-0 border-repod-border-dark" />
       <div className="w-full flex flex-col mt-12 flex-1">
         <NavigationLink
-          isSelected={router.pathname.startsWith("/console")}
-          destination={`/console/${router.query.showId}/`}
+          isSelected={router.pathname.startsWith("/[showId]/console")}
+          destination={`/${router.query.showId}/console/`}
           label="Dashboard"
           IconComponent={BarChart2}
           expanded={expanded}
         />
         <NavigationLink
-          isSelected={router.pathname.startsWith("/monetization")}
-          destination={`/monetization/${router.query.showId}/`}
-          label="Monetization"
-          IconComponent={DollarSign}
+          isSelected={router.pathname.startsWith("/[showId]/tips")}
+          destination={`/${router.query.showId}/tips/`}
+          label="Tipping"
+          IconComponent={CoinsIcon}
+          expanded={expanded}
+        />
+        <NavigationLink
+          isSelected={router.pathname.startsWith("/[showId]/subscriptions")}
+          destination={`/${router.query.showId}/subscriptions/`}
+          label="Subscriptions"
+          IconComponent={CrownIcon}
+          expanded={expanded}
+        />
+        <NavigationLink
+          isSelected={router.pathname.startsWith("/[showId]/settings")}
+          destination={`/${router.query.showId}/settings/monetization`}
+          label="Settings"
+          IconComponent={Sliders}
           expanded={expanded}
         />
         {/* <NavigationLink
           isSelected={router.pathname.startsWith("/team")}
-          destination={`/team/${router.query.showId}`}
+          destination={`/${router.query.showId}/team/`}
           label="Team"
           IconComponent={Users}
           expanded={expanded}

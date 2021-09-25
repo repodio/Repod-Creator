@@ -6,29 +6,28 @@ type LayoutProps = {
   children: JSX.Element;
 };
 
-const DashboardLayout = ({ children }: LayoutProps) => {
+const SubscriptionsLayout = ({ children }: LayoutProps) => {
   const router = useRouter();
   const { showId } = router.query;
 
   const routes = useMemo(
     () => [
       {
-        label: "Overview",
-        url: `/${showId}/console`,
+        label: "Subscription Tiers",
+        url: `/${showId}/subscriptions`,
       },
       {
-        label: "Followers",
-        url: `/${showId}/console/followers`,
+        label: "Benefits",
+        url: `/${showId}/subscriptions/benefits`,
       },
     ],
     [showId]
   );
-
   return (
-    <TopTabsLayout title="Dashboard" routes={routes}>
+    <TopTabsLayout title="Subscriptions" routes={routes}>
       {children}
     </TopTabsLayout>
   );
 };
 
-export default DashboardLayout;
+export default SubscriptionsLayout;

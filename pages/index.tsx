@@ -20,15 +20,20 @@ const Home = () => {
 
         if (!profile) {
           console.error("Home couldnt find user", AuthUser.id);
+
+          console.log("redirecting to /auth");
+
           router.replace(`/auth`);
         }
       }
       const claimedShows = await dispatch(fetchClaimedShows());
 
       if (!claimedShows || !claimedShows.length) {
+        console.log("redirecting to /claim");
+
         router.replace(`/claim`);
       } else {
-        router.replace(`/console/${claimedShows[0]}`);
+        router.replace(`/${claimedShows[0]}/console`);
       }
     })();
   }, []);

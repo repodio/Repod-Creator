@@ -3,15 +3,22 @@ import { useRouter } from "next/router";
 import { useMediaQuery } from "react-responsive";
 import NavigationLink from "./partials/navigationLink";
 
-const ROUTE = "monetization";
+type TopTabsLayoutProps = {
+  title: string;
+  routes: {
+    label: string;
+    url: string;
+  }[];
+  children: JSX.Element;
+};
 
-const MonetizationLayout = ({ children }) => {
+const TopTabsLayout = ({
+  title,
+  routes = [],
+  children,
+}: TopTabsLayoutProps) => {
   const router = useRouter();
-  const { showId } = router.query;
-
-  const splitLink = router.asPath.split("/");
-  const viewSubscriptions = splitLink[3] && splitLink[3] === "subscriptions";
-  const viewMembers = !viewSubscriptions;
+  const asPathMinusParams = router.asPath.split("?")[0];
   const isMobile = useMediaQuery({ query: "(max-width: 1224px)" });
 
   return (
@@ -22,14 +29,17 @@ const MonetizationLayout = ({ children }) => {
             isMobile ? "ml-4" : "ml-8"
           }`}
         >
-          Monetization
+          {title}
         </h1>
         <div className={`flex flex-row ${isMobile ? "" : "ml-4"}`}>
-          <NavigationLink
-            label="Tipping"
-            isSelected={viewMembers}
-            destination={`/${ROUTE}/${showId}`}
-          />
+          {routes.map((route) => (
+            <NavigationLink
+              key={route.label}
+              label={route.label}
+              isSelected={asPathMinusParams === route.url}
+              destination={route.url}
+            />
+          ))}
         </div>
         <div className="h-0 border border-solid border-t-0 border-repod-border-light" />
       </div>
@@ -38,4 +48,4 @@ const MonetizationLayout = ({ children }) => {
   );
 };
 
-export default MonetizationLayout;
+export default TopTabsLayout;

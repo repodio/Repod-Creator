@@ -7,6 +7,7 @@ import {
   getEpisodes,
   searchEpisodes,
   setFeaturedEpisodeId,
+  createSubscriptionTier,
 } from "utils/repodAPI";
 import { convertArrayToObject } from "utils/normalizing";
 import { flow, pick, values, uniq } from "lodash/fp";
@@ -21,6 +22,14 @@ export type StateType = {
   };
   claimedShowIds: string[];
   loadingEpisodes: boolean;
+};
+
+const DEFAULT_SUBSCRIPTION_TIER = {
+  title: "Cool Member",
+  monthlyPrice: 500,
+  description: "",
+  enableShippingAddress: false,
+  published: false,
 };
 
 // Initial State
@@ -238,7 +247,7 @@ export const fetchClaimedShows =
 
       return Object.keys(normalizedShows);
     } catch (error) {
-      console.warn("[THUNK ERROR]: login", error);
+      console.warn("[THUNK ERROR]: fetchClaimedShows", error);
     }
   };
 
@@ -259,7 +268,7 @@ export const fetchClaimShowMonetizeStats =
       );
       return claimedShow;
     } catch (error) {
-      console.warn("[THUNK ERROR]: login", error);
+      console.warn("[THUNK ERROR]: fetchClaimShowMonetizeStats", error);
     }
   };
 
@@ -276,7 +285,7 @@ export const fetchShowStats =
         })
       );
     } catch (error) {
-      console.warn("[THUNK ERROR]: login", error);
+      console.warn("[THUNK ERROR]: fetchShowStats", error);
     }
   };
 
@@ -311,7 +320,7 @@ export const fetchShowEpisodes =
     } catch (error) {
       dispatch(fetchEpisodesFinish());
 
-      console.warn("[THUNK ERROR]: login", error);
+      console.warn("[THUNK ERROR]: fetchShowEpisodes", error);
     }
   };
 
@@ -346,7 +355,7 @@ export const handleSearchEpisodes =
     } catch (error) {
       dispatch(fetchEpisodesFinish());
 
-      console.warn("[THUNK ERROR]: login", error);
+      console.warn("[THUNK ERROR]: handleSearchEpisodes", error);
     }
   };
 
@@ -366,7 +375,7 @@ export const handleFeaturedEpisodeSet =
 
       return;
     } catch (error) {
-      console.warn("[THUNK ERROR]: login", error);
+      console.warn("[THUNK ERROR]: handleFeaturedEpisodeSet", error);
     }
   };
 

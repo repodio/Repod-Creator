@@ -56,6 +56,7 @@ interface ReduxShowItem extends ShowItem {
 }
 
 interface ClaimedShowItems {
+  subscriptionTierIds?: string[];
   stripeAccountId?: string;
   featuredEpisodeId: string;
   users: {
@@ -64,6 +65,27 @@ interface ClaimedShowItems {
       type: ClaimedShowType;
     };
   };
+}
+
+interface SubscriptionTierItem {
+  showId: string;
+  subscriptionTierId: string;
+  title: string;
+  monthlyPrice: number;
+  description?: string;
+  enableShippingAddress?: boolean;
+  published: boolean;
+  benefitIds?: string[];
+  benefits?: SubscriptionBenefitItem[];
+}
+
+interface SubscriptionBenefitItem {
+  showId: string;
+  benefitId: string;
+  title: string;
+  type: string;
+  rssFeed?: string;
+  tiersCount?: number;
 }
 
 interface TipData {

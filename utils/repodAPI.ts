@@ -12,6 +12,7 @@ const ROUTES = {
   user: "user",
   claimShow: "claim-show",
   claimShows: "claim-shows",
+  subscriptions: "subscriptions",
 };
 
 const verifyToken = async (token, ctx) => {
@@ -161,6 +162,192 @@ const searchEpisodes = async ({
     }
   );
   return response.json();
+};
+
+const createSubscriptionTier = async ({
+  showId,
+  title,
+  monthlyPrice,
+  description,
+  enableShippingAddress,
+  published,
+  benefitIds,
+}: {
+  showId?: string;
+  title: string;
+  monthlyPrice: number;
+  description?: string;
+  enableShippingAddress?: boolean;
+  published: boolean;
+  benefitIds?: string[];
+}): Promise<string> => {
+  const response = await fetch(
+    `${API_DOMAIN}/v1/${ROUTES.subscriptions}/${showId}`,
+    {
+      method: "POST",
+      headers: await getHeaders(),
+      body: JSON.stringify({
+        title,
+        monthlyPrice,
+        description,
+        enableShippingAddress,
+        published,
+        benefitIds,
+      }),
+    }
+  );
+  const json = await response.json();
+
+  return json.data;
+};
+
+const updateSubscriptionTier = async ({
+  showId,
+  subscriptionTierId,
+  title,
+  monthlyPrice,
+  description,
+  enableShippingAddress,
+  benefitIds,
+  published,
+}: {
+  showId: string;
+  subscriptionTierId: string;
+  title?: string;
+  monthlyPrice: number;
+  description?: string;
+  enableShippingAddress?: boolean;
+  benefitIds?: string[];
+  published?: boolean;
+}): Promise<string> => {
+  const response = await fetch(
+    `${API_DOMAIN}/v1/${ROUTES.subscriptions}/${showId}/${subscriptionTierId}`,
+    {
+      method: "PUT",
+      headers: await getHeaders(),
+      body: JSON.stringify({
+        title,
+        monthlyPrice,
+        description,
+        enableShippingAddress,
+        benefitIds,
+        published,
+      }),
+    }
+  );
+  const json = await response.json();
+
+  return json.data;
+};
+
+const deleteSubscriptionTier = async ({
+  showId,
+  subscriptionTierId,
+}: {
+  showId: string;
+  subscriptionTierId: string;
+}): Promise<void> => {
+  await fetch(
+    `${API_DOMAIN}/v1/${ROUTES.subscriptions}/${showId}/${subscriptionTierId}`,
+    {
+      method: "DELETE",
+      headers: await getHeaders(),
+    }
+  );
+};
+
+const deleteSubscriptionBenefit = async ({
+  showId,
+  benefitId,
+}: {
+  showId: string;
+  benefitId: string;
+}): Promise<void> => {
+  await fetch(
+    `${API_DOMAIN}/v1/${ROUTES.subscriptions}/${showId}/benefits/${benefitId}`,
+    {
+      method: "DELETE",
+      headers: await getHeaders(),
+    }
+  );
+};
+
+const updateSubscriptionBenefit = async ({
+  showId,
+  benefitId,
+  title,
+  type,
+  rssFeed,
+}: {
+  showId: string;
+  benefitId: string;
+  title: string;
+  type: string;
+  rssFeed: string;
+}): Promise<string> => {
+  const response = await fetch(
+    `${API_DOMAIN}/v1/${ROUTES.subscriptions}/${showId}/benefits/${benefitId}`,
+    {
+      method: "PUT",
+      headers: await getHeaders(),
+      body: JSON.stringify({
+        title,
+        type,
+        rssFeed,
+      }),
+    }
+  );
+  const json = await response.json();
+
+  return json.data;
+};
+
+const createSubscriptionBenefit = async ({
+  showId,
+  title,
+  type,
+  rssFeed,
+}: {
+  showId?: string;
+  title: string;
+  type: string;
+  rssFeed?: string;
+}): Promise<string> => {
+  const response = await fetch(
+    `${API_DOMAIN}/v1/${ROUTES.subscriptions}/${showId}/benefits`,
+    {
+      method: "POST",
+      headers: await getHeaders(),
+      body: JSON.stringify({
+        title,
+        type,
+        rssFeed,
+      }),
+    }
+  );
+  const json = await response.json();
+
+  return json.data;
+};
+
+const getShowSubscriptionTiers = async ({
+  showId,
+}: {
+  showId?: string;
+}): Promise<{
+  subscriptionTiers: SubscriptionTierItem[];
+  subscriptionBenefits: SubscriptionBenefitItem[];
+}> => {
+  const response = await fetch(
+    `${API_DOMAIN}/v1/${ROUTES.subscriptions}/${showId}`,
+    {
+      method: "GET",
+      headers: await getHeaders(),
+    }
+  );
+  const json = await response.json();
+
+  return json.data;
 };
 
 const setUser = async ({
@@ -353,4 +540,11 @@ export {
   notifySuccessfulStripeAccountRedirect,
   removeStripeAccountIdOnShow,
   fetchClaimedShowMonetizesAPI,
+  createSubscriptionTier,
+  createSubscriptionBenefit,
+  getShowSubscriptionTiers,
+  updateSubscriptionTier,
+  updateSubscriptionBenefit,
+  deleteSubscriptionTier,
+  deleteSubscriptionBenefit,
 };

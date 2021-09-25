@@ -24,6 +24,10 @@ const getSize = (size: string) => {
       return {
         classNames: `px-4 py-2 text-lg`,
       };
+    case "Small":
+      return {
+        classNames: `px-4 text-sm py-1`,
+      };
     case "Tiny":
       return {
         classNames: `px-6 text-sm`,
@@ -37,4 +41,8 @@ export const Medium = (props) => (
 
 export const Tiny = (props) => (
   <BaseButton {...props} styles={getSize("Tiny")} />
+);
+
+export const Small = (props) => (
+  <BaseButton {...props} styles={getSize("Small")} />
 );

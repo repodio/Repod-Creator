@@ -20,7 +20,7 @@ const getSize = (size: string) => {
     case Styles.info:
       return {
         label: `text-info`,
-        background: `bg-badge-info`,
+        background: `bg-bg-info`,
       };
     case Styles.disabled:
       return {

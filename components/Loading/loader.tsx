@@ -1,7 +1,7 @@
 import React from "react";
 import Loader from "react-loader-spinner";
 
-const LOADER_COLORS = {
+export const LOADER_COLORS = {
   light: "#ffffff",
   dark: "#222B45",
 };

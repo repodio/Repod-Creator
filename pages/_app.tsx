@@ -5,6 +5,7 @@ import { PersistGate } from "redux-persist/integration/react";
 import { wrapper } from "reduxConfig/store";
 import { ConsoleLayout } from "components/Layouts";
 import { useRouter } from "next/router";
+import { Toaster } from "react-hot-toast";
 
 initAuth();
 
@@ -15,9 +16,11 @@ function MyApp({ Component, pageProps }) {
   // store.__persistor && store.__persistor.purge();
 
   const consoleLayout =
-    router.pathname.startsWith("/console") ||
-    router.pathname.startsWith("/team") ||
-    router.pathname.startsWith("/monetization");
+    router.pathname.startsWith("/[showId]/console") ||
+    router.pathname.startsWith("/[showId]/team") ||
+    router.pathname.startsWith("/[showId]/tips") ||
+    router.pathname.startsWith("/[showId]/subscriptions") ||
+    router.pathname.startsWith("/[showId]/settings");
 
   return (
     <Provider store={store}>
@@ -29,6 +32,16 @@ function MyApp({ Component, pageProps }) {
         ) : (
           <Component {...pageProps} />
         )}
+
+        <Toaster
+          position="top-center"
+          toastOptions={{
+            style: {
+              background: "#111827",
+              color: "#fff",
+            },
+          }}
+        />
       </PersistGate>
     </Provider>
   );

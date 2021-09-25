@@ -190,7 +190,7 @@ const Dashboard = () => {
         </div>
       ) : null}
       <div className="p-4 w-full">
-        <Link href={`/console/${showId}/`}>
+        <Link href={`/${showId}/console`}>
           <a
             className={`text-lg font-semibold text-repod-text-primary flex flex-row items-center py-4 hover:opacity-50 transition`}
           >
