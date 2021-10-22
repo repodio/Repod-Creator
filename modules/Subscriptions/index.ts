@@ -36,9 +36,9 @@ const DEFAULT_SUBSCRIPTION_BENEFIT = {
     title: "Custom Benefit",
     type: SubscriptionBenefits.custom,
   },
-  [SubscriptionBenefits.bonusEpisodes]: {
+  [SubscriptionBenefits.adFreeEpisodes]: {
     title: "Ad Free Episodes",
-    type: SubscriptionBenefits.bonusEpisodes,
+    type: SubscriptionBenefits.adFreeEpisodes,
   },
   [SubscriptionBenefits.bonusEpisodes]: {
     title: "Bonus Episodes",
