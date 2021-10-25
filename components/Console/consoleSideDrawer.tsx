@@ -95,7 +95,7 @@ const ConsoleSideDrawer = () => {
         <NavigationLink
           isSelected={router.pathname.startsWith("/[showId]/subscriptions")}
           destination={`/${router.query.showId}/subscriptions/`}
-          label="Subscriptions"
+          label="Memberships"
           IconComponent={CrownIcon}
           expanded={expanded}
         />

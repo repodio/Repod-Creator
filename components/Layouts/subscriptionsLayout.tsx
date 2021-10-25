@@ -13,7 +13,7 @@ const SubscriptionsLayout = ({ children }: LayoutProps) => {
   const routes = useMemo(
     () => [
       {
-        label: "Subscription Tiers",
+        label: "Membership Tiers",
         url: `/${showId}/subscriptions`,
       },
       {
@@ -24,7 +24,7 @@ const SubscriptionsLayout = ({ children }: LayoutProps) => {
     [showId]
   );
   return (
-    <TopTabsLayout title="Subscriptions" routes={routes}>
+    <TopTabsLayout title="Memberships" routes={routes}>
       {children}
     </TopTabsLayout>
   );
