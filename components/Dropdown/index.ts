@@ -1,4 +1,5 @@
 import ProfileDropdown from "./profileDropdown";
 import OptionsDropdown from "./optionsDropdown";
+import Select from "./select";
 
-export { ProfileDropdown, OptionsDropdown };
+export { ProfileDropdown, OptionsDropdown, Select };
