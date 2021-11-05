@@ -16,8 +16,18 @@ const ROUTES = {
 };
 
 export const COUNTRY_CODES = {
-  US: "US",
-  UK: "UK",
+  CA: {
+    key: "CA",
+    label: "Canada",
+  },
+  GB: {
+    key: "GB",
+    label: "United Kingdom",
+  },
+  US: {
+    key: "US",
+    label: "United States",
+  },
 };
 
 const verifyToken = async (token, ctx) => {
@@ -465,7 +475,7 @@ const setFeaturedEpisodeId = async ({
 
 const fetchConnectedAccountOnboardingUrl = async ({
   showId,
-  countryCode = COUNTRY_CODES.US,
+  countryCode = COUNTRY_CODES.US.key,
 }: {
   showId: string;
   countryCode: string;

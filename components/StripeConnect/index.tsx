@@ -19,7 +19,7 @@ const STRIPE_CONNECT_COPY = {
 const StripeConnect = ({ message = STRIPE_CONNECT_COPY.DefaultMessage }) => {
   const router = useRouter();
   const [connectButtonLoading, setConnectButtonLoading] = useState(false);
-  const [countryCode, setCountryCode] = useState(COUNTRY_CODES.US);
+  const [countryCode, setCountryCode] = useState(COUNTRY_CODES.US.key);
   const { showId } = router.query;
   const showIdString = showId as string;
 
@@ -40,7 +40,7 @@ const StripeConnect = ({ message = STRIPE_CONNECT_COPY.DefaultMessage }) => {
   const selectOptions = useMemo(
     () =>
       map((key: string) => ({
-        label: COUNTRY_CODES[key],
+        label: COUNTRY_CODES[key].label,
         key,
       }))(Object.keys(COUNTRY_CODES)),
     [COUNTRY_CODES]
@@ -67,7 +67,7 @@ const StripeConnect = ({ message = STRIPE_CONNECT_COPY.DefaultMessage }) => {
         <Select
           options={selectOptions}
           onOptionChange={setCountryCode}
-          initialOption={COUNTRY_CODES.US}
+          initialOption={COUNTRY_CODES.US.key}
         />
       </div>
       <Button.Medium
