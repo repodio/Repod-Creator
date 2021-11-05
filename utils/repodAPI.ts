@@ -15,6 +15,21 @@ const ROUTES = {
   subscriptions: "subscriptions",
 };
 
+export const COUNTRY_CODES = {
+  CA: {
+    key: "CA",
+    label: "Canada",
+  },
+  GB: {
+    key: "GB",
+    label: "United Kingdom",
+  },
+  US: {
+    key: "US",
+    label: "United States",
+  },
+};
+
 const verifyToken = async (token, ctx) => {
   let host;
 
@@ -460,11 +475,13 @@ const setFeaturedEpisodeId = async ({
 
 const fetchConnectedAccountOnboardingUrl = async ({
   showId,
+  countryCode = COUNTRY_CODES.US.key,
 }: {
   showId: string;
+  countryCode: string;
 }): Promise<string> => {
   const response = await fetch(
-    `${API_DOMAIN}/v1/${ROUTES.claimShow}/${showId}/connect-account`,
+    `${API_DOMAIN}/v1/${ROUTES.claimShow}/${showId}/connect-account?country=${countryCode}`,
     {
       method: "GET",
       headers: await getHeaders(),

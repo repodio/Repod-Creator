@@ -59,18 +59,6 @@ const Tips = () => {
     })();
   }, []);
 
-  const handleConnectAccount = useCallback(async () => {
-    setConnectButtonLoading(true);
-    const onboardingURL = await fetchConnectedAccountOnboardingUrl({
-      showId: showIdString,
-    });
-
-    if (window) {
-      window.location.href = onboardingURL;
-    }
-    setConnectButtonLoading(false);
-  }, [showIdString]);
-
   const removeConnectAccount = useCallback(async () => {
     await removeStripeAccountIdOnShow({
       showId: showIdString,
