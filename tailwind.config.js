@@ -36,6 +36,7 @@ module.exports = {
         "repod-disabled-bg": "rgba(143, 155, 179, 0.24)",
         "repod-border-dark": "#2E3A59",
         "repod-border-light": "#E4E9F2",
+        "repod-border-medium": "#C5CEE0",
         danger: "#FF5F5F",
         warning: "#FFAA00",
         info: "#0095FF",
