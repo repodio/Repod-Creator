@@ -22,7 +22,7 @@ const CheckIcon = (props) => {
         stroke="none"
         strokeWidth="1"
         fill="none"
-        fill-rule="evenodd"
+        fillRule="evenodd"
       >
         <mask id="mask-2" fill="white">
           <use xlinkHref="#path-1"></use>

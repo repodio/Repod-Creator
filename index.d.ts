@@ -59,6 +59,8 @@ interface ClaimedShowItems {
   subscriptionTierIds?: string[];
   stripeAccountId?: string;
   featuredEpisodeId: string;
+  customWelcomeNotesPerTier: boolean;
+  globalWelcomeNotes: string;
   users: {
     [key: string]: {
       role: ClaimedShowRole;
@@ -77,6 +79,7 @@ interface SubscriptionTierItem {
   published: boolean;
   benefitIds?: string[];
   benefits?: SubscriptionBenefitItem[];
+  customWelcomeNotes: string;
 }
 
 interface SubscriptionBenefitItem {

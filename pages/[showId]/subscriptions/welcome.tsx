@@ -38,7 +38,6 @@ const MdEditor = dynamic(() => import("react-markdown-editor-lite"), {
 
 const WelcomeMessages = () => {
   const router = useRouter();
-  const [sameNotesEnabled, setSameNotesEnabled] = useState(true);
   const [textValue, setTextValue] = React.useState(
     "Thanks for supporting the podcast!"
   );
@@ -51,31 +50,18 @@ const WelcomeMessages = () => {
 
   const { showId } = router.query;
   const showIdString = showId as string;
+  const show = useSelector(showsSelectors.getShowById(showIdString));
 
-  // const show = useSelector(showsSelectors.getShowById(showIdString));
-  // const benefits = useSelector(
-  //   subscriptionsSelectors.getAllShowBenefits(showIdString)
-  // );
-  // const dispatch = useDispatch<ThunkDispatch<{}, undefined, Action>>();
-  // const isMobile = useMediaQuery({ query: "(max-width: 815px)" });
+  const [sameNotesEnabled, setSameNotesEnabled] = useState(true);
 
-  // useEffect(() => {
-  //   (async () => {
-  //     if (!show) {
-  //       router.replace(`/`);
-  //     }
+  const subscriptionTiers = useSelector(
+    subscriptionsSelectors.getSubscriptionTiers(showIdString)
+  );
 
-  //     await dispatch(fetchShowSubscriptionTiers(showIdString));
+  const claimedShow = show.claimedShow;
 
-  //     setPageLoading(false);
-  //   })();
-  // }, []);
-
-  // useEffect(() => {
-  //   if (!isBenefitModalOpen) {
-  //     setSelectedBenefitId(null);
-  //   }
-  // }, [isBenefitModalOpen]);
+  console.log("subscriptionTiers", subscriptionTiers);
+  console.log("show.claimedShow", show.claimedShow);
 
   return (
     <SubscriptionsLayout>
@@ -130,14 +116,18 @@ const WelcomeMessages = () => {
                 onChange={handleEditorChange}
                 plugins={["font-bold", "font-italic", "link", "mode-toggle"]}
               />
-              {/* <MDEditor
-                value={value}
-                onChange={setValue}
-                // commands={[commands.bold, commands.divider]}
-              /> */}
-              {/* <MDEditor.Markdown source={value} /> */}
             </div>
-          ) : null}
+          ) : (
+            <div className="flex flex-row items-center justify-start w-full mb-2 mt-2">
+              <MdEditor
+                style={{ height: "250px", width: "100%" }}
+                value={textValue}
+                renderHTML={(text) => mdParser.render(text)}
+                onChange={handleEditorChange}
+                plugins={["font-bold", "font-italic", "link", "mode-toggle"]}
+              />
+            </div>
+          )}
           <div className="flex items-end justify-end w-full mt-4">
             <div>
               <Button.Medium
