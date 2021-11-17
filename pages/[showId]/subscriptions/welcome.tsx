@@ -1,5 +1,5 @@
-import "@uiw/react-md-editor/markdown-editor.css";
-import "@uiw/react-markdown-preview/markdown.css";
+import "react-markdown-editor-lite/lib/index.css";
+import MarkdownIt from "markdown-it";
 import React, { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import { withAuthUser, AuthAction } from "next-firebase-auth";
@@ -32,17 +32,22 @@ const PAGE_COPY = {
   OptionsLabelDifferentMessage: "Customize welcome notes for each tier",
 };
 
-const MDEditor = dynamic(
-  () => import("@uiw/react-md-editor").then((mod) => mod.default),
-  { ssr: false }
-);
+const MdEditor = dynamic(() => import("react-markdown-editor-lite"), {
+  ssr: false,
+});
 
 const WelcomeMessages = () => {
   const router = useRouter();
   const [sameNotesEnabled, setSameNotesEnabled] = useState(true);
-  const [value, setValue] = React.useState(
-    "**Thanks for supporting the podcast!**"
+  const [textValue, setTextValue] = React.useState(
+    "Thanks for supporting the podcast!"
   );
+
+  function handleEditorChange({ text }) {
+    setTextValue(text);
+  }
+
+  const mdParser = new MarkdownIt(/* Markdown-it options */);
 
   const { showId } = router.query;
   const showIdString = showId as string;
@@ -91,7 +96,10 @@ const WelcomeMessages = () => {
           <p className="text-sm font-book text-repod-text-secondary mb-2">
             {PAGE_COPY.WelcomeNotesSubtitle}
           </p>
-          <div className="flex flex-row items-center justify-start w-full mb-2">
+          <button
+            onClick={() => setSameNotesEnabled(true)}
+            className="focus:outline-none flex flex-row items-center justify-start w-full mb-2"
+          >
             <SelectButton
               selected={sameNotesEnabled}
               onPress={() => setSameNotesEnabled(true)}
@@ -99,8 +107,11 @@ const WelcomeMessages = () => {
             <p className="text-base font-semibold text-repod-text-primary ml-2">
               {PAGE_COPY.OptionsLabelSameMessage}
             </p>
-          </div>
-          <div className="flex flex-row items-center justify-start w-full">
+          </button>
+          <button
+            onClick={() => setSameNotesEnabled(false)}
+            className="focus:outline-none flex flex-row items-center justify-start w-full mb-2"
+          >
             <SelectButton
               selected={!sameNotesEnabled}
               onPress={() => setSameNotesEnabled(false)}
@@ -108,16 +119,35 @@ const WelcomeMessages = () => {
             <p className="text-base font-semibold text-repod-text-primary ml-2">
               {PAGE_COPY.OptionsLabelDifferentMessage}
             </p>
-          </div>
+          </button>
 
           {sameNotesEnabled ? (
-            <div>
-              <MDEditor value={value} onChange={setValue} />
+            <div className="flex flex-row items-center justify-start w-full mb-2 mt-2">
+              <MdEditor
+                style={{ height: "250px", width: "100%" }}
+                value={textValue}
+                renderHTML={(text) => mdParser.render(text)}
+                onChange={handleEditorChange}
+                plugins={["font-bold", "font-italic", "link", "mode-toggle"]}
+              />
+              {/* <MDEditor
+                value={value}
+                onChange={setValue}
+                // commands={[commands.bold, commands.divider]}
+              /> */}
               {/* <MDEditor.Markdown source={value} /> */}
             </div>
           ) : null}
-
-          <Button.Medium />
+          <div className="flex items-end justify-end w-full mt-4">
+            <div>
+              <Button.Medium
+                type="submit"
+                className="bg-repod-tint text-repod-text-alternative"
+              >
+                Save Changes
+              </Button.Medium>
+            </div>
+          </div>
         </div>
       </div>
     </SubscriptionsLayout>

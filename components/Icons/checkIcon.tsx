@@ -20,7 +20,7 @@ const CheckIcon = (props) => {
       <g
         id="-5)-Checkbox/5)-Icon-[Setup]/Checkmark"
         stroke="none"
-        stroke-width="1"
+        strokeWidth="1"
         fill="none"
         fill-rule="evenodd"
       >
