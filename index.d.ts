@@ -79,7 +79,7 @@ interface SubscriptionTierItem {
   published: boolean;
   benefitIds?: string[];
   benefits?: SubscriptionBenefitItem[];
-  customWelcomeNotes?: string;
+  customWelcomeNote?: string;
 }
 
 interface SubscriptionBenefitItem {

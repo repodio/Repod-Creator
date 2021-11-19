@@ -51,8 +51,14 @@ const WelcomeMessages = () => {
   const showIdString = showId as string;
   const show = useSelector(showsSelectors.getShowById(showIdString));
 
-  const [customWelcomeNotesPerTier, setCustomWelcomeNotesPerTier] =
-    useState(false);
+  const initialCustomWelcomeNotesPerTier =
+    show &&
+    show.claimedShow &&
+    show.claimedShow.customWelcomeNotesPerTier === true;
+
+  const [customWelcomeNotesPerTier, setCustomWelcomeNotesPerTier] = useState(
+    initialCustomWelcomeNotesPerTier
+  );
 
   const subscriptionTiers = useSelector(
     subscriptionsSelectors.getSubscriptionTiers(showIdString)
@@ -70,8 +76,11 @@ const WelcomeMessages = () => {
 
   forEach((subscriptionTier: SubscriptionTierItem) => {
     initialCustomTextValues[subscriptionTier.subscriptionTierId] =
-      subscriptionTier.customWelcomeNotes;
+      subscriptionTier.customWelcomeNote;
   })(subscriptionTiers);
+
+  console.log("initialCustomTextValues", initialCustomTextValues);
+  console.log("subscriptionTiers", subscriptionTiers);
 
   const [customTextValue, setCustomTextValue] = React.useState(
     initialCustomTextValues
@@ -81,9 +90,9 @@ const WelcomeMessages = () => {
     const customWelcomeNotes = map((key: string) => {
       return {
         subscriptionTierId: key,
-        customWelcomeNote: initialCustomTextValues[key],
+        customWelcomeNote: customTextValue[key] || "",
       };
-    })(Object.keys(initialCustomTextValues));
+    })(Object.keys(customTextValue));
 
     console.log("handleWelcomeNotesSet", {
       showId: showIdString,
@@ -125,24 +134,24 @@ const WelcomeMessages = () => {
             {PAGE_COPY.WelcomeNotesSubtitle}
           </p>
           <button
-            onClick={() => setCustomWelcomeNotesPerTier(true)}
+            onClick={() => setCustomWelcomeNotesPerTier(false)}
             className="focus:outline-none flex flex-row items-center justify-start w-full mb-2"
           >
             <SelectButton
               selected={!customWelcomeNotesPerTier}
-              onPress={() => setCustomWelcomeNotesPerTier(true)}
+              onPress={() => setCustomWelcomeNotesPerTier(false)}
             />
             <p className="text-base font-semibold text-repod-text-primary ml-2">
               {PAGE_COPY.OptionsLabelSameMessage}
             </p>
           </button>
           <button
-            onClick={() => setCustomWelcomeNotesPerTier(false)}
+            onClick={() => setCustomWelcomeNotesPerTier(true)}
             className="focus:outline-none flex flex-row items-center justify-start w-full mb-2"
           >
             <SelectButton
               selected={customWelcomeNotesPerTier}
-              onPress={() => setCustomWelcomeNotesPerTier(false)}
+              onPress={() => setCustomWelcomeNotesPerTier(true)}
             />
             <p className="text-base font-semibold text-repod-text-primary ml-2">
               {PAGE_COPY.OptionsLabelDifferentMessage}
@@ -164,7 +173,10 @@ const WelcomeMessages = () => {
           ) : (
             <div className="flex flex-col items-center justify-start w-full mt-2">
               {map((subscriptionTier: SubscriptionTierItem) => (
-                <div className="flex flex-row items-start justify-start w-full mb-16">
+                <div
+                  key={subscriptionTier.subscriptionTierId}
+                  className="flex flex-row items-start justify-start w-full mb-16"
+                >
                   <div
                     className="flex flex-col items-start justify-start mr-2"
                     style={{ width: 200 }}
