@@ -550,7 +550,10 @@ export default (state = INITIAL_STATE, action) =>
         ...state.byId,
         [action.showId]: {
           ...(state.byId[action.showId] || {}),
-          customWelcomeNotesPerTier: action.customWelcomeNotesPerTier,
+          claimedShow: {
+            ...((state.byId[action.showId] || {}).claimedShow || {}),
+            customWelcomeNotesPerTier: action.customWelcomeNotesPerTier,
+          },
         },
       },
     }),
@@ -560,7 +563,10 @@ export default (state = INITIAL_STATE, action) =>
         ...state.byId,
         [action.showId]: {
           ...(state.byId[action.showId] || {}),
-          globalWelcomeNote: action.globalWelcomeNote,
+          claimedShow: {
+            ...((state.byId[action.showId] || {}).claimedShow || {}),
+            globalWelcomeNote: action.globalWelcomeNote,
+          },
         },
       },
     }),
