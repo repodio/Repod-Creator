@@ -8,13 +8,15 @@ import {
   searchEpisodes,
   setFeaturedEpisodeId,
   createSubscriptionTier,
+  setWelcomeNotes,
 } from "utils/repodAPI";
 import { convertArrayToObject } from "utils/normalizing";
-import { flow, pick, values, uniq } from "lodash/fp";
+import { flow, pick, values, uniq, forEach } from "lodash/fp";
 import { RootState } from "reduxConfig/store";
 
 import { Action, ActionCreator } from "redux";
 import { ThunkResult, AsyncDispatch } from "reduxConfig/redux";
+import { updateCustomWelcomeNotes } from "modules/Subscriptions";
 
 export type StateType = {
   byId: {
@@ -96,6 +98,10 @@ const UPDATE_STRIPE_ACCOUNT_ID_ON_SHOW =
   "repod/Shows/UPDATE_STRIPE_ACCOUNT_ID_ON_SHOW";
 const UPSERT_CLAIMED_SHOW_MONETIZE_STATS =
   "repod/Shows/UPSERT_CLAIMED_SHOW_MONETIZE_STATS";
+const UPDATE_WELCOME_NOTES_CUSUTOM_SETTING =
+  "repod/Shows/UPDATE_WELCOME_NOTES_CUSUTOM_SETTING";
+const UPDATE_WELCOME_NOTES_GLOBAL_NOTES =
+  "repod/Shows/UPDATE_WELCOME_NOTES_GLOBAL_NOTES";
 
 // Action Creators
 export const upsertShows: ActionCreator<Action> = (shows: {
@@ -146,6 +152,30 @@ const updateFeaturedEpisodeId: ActionCreator<Action> = ({
   type: UPDATE_FEATURED_EPISODE_ID,
   showId,
   episodeId,
+});
+
+const updateClaimedShowWelcomeNotesCustomSettings: ActionCreator<Action> = ({
+  showId,
+  customWelcomeNotesPerTier,
+}: {
+  showId: string;
+  customWelcomeNotesPerTier: boolean;
+}) => ({
+  type: UPDATE_WELCOME_NOTES_CUSUTOM_SETTING,
+  showId,
+  customWelcomeNotesPerTier,
+});
+
+const updateClaimedShowWelcomeNotesGlobalNotes: ActionCreator<Action> = ({
+  showId,
+  globalWelcomeNote,
+}: {
+  showId: string;
+  globalWelcomeNote: string;
+}) => ({
+  type: UPDATE_WELCOME_NOTES_GLOBAL_NOTES,
+  showId,
+  globalWelcomeNote,
 });
 
 const fetchEpisodesStart: ActionCreator<Action> = () => ({
@@ -379,6 +409,68 @@ export const handleFeaturedEpisodeSet =
     }
   };
 
+export const handleWelcomeNotesSet =
+  ({
+    showId,
+    customWelcomeNotesPerTier,
+    globalWelcomeNote,
+    customWelcomeNotes,
+  }: {
+    showId: string;
+    customWelcomeNotesPerTier: boolean;
+    globalWelcomeNote?: string;
+    customWelcomeNotes?: {
+      subscriptionTierId: string;
+      customWelcomeNote: string;
+    }[];
+  }): ThunkResult<Promise<void>> =>
+  async (dispatch: AsyncDispatch) => {
+    try {
+      await setWelcomeNotes({
+        showId,
+        customWelcomeNotesPerTier,
+        globalWelcomeNote,
+        customWelcomeNotes,
+      });
+
+      dispatch(
+        updateClaimedShowWelcomeNotesCustomSettings({
+          showId,
+          customWelcomeNotesPerTier,
+        })
+      );
+      if (customWelcomeNotesPerTier) {
+        forEach(
+          ({
+            subscriptionTierId,
+            customWelcomeNote,
+          }: {
+            subscriptionTierId: string;
+            customWelcomeNote: string;
+          }) => {
+            dispatch(
+              updateCustomWelcomeNotes({
+                subscriptionTierId,
+                customWelcomeNote,
+              })
+            );
+          }
+        )(customWelcomeNotes);
+      } else {
+        dispatch(
+          updateClaimedShowWelcomeNotesGlobalNotes({
+            showId,
+            globalWelcomeNote,
+          })
+        );
+      }
+
+      return;
+    } catch (error) {
+      console.warn("[THUNK ERROR]: handleWelcomeNotesSet", error);
+    }
+  };
+
 // Reducer
 export default (state = INITIAL_STATE, action) =>
   switchcase({
@@ -449,6 +541,26 @@ export default (state = INITIAL_STATE, action) =>
         [action.showId]: {
           ...(state.byId[action.showId] || {}),
           featuredEpisodeId: action.episodeId,
+        },
+      },
+    }),
+    [UPDATE_WELCOME_NOTES_CUSUTOM_SETTING]: () => ({
+      ...state,
+      byId: {
+        ...state.byId,
+        [action.showId]: {
+          ...(state.byId[action.showId] || {}),
+          customWelcomeNotesPerTier: action.customWelcomeNotesPerTier,
+        },
+      },
+    }),
+    [UPDATE_WELCOME_NOTES_GLOBAL_NOTES]: () => ({
+      ...state,
+      byId: {
+        ...state.byId,
+        [action.showId]: {
+          ...(state.byId[action.showId] || {}),
+          globalWelcomeNote: action.globalWelcomeNote,
         },
       },
     }),

@@ -186,6 +186,8 @@ const REMOVE_BENEFIT_SUBSCRIPTION_TIER =
 const REMOVE_SUBSCRIPTION_TIER = "repod/Subscriptions/REMOVE_SUBSCRIPTION_TIER";
 const REMOVE_SUBSCRIPTION_BENEFIT =
   "repod/Subscriptions/REMOVE_SUBSCRIPTION_BENEFIT";
+const UPDATE_CUSTOM_WELCOME_NOTES =
+  "repod/Subscriptions/UPDATE_CUSTOM_WELCOME_NOTES";
 
 // Action Creators
 export const upsertSubscriptionTier: ActionCreator<Action> = ({
@@ -261,6 +263,18 @@ const clearSubscriptionBenefit: ActionCreator<Action> = ({
 }) => ({
   type: REMOVE_SUBSCRIPTION_BENEFIT,
   benefitId,
+});
+
+export const updateCustomWelcomeNotes: ActionCreator<Action> = ({
+  subscriptionTierId,
+  customWelcomeNote,
+}: {
+  subscriptionTierId: string;
+  customWelcomeNote: string;
+}) => ({
+  type: UPDATE_CUSTOM_WELCOME_NOTES,
+  subscriptionTierId,
+  customWelcomeNote,
 });
 
 // Thunk
@@ -651,6 +665,16 @@ export default (state = INITIAL_STATE, action) =>
     [REMOVE_SUBSCRIPTION_BENEFIT]: () => ({
       ...state,
       benefitsById: omit([action.benefitId])(state.benefitsById),
+    }),
+    [UPDATE_CUSTOM_WELCOME_NOTES]: () => ({
+      ...state,
+      subscriptionTiersById: {
+        ...state.subscriptionTiersById,
+        [action.subscriptionTierId]: {
+          ...(state.subscriptionTiersById[action.subscriptionTierId] || {}),
+          customWelcomeNote: action.customWelcomeNote,
+        },
+      },
     }),
     LOGOUT: () => ({
       ...INITIAL_STATE,

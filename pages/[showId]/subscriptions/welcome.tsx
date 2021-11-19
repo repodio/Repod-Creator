@@ -4,7 +4,10 @@ import React, { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import { withAuthUser, AuthAction } from "next-firebase-auth";
 import { useSelector, useDispatch } from "react-redux";
-import { selectors as showsSelectors } from "modules/Shows";
+import {
+  handleWelcomeNotesSet,
+  selectors as showsSelectors,
+} from "modules/Shows";
 import {
   selectors as subscriptionsSelectors,
   fetchShowSubscriptionTiers,
@@ -15,11 +18,12 @@ import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
 import { SubscriptionsLayout } from "components/Layouts";
 import { useMediaQuery } from "react-responsive";
-import { map } from "lodash/fp";
+import { map, forEach } from "lodash/fp";
 import { RemoveBenefitModal, TierBenefitsModal } from "components/Modals";
 import { AlertCircle, Trash2 } from "react-feather";
 import { TypesRequiringRSSFeed } from "constants/subscriptionBenefitTypes";
 import { Button, SelectButton } from "components/Buttons";
+import { formatCurrency } from "utils/formats";
 
 const PAGE_COPY = {
   PageTitle: "Custom Welcome Notes",
@@ -30,6 +34,7 @@ const PAGE_COPY = {
     "You can either re-use a single welcome note for all your subscription tiers, or create custom welcome notes for each subscription tier.",
   OptionsLabelSameMessage: "Use the same welcome note for each tier",
   OptionsLabelDifferentMessage: "Customize welcome notes for each tier",
+  TierLabel: "Tier",
 };
 
 const MdEditor = dynamic(() => import("react-markdown-editor-lite"), {
@@ -38,13 +43,7 @@ const MdEditor = dynamic(() => import("react-markdown-editor-lite"), {
 
 const WelcomeMessages = () => {
   const router = useRouter();
-  const [textValue, setTextValue] = React.useState(
-    "Thanks for supporting the podcast!"
-  );
-
-  function handleEditorChange({ text }) {
-    setTextValue(text);
-  }
+  const dispatch = useDispatch<ThunkDispatch<{}, undefined, Action>>();
 
   const mdParser = new MarkdownIt(/* Markdown-it options */);
 
@@ -52,13 +51,56 @@ const WelcomeMessages = () => {
   const showIdString = showId as string;
   const show = useSelector(showsSelectors.getShowById(showIdString));
 
-  const [sameNotesEnabled, setSameNotesEnabled] = useState(true);
+  const [customWelcomeNotesPerTier, setCustomWelcomeNotesPerTier] =
+    useState(false);
 
   const subscriptionTiers = useSelector(
     subscriptionsSelectors.getSubscriptionTiers(showIdString)
   );
 
   const claimedShow = show.claimedShow;
+
+  const [globalTextValue, setGlobalTextValue] = React.useState(
+    claimedShow.globalWelcomeNote
+      ? claimedShow.globalWelcomeNote
+      : "Thanks for supporting the podcast!"
+  );
+
+  const initialCustomTextValues = {};
+
+  forEach((subscriptionTier: SubscriptionTierItem) => {
+    initialCustomTextValues[subscriptionTier.subscriptionTierId] =
+      subscriptionTier.customWelcomeNotes;
+  })(subscriptionTiers);
+
+  const [customTextValue, setCustomTextValue] = React.useState(
+    initialCustomTextValues
+  );
+
+  const handleSaveChanges = async () => {
+    const customWelcomeNotes = map((key: string) => {
+      return {
+        subscriptionTierId: key,
+        customWelcomeNote: initialCustomTextValues[key],
+      };
+    })(Object.keys(initialCustomTextValues));
+
+    console.log("handleWelcomeNotesSet", {
+      showId: showIdString,
+      customWelcomeNotesPerTier,
+      globalWelcomeNote: globalTextValue,
+      customWelcomeNotes,
+    });
+
+    await dispatch(
+      handleWelcomeNotesSet({
+        showId: showIdString,
+        customWelcomeNotesPerTier,
+        globalWelcomeNote: globalTextValue,
+        customWelcomeNotes,
+      })
+    );
+  };
 
   console.log("subscriptionTiers", subscriptionTiers);
   console.log("show.claimedShow", show.claimedShow);
@@ -83,49 +125,81 @@ const WelcomeMessages = () => {
             {PAGE_COPY.WelcomeNotesSubtitle}
           </p>
           <button
-            onClick={() => setSameNotesEnabled(true)}
+            onClick={() => setCustomWelcomeNotesPerTier(true)}
             className="focus:outline-none flex flex-row items-center justify-start w-full mb-2"
           >
             <SelectButton
-              selected={sameNotesEnabled}
-              onPress={() => setSameNotesEnabled(true)}
+              selected={!customWelcomeNotesPerTier}
+              onPress={() => setCustomWelcomeNotesPerTier(true)}
             />
             <p className="text-base font-semibold text-repod-text-primary ml-2">
               {PAGE_COPY.OptionsLabelSameMessage}
             </p>
           </button>
           <button
-            onClick={() => setSameNotesEnabled(false)}
+            onClick={() => setCustomWelcomeNotesPerTier(false)}
             className="focus:outline-none flex flex-row items-center justify-start w-full mb-2"
           >
             <SelectButton
-              selected={!sameNotesEnabled}
-              onPress={() => setSameNotesEnabled(false)}
+              selected={customWelcomeNotesPerTier}
+              onPress={() => setCustomWelcomeNotesPerTier(false)}
             />
             <p className="text-base font-semibold text-repod-text-primary ml-2">
               {PAGE_COPY.OptionsLabelDifferentMessage}
             </p>
           </button>
 
-          {sameNotesEnabled ? (
-            <div className="flex flex-row items-center justify-start w-full mb-2 mt-2">
+          {!customWelcomeNotesPerTier ? (
+            <div className="flex flex-row items-center justify-start w-full mb-16 mt-2">
               <MdEditor
                 style={{ height: "250px", width: "100%" }}
-                value={textValue}
+                value={globalTextValue}
                 renderHTML={(text) => mdParser.render(text)}
-                onChange={handleEditorChange}
+                onChange={({ text }) => {
+                  setGlobalTextValue(text);
+                }}
                 plugins={["font-bold", "font-italic", "link", "mode-toggle"]}
               />
             </div>
           ) : (
-            <div className="flex flex-row items-center justify-start w-full mb-2 mt-2">
-              <MdEditor
-                style={{ height: "250px", width: "100%" }}
-                value={textValue}
-                renderHTML={(text) => mdParser.render(text)}
-                onChange={handleEditorChange}
-                plugins={["font-bold", "font-italic", "link", "mode-toggle"]}
-              />
+            <div className="flex flex-col items-center justify-start w-full mt-2">
+              {map((subscriptionTier: SubscriptionTierItem) => (
+                <div className="flex flex-row items-start justify-start w-full mb-16">
+                  <div
+                    className="flex flex-col items-start justify-start mr-2"
+                    style={{ width: 200 }}
+                  >
+                    <p className="text-sm font-semibold text-repod-text-secondary">
+                      {PAGE_COPY.TierLabel}
+                    </p>
+                    <p className="text-base font-semibold text-repod-text-primary">
+                      {subscriptionTier.title}
+                    </p>
+                    <p className="text-sm font-semibold text-repod-text-secondary uppercase">
+                      {`${formatCurrency(
+                        subscriptionTier.monthlyPrice
+                      )} PER MONTH`}
+                    </p>
+                  </div>
+                  <MdEditor
+                    style={{ height: "250px", width: "100%" }}
+                    value={customTextValue[subscriptionTier.subscriptionTierId]}
+                    renderHTML={(text) => mdParser.render(text)}
+                    onChange={({ text }) => {
+                      setCustomTextValue({
+                        ...customTextValue,
+                        [subscriptionTier.subscriptionTierId]: text,
+                      });
+                    }}
+                    plugins={[
+                      "font-bold",
+                      "font-italic",
+                      "link",
+                      "mode-toggle",
+                    ]}
+                  />
+                </div>
+              ))(subscriptionTiers)}
             </div>
           )}
           <div className="flex items-end justify-end w-full mt-4">
@@ -133,6 +207,7 @@ const WelcomeMessages = () => {
               <Button.Medium
                 type="submit"
                 className="bg-repod-tint text-repod-text-alternative"
+                onClick={handleSaveChanges}
               >
                 Save Changes
               </Button.Medium>
