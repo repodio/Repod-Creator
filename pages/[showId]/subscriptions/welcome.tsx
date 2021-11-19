@@ -1,6 +1,6 @@
 import "react-markdown-editor-lite/lib/index.css";
 import MarkdownIt from "markdown-it";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import dynamic from "next/dynamic";
 import { withAuthUser, AuthAction } from "next-firebase-auth";
 import { useSelector, useDispatch } from "react-redux";
@@ -10,18 +10,13 @@ import {
 } from "modules/Shows";
 import {
   selectors as subscriptionsSelectors,
-  fetchShowSubscriptionTiers,
 } from "modules/Subscriptions";
 import { useRouter } from "next/router";
 import { LoadingScreen } from "components/Loading";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
 import { SubscriptionsLayout } from "components/Layouts";
-import { useMediaQuery } from "react-responsive";
 import { map, forEach } from "lodash/fp";
-import { RemoveBenefitModal, TierBenefitsModal } from "components/Modals";
-import { AlertCircle, Trash2 } from "react-feather";
-import { TypesRequiringRSSFeed } from "constants/subscriptionBenefitTypes";
 import { Button, SelectButton } from "components/Buttons";
 import { formatCurrency } from "utils/formats";
 

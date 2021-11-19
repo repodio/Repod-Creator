@@ -43,8 +43,7 @@
     "redux-thunk": "^2.3.0",
     "reselect": "^4.0.0",
     "rss-parser": "^3.12.0",
-    "showdown": "^1.9.1",
-    "turndown": "^7.1.1"
+    "showdown": "^1.9.1"
   },
   "devDependencies": {
     "@types/lodash": "^4.14.168",
