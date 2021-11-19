@@ -25,6 +25,9 @@ import { TypesRequiringRSSFeed } from "constants/subscriptionBenefitTypes";
 import { Button, SelectButton } from "components/Buttons";
 import { formatCurrency } from "utils/formats";
 
+const showdown = require("showdown");
+const htmlConverter = new showdown.Converter();
+
 const PAGE_COPY = {
   PageTitle: "Custom Welcome Notes",
   PageSubtitle:
@@ -68,7 +71,7 @@ const WelcomeMessages = () => {
 
   const [globalTextValue, setGlobalTextValue] = React.useState(
     claimedShow.globalWelcomeNote
-      ? claimedShow.globalWelcomeNote
+      ? htmlConverter.makeMd(claimedShow.globalWelcomeNote)
       : "Thanks for supporting the podcast!"
   );
 
@@ -76,11 +79,8 @@ const WelcomeMessages = () => {
 
   forEach((subscriptionTier: SubscriptionTierItem) => {
     initialCustomTextValues[subscriptionTier.subscriptionTierId] =
-      subscriptionTier.customWelcomeNote;
+      htmlConverter.makeMd(subscriptionTier.customWelcomeNote);
   })(subscriptionTiers);
-
-  console.log("initialCustomTextValues", initialCustomTextValues);
-  console.log("subscriptionTiers", subscriptionTiers);
 
   const [customTextValue, setCustomTextValue] = React.useState(
     initialCustomTextValues
@@ -90,29 +90,19 @@ const WelcomeMessages = () => {
     const customWelcomeNotes = map((key: string) => {
       return {
         subscriptionTierId: key,
-        customWelcomeNote: customTextValue[key] || "",
+        customWelcomeNote: htmlConverter.makeHtml(customTextValue[key] || ""),
       };
     })(Object.keys(customTextValue));
-
-    console.log("handleWelcomeNotesSet", {
-      showId: showIdString,
-      customWelcomeNotesPerTier,
-      globalWelcomeNote: globalTextValue,
-      customWelcomeNotes,
-    });
 
     await dispatch(
       handleWelcomeNotesSet({
         showId: showIdString,
         customWelcomeNotesPerTier,
-        globalWelcomeNote: globalTextValue,
+        globalWelcomeNote: htmlConverter.makeHtml(globalTextValue),
         customWelcomeNotes,
       })
     );
   };
-
-  console.log("subscriptionTiers", subscriptionTiers);
-  console.log("show.claimedShow", show.claimedShow);
 
   return (
     <SubscriptionsLayout>
