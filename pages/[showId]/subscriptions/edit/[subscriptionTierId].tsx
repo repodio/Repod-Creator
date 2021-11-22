@@ -143,7 +143,7 @@ const EditSubscription = () => {
         console.log("onSave error", error);
       }
     },
-    [errors, benefitIds, subscriptionTier.published]
+    [enableShippingAddress, errors, benefitIds, subscriptionTier.published]
   );
 
   const handleCancel = () => {

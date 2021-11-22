@@ -208,19 +208,19 @@ const ListItem = ({
               checked={boolValue}
               onChange={onChange}
               className={`${
-                value ? "bg-info" : "bg-gray-300"
+                boolValue ? "bg-info" : "bg-gray-300"
               } relative inline-flex items-center h-6 rounded-full w-11 transform all ease-in-out duration-200 focus:outline-none mx-4`}
             >
               <span
                 /* Transition the Switch's knob on state change */
                 className={`transform transition ease-in-out duration-200
-              ${value ? "translate-x-9" : "translate-x-0"}
+              ${boolValue ? "translate-x-9" : "translate-x-0"}
         `}
               />
-              <span className="sr-only">Enable notifications</span>
+              <span className="sr-only">Toggle</span>
               <span
                 className={`${
-                  value ? "translate-x-6" : "translate-x-1"
+                  boolValue ? "translate-x-6" : "translate-x-1"
                 } inline-block w-4 h-4 transform bg-white rounded-full transform transition ease-in-out duration-200`}
               />
             </Switch>

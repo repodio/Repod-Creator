@@ -8,7 +8,7 @@
     "start": "next start"
   },
   "dependencies": {
-    "@headlessui/react": "^1.0.0",
+    "@headlessui/react": "^1.4.2",
     "@nivo/core": "^0.69.0",
     "@nivo/line": "^0.69.1",
     "@popperjs/core": "2.9.1",
