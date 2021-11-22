@@ -20,6 +20,10 @@ const SubscriptionsLayout = ({ children }: LayoutProps) => {
         label: "Benefits",
         url: `/${showId}/subscriptions/benefits`,
       },
+      {
+        label: "Welcome Messages",
+        url: `/${showId}/subscriptions/welcome`,
+      },
     ],
     [showId]
   );

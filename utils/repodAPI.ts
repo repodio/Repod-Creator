@@ -473,6 +473,38 @@ const setFeaturedEpisodeId = async ({
   return response;
 };
 
+const setWelcomeNotes = async ({
+  showId,
+  customWelcomeNotesPerTier,
+  globalWelcomeNote,
+  customWelcomeNotes,
+}: {
+  showId: string;
+  customWelcomeNotesPerTier: boolean;
+  globalWelcomeNote?: string;
+  customWelcomeNotes?: {
+    subscriptionTierId: string;
+    customWelcomeNote: string;
+  }[];
+}): Promise<{
+  success: boolean;
+}> => {
+  const response = await fetch(
+    `${API_DOMAIN}/v1/${ROUTES.claimShow}/${showId}/welcomenotes`,
+    {
+      method: "POST",
+      headers: await getHeaders(),
+      body: JSON.stringify({
+        customWelcomeNotesPerTier,
+        globalWelcomeNote,
+        customWelcomeNotes,
+      }),
+    }
+  ).then((data) => data.json());
+
+  return response;
+};
+
 const fetchConnectedAccountOnboardingUrl = async ({
   showId,
   countryCode = COUNTRY_CODES.US.key,
@@ -553,6 +585,7 @@ export {
   sendVerificationCodeEmail,
   fetchShowData,
   setFeaturedEpisodeId,
+  setWelcomeNotes,
   fetchConnectedAccountOnboardingUrl,
   notifySuccessfulStripeAccountRedirect,
   removeStripeAccountIdOnShow,
