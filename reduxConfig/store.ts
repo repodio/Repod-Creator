@@ -12,7 +12,7 @@ import { createWrapper } from "next-redux-wrapper";
 
 const middlewareCollection = [thunk];
 
-middlewareCollection.push(logger);
+// middlewareCollection.push(logger);
 
 export type RootState = {
   profile: ProfileStateType;
