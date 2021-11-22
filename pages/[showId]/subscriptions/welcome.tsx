@@ -17,6 +17,7 @@ import { SubscriptionsLayout } from "components/Layouts";
 import { map, forEach } from "lodash/fp";
 import { Button, SelectButton } from "components/Buttons";
 import { formatCurrency } from "utils/formats";
+import toast from "react-hot-toast";
 
 const showdown = require("showdown");
 const htmlConverter = new showdown.Converter();
@@ -78,21 +79,27 @@ const WelcomeMessages = () => {
   );
 
   const handleSaveChanges = async () => {
-    const customWelcomeNotes = map((key: string) => {
-      return {
-        subscriptionTierId: key,
-        customWelcomeNote: htmlConverter.makeHtml(customTextValue[key] || ""),
-      };
-    })(Object.keys(customTextValue));
+    try {
+      const customWelcomeNotes = map((key: string) => {
+        return {
+          subscriptionTierId: key,
+          customWelcomeNote: htmlConverter.makeHtml(customTextValue[key] || ""),
+        };
+      })(Object.keys(customTextValue));
 
-    await dispatch(
-      handleWelcomeNotesSet({
-        showId: showIdString,
-        customWelcomeNotesPerTier,
-        globalWelcomeNote: htmlConverter.makeHtml(globalTextValue || ""),
-        customWelcomeNotes,
-      })
-    );
+      await dispatch(
+        handleWelcomeNotesSet({
+          showId: showIdString,
+          customWelcomeNotesPerTier,
+          globalWelcomeNote: htmlConverter.makeHtml(globalTextValue || ""),
+          customWelcomeNotes,
+        })
+      );
+
+      toast.success("Welcome Notes Saved!");
+    } catch (error) {
+      toast.error("Something went wrong");
+    }
   };
 
   return (
