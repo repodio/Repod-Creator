@@ -8,9 +8,7 @@ import {
   handleWelcomeNotesSet,
   selectors as showsSelectors,
 } from "modules/Shows";
-import {
-  selectors as subscriptionsSelectors,
-} from "modules/Subscriptions";
+import { selectors as subscriptionsSelectors } from "modules/Subscriptions";
 import { useRouter } from "next/router";
 import { LoadingScreen } from "components/Loading";
 import { ThunkDispatch } from "redux-thunk";
@@ -49,10 +47,10 @@ const WelcomeMessages = () => {
   const showIdString = showId as string;
   const show = useSelector(showsSelectors.getShowById(showIdString));
 
+  const claimedShow = show && show.claimedShow;
+
   const initialCustomWelcomeNotesPerTier =
-    show &&
-    show.claimedShow &&
-    show.claimedShow.customWelcomeNotesPerTier === true;
+    claimedShow && claimedShow.customWelcomeNotesPerTier === true;
 
   const [customWelcomeNotesPerTier, setCustomWelcomeNotesPerTier] = useState(
     initialCustomWelcomeNotesPerTier
@@ -62,11 +60,9 @@ const WelcomeMessages = () => {
     subscriptionsSelectors.getSubscriptionTiers(showIdString)
   );
 
-  const claimedShow = show.claimedShow;
-
   const [globalTextValue, setGlobalTextValue] = React.useState(
-    claimedShow.globalWelcomeNote
-      ? htmlConverter.makeMd(claimedShow.globalWelcomeNote)
+    claimedShow && claimedShow.globalWelcomeNote
+      ? htmlConverter.makeMd(claimedShow.globalWelcomeNote || "")
       : "Thanks for supporting the podcast!"
   );
 
@@ -74,7 +70,7 @@ const WelcomeMessages = () => {
 
   forEach((subscriptionTier: SubscriptionTierItem) => {
     initialCustomTextValues[subscriptionTier.subscriptionTierId] =
-      htmlConverter.makeMd(subscriptionTier.customWelcomeNote);
+      htmlConverter.makeMd(subscriptionTier.customWelcomeNote || "");
   })(subscriptionTiers);
 
   const [customTextValue, setCustomTextValue] = React.useState(
@@ -93,7 +89,7 @@ const WelcomeMessages = () => {
       handleWelcomeNotesSet({
         showId: showIdString,
         customWelcomeNotesPerTier,
-        globalWelcomeNote: htmlConverter.makeHtml(globalTextValue),
+        globalWelcomeNote: htmlConverter.makeHtml(globalTextValue || ""),
         customWelcomeNotes,
       })
     );
