@@ -18,9 +18,7 @@ import { map, forEach } from "lodash/fp";
 import { Button, SelectButton } from "components/Buttons";
 import { formatCurrency } from "utils/formats";
 import toast from "react-hot-toast";
-
-const showdown = require("showdown");
-const htmlConverter = new showdown.Converter();
+import { convertToMD, convertToHTML } from "utils/markdown";
 
 const PAGE_COPY = {
   PageTitle: "Custom Welcome Notes",
@@ -63,15 +61,16 @@ const WelcomeMessages = () => {
 
   const [globalTextValue, setGlobalTextValue] = React.useState(
     claimedShow && claimedShow.globalWelcomeNote
-      ? htmlConverter.makeMd(claimedShow.globalWelcomeNote || "")
+      ? convertToMD(claimedShow.globalWelcomeNote || "")
       : "Thanks for supporting the podcast!"
   );
 
   const initialCustomTextValues = {};
 
   forEach((subscriptionTier: SubscriptionTierItem) => {
-    initialCustomTextValues[subscriptionTier.subscriptionTierId] =
-      htmlConverter.makeMd(subscriptionTier.customWelcomeNote || "");
+    initialCustomTextValues[subscriptionTier.subscriptionTierId] = convertToMD(
+      subscriptionTier.customWelcomeNote || ""
+    );
   })(subscriptionTiers);
 
   const [customTextValue, setCustomTextValue] = React.useState(
@@ -83,7 +82,7 @@ const WelcomeMessages = () => {
       const customWelcomeNotes = map((key: string) => {
         return {
           subscriptionTierId: key,
-          customWelcomeNote: htmlConverter.makeHtml(customTextValue[key] || ""),
+          customWelcomeNote: convertToHTML(customTextValue[key] || ""),
         };
       })(Object.keys(customTextValue));
 
@@ -91,7 +90,7 @@ const WelcomeMessages = () => {
         handleWelcomeNotesSet({
           showId: showIdString,
           customWelcomeNotesPerTier,
-          globalWelcomeNote: htmlConverter.makeHtml(globalTextValue || ""),
+          globalWelcomeNote: convertToHTML(globalTextValue || ""),
           customWelcomeNotes,
         })
       );
