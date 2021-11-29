@@ -137,15 +137,17 @@ const searchShows = async ({
   query,
   size = 5,
   includeRSS = false,
+  cursor = 0,
 }: {
   query: string;
   size?: number;
   includeRSS?: boolean;
+  cursor?: number;
 }) => {
   const response = await fetch(
     `${API_DOMAIN}/v1/${
       ROUTES.search
-    }?type=shows&size=${size}&queryString=${query}&includeRSS=${
+    }?type=shows&size=${size}&cursor=${cursor}&queryString=${query}&includeRSS=${
       includeRSS ? 1 : 0
     }`,
     {
