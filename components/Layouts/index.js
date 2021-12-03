@@ -4,6 +4,7 @@ import TeamLayout from "./teamLayout.tsx";
 import TipsLayout from "./tipsLayout.tsx";
 import SettingsLayout from "./settingsLayout.tsx";
 import SubscriptionsLayout from "./subscriptionsLayout.tsx";
+import MembersLayout from "./membersLayout.tsx";
 
 export {
   ConsoleLayout,
@@ -12,4 +13,5 @@ export {
   TipsLayout,
   SettingsLayout,
   SubscriptionsLayout,
+  MembersLayout,
 };

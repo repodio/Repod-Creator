@@ -77,7 +77,7 @@ const SubscriptionTiers = ({
   return (
     <div className="flex flex-col">
       <div className="flex flex-col items-center w-full mb-8">
-        <p className="text-lg font-bold text-repod-text-primary text-center">
+        <p className="text-xl font-bold text-repod-text-primary text-center">
           {PAGE_COPY.OverviewTitle}
         </p>
         <p className="text-md font-semibold text-repod-text-secondary text-center">
