@@ -21,26 +21,7 @@ const SelectableTableComponent = ({
   const [selectedId, setSelectedId] = useState(null);
 
   const userItem = useMemo(
-    () =>
-      find(
-        (item: {
-          userId: string;
-          avatarUrl: string;
-          displayName: string;
-          status: string;
-          tier: string;
-          monthlyAmount: number;
-          email: string;
-          shippingAddress: {
-            streetAddress: string;
-            city: string;
-            state: string;
-            zipCode: string;
-            appartmentNumber: string;
-            shareShippingAddress: boolean;
-          };
-        }) => item.userId === selectedId
-      )(data),
+    () => find((item: MemberData) => item.userId === selectedId)(data),
     [selectedId]
   );
 

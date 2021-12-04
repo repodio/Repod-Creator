@@ -91,6 +91,24 @@ interface SubscriptionBenefitItem {
   tiersCount?: number;
 }
 
+interface MemberData {
+  userId: string;
+  avatarUrl: string;
+  displayName: string;
+  status: string;
+  tier: string;
+  monthlyAmount: number;
+  email: string;
+  shippingAddress: {
+    streetAddress: string;
+    city: string;
+    state: string;
+    zipCode: string;
+    appartmentNumber: string;
+    shareShippingAddress: boolean;
+  };
+}
+
 interface TipData {
   tipAmount: number;
   showId: string;
