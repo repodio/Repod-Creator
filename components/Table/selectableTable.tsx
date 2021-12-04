@@ -3,7 +3,7 @@ import { useTable, useFlexLayout } from "react-table";
 import { Loader } from "components/Loading";
 import { find } from "lodash/fp";
 import { ProfileAvatar } from "components/Images";
-import { formatCurrency } from "utils/formats";
+import { formatCurrency, formatMonthsFromToday } from "utils/formats";
 
 const SelectableTableComponent = ({
   data,
@@ -106,10 +106,20 @@ const SelectableTableComponent = ({
                     {userItem.displayName}
                   </p>
                   <p className="text-xs font-book text-repod-text-secondary">
-                    Member for 5 months
+                    {formatMonthsFromToday(userItem.createdOn) <= 1
+                      ? `Member for ${formatMonthsFromToday(
+                          userItem.createdOn
+                        )} month`
+                      : `Member for ${formatMonthsFromToday(
+                          userItem.createdOn
+                        )} months`}
                   </p>
                   <p className="text-sm font-book text-repod-text-primary">
-                    {formatCurrency(userItem.monthlyAmount)} total contribution
+                    {formatCurrency(
+                      userItem.monthlyPrice *
+                        formatMonthsFromToday(userItem.createdOn)
+                    )}{" "}
+                    total contribution
                   </p>
                 </div>
               </div>

@@ -30,115 +30,7 @@ const PAGE_COPY = {
 const Subscriptions = () => {
   const router = useRouter();
   const [pageLoading, setPageLoading] = useState(true);
-  const [members, setMembers] = useState([
-    {
-      userId: "123",
-      avatarUrl:
-        "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1480&q=80",
-      displayName: "Greg Hori",
-      status: "Active",
-      tier: "Amazing Member",
-      monthlyAmount: 500,
-      createdOn: { _seconds: 1637477655 },
-      email: "example@gmail.com",
-      shippingAddress: {
-        streetAddress: "938 Willow Glen Way",
-        city: "San Jose",
-        state: "CA",
-        zipCode: "95125",
-        appartmentNumber: "#409",
-        shareShippingAddress: true,
-      },
-    },
-    {
-      userId: "234",
-      avatarUrl:
-        "https://images.unsplash.com/photo-1509335035496-c47fc836517f?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1485&q=80",
-      displayName: "Jen Naka",
-      status: "Active",
-      tier: "Excellent Member",
-      monthlyAmount: 2500,
-      createdOn: { _seconds: 1636477655 },
-      email: "example@gmail.com",
-      shippingAddress: {
-        streetAddress: null,
-        city: null,
-        state: null,
-        zipCode: null,
-        appartmentNumber: null,
-        shareShippingAddress: false,
-      },
-    },
-    {
-      userId: "345",
-      avatarUrl:
-        "https://images.unsplash.com/photo-1586297135537-94bc9ba060aa?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1480&q=80",
-      displayName: "Jess Banes",
-      status: "Canceled",
-      tier: "Awesome Member",
-      monthlyAmount: 1000,
-      createdOn: { _seconds: 1635477655 },
-      email: "example@gmail.com",
-      shippingAddress: null,
-    },
-    {
-      userId: "456",
-      avatarUrl:
-        "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1480&q=80",
-      displayName: "Greg Hori",
-      status: "Active",
-      tier: "Amazing Member",
-      monthlyAmount: 500,
-      createdOn: { _seconds: 1637477655 },
-      email: "example@gmail.com",
-      shippingAddress: {
-        streetAddress: "938 Willow Glen Way",
-        city: "San Jose",
-        state: "CA",
-        zipCode: "95125",
-        appartmentNumber: "#409",
-        shareShippingAddress: true,
-      },
-    },
-    {
-      userId: "567",
-      avatarUrl:
-        "https://images.unsplash.com/photo-1509335035496-c47fc836517f?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1485&q=80",
-      displayName: "Jen Naka",
-      status: "Active",
-      tier: "Excellent Member",
-      monthlyAmount: 2500,
-      createdOn: { _seconds: 1636477655 },
-      email: "example@gmail.com",
-      shippingAddress: {
-        streetAddress: "938 Willow Glen Way",
-        city: "San Jose",
-        state: "CA",
-        zipCode: "95125",
-        appartmentNumber: "#409",
-        shareShippingAddress: true,
-      },
-    },
-    {
-      userId: "678",
-      avatarUrl:
-        "https://images.unsplash.com/photo-1586297135537-94bc9ba060aa?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1480&q=80",
-      displayName: "Jess Banes",
-      status: "Canceled",
-      tier: "Awesome Member",
-      monthlyAmount: 1000,
-      createdOn: { _seconds: 1635477655 },
-      email: "example@gmail.com",
-      shippingAddress: {
-        streetAddress: "938 Willow Glen Way",
-        city: "San Jose",
-        state: "CA",
-        zipCode: "95125",
-        appartmentNumber: "#409",
-        shareShippingAddress: true,
-      },
-    },
-  ]);
+  const [members, setMembers] = useState([]);
   const { showId } = router.query;
   const showIdString = showId as string;
 
@@ -165,6 +57,8 @@ const Subscriptions = () => {
   if (!show || pageLoading) {
     return <LoadingScreen />;
   }
+
+  console.log("members", members);
 
   return (
     <MembersLayout>

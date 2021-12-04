@@ -97,8 +97,9 @@ interface MemberData {
   displayName: string;
   status: string;
   tier: string;
-  monthlyAmount: number;
+  monthlyPrice: number;
   email: string;
+  createdOn: Date;
   shippingAddress: {
     streetAddress: string;
     city: string;

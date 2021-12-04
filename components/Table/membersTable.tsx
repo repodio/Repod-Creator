@@ -54,7 +54,7 @@ const MembersTable = ({ data }) => {
       });
       options.push({
         Header: () => <div style={{ textAlign: "right" }}>Pledge</div>,
-        accessor: "monthlyAmount",
+        accessor: "monthlyPrice",
         Cell: (row) => (
           <p className=" text-md text-repod-text-primary text-right">
             {formatCurrency(row.cell.value)}
