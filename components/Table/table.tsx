@@ -16,7 +16,6 @@ const TableComponent = ({
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
     useTable({ columns, data }, useFlexLayout);
 
-  console.log("TableComponent isMobile", isMobile);
   return (
     <div className="relative flex flex-col w-full">
       {loading ? (
