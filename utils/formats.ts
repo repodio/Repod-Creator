@@ -143,5 +143,5 @@ export const formatCurrency = (cents) =>
     currency: "USD",
   });
 
-export const formatMonthsFromToday = (incomingDate: string): number =>
+export const formatMonthsFromToday = (incomingDate: Date): number =>
   Math.ceil(moment().diff(moment(incomingDate), "months", true));
