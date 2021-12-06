@@ -25,8 +25,6 @@ const SelectableTableComponent = ({
     [selectedId]
   );
 
-  console.log("userItem", userItem);
-
   return (
     <div className="relative flex flex-col w-full">
       {loading ? (

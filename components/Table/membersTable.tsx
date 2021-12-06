@@ -24,11 +24,11 @@ const MembersTable = ({ data }) => {
       options.push({
         Header: "",
         Cell: (row) => (
-          <>
+          <div style={{ minWidth: 42 }}>
             <ProfileAvatar url={row.cell.value} />
-          </>
+          </div>
         ),
-        width: 36,
+        width: 42,
         accessor: "avatarUrl",
       });
       options.push({
