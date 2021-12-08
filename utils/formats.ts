@@ -31,7 +31,6 @@ moment.locale("en", {
 });
 
 export const formatDate = (incomingDate) => {
-  console.log("formatDate", incomingDate);
   if (!incomingDate) {
     return null;
   }
@@ -143,3 +142,6 @@ export const formatCurrency = (cents) =>
     style: "currency",
     currency: "USD",
   });
+
+export const formatMonthsFromToday = (incomingDate: Date): number =>
+  Math.ceil(moment().diff(moment(incomingDate), "months", true));

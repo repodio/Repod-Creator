@@ -3,7 +3,7 @@ import { useImage } from "react-image";
 
 const ProfileAvatar = ({ url }) => {
   const { src, isLoading, error } = useImage({
-    srcList: url,
+    srcList: url || "/avatar-default.png",
     useSuspense: false,
   });
 

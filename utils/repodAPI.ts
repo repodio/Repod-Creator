@@ -507,6 +507,23 @@ const setWelcomeNotes = async ({
   return response;
 };
 
+const fetchMembers = async ({
+  showId,
+}: {
+  showId: string;
+}): Promise<MemberData[]> => {
+  const response = await fetch(
+    `${API_DOMAIN}/v1/${ROUTES.claimShow}/${showId}/members`,
+    {
+      method: "GET",
+      headers: await getHeaders(),
+    }
+  ).then((data) => data.json());
+
+  console.log("fetchMembers response: ", response);
+  return response.members;
+};
+
 const fetchConnectedAccountOnboardingUrl = async ({
   showId,
   countryCode = COUNTRY_CODES.US.key,
@@ -599,4 +616,5 @@ export {
   updateSubscriptionBenefit,
   deleteSubscriptionTier,
   deleteSubscriptionBenefit,
+  fetchMembers,
 };

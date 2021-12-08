@@ -20,6 +20,7 @@ function MyApp({ Component, pageProps }) {
     router.pathname.startsWith("/[showId]/team") ||
     router.pathname.startsWith("/[showId]/tips") ||
     router.pathname.startsWith("/[showId]/subscriptions") ||
+    router.pathname.startsWith("/[showId]/members") ||
     router.pathname.startsWith("/[showId]/settings");
 
   return (
