@@ -294,13 +294,11 @@ const updateSubscriptionBenefit = async ({
   benefitId,
   title,
   type,
-  rssFeed,
 }: {
   showId: string;
   benefitId: string;
   title: string;
   type: string;
-  rssFeed: string;
 }): Promise<string> => {
   const response = await fetch(
     `${API_DOMAIN}/v1/${ROUTES.subscriptions}/${showId}/benefits/${benefitId}`,
@@ -310,7 +308,6 @@ const updateSubscriptionBenefit = async ({
       body: JSON.stringify({
         title,
         type,
-        rssFeed,
       }),
     }
   );
@@ -323,12 +320,10 @@ const createSubscriptionBenefit = async ({
   showId,
   title,
   type,
-  rssFeed,
 }: {
   showId?: string;
   title: string;
   type: string;
-  rssFeed?: string;
 }): Promise<string> => {
   const response = await fetch(
     `${API_DOMAIN}/v1/${ROUTES.subscriptions}/${showId}/benefits`,
@@ -338,7 +333,6 @@ const createSubscriptionBenefit = async ({
       body: JSON.stringify({
         title,
         type,
-        rssFeed,
       }),
     }
   );

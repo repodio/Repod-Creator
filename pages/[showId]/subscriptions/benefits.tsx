@@ -18,10 +18,6 @@ import { AlertCircle, Trash2 } from "react-feather";
 import { TypesRequiringRSSFeed } from "constants/subscriptionBenefitTypes";
 import { Button } from "components/Buttons";
 
-const PAGE_COPY = {
-  NoRSSMessage: "No RSS Feed",
-};
-
 const Benefits = () => {
   const router = useRouter();
   const [pageLoading, setPageLoading] = useState(true);
@@ -109,28 +105,6 @@ const Benefits = () => {
               <p className="truncate text-md font-semibold text-repod-text-primary">
                 {benefit.title}
               </p>
-              {TypesRequiringRSSFeed.includes(benefit.type) ? (
-                benefit.rssFeed ? (
-                  !isMobile ? (
-                    <p
-                      style={{ width: 300 }}
-                      className="w-full truncate text-sm font-book text-repod-text-secondary"
-                    >
-                      {benefit.rssFeed}
-                    </p>
-                  ) : null
-                ) : (
-                  <div className="flex flex-row justify-start items-center">
-                    <AlertCircle
-                      className="stroke-current text-danger"
-                      size={18}
-                    />
-                    <p className="truncate text-sm font-book text-danger ml-1">
-                      {PAGE_COPY.NoRSSMessage}
-                    </p>
-                  </div>
-                )
-              ) : null}
             </div>
             <div
               className={
