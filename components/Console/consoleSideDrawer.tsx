@@ -6,6 +6,7 @@ import {
   ChevronRight,
   Sliders,
   Users,
+  Mic,
 } from "react-feather";
 import { ProfileDropdown } from "components/Dropdown";
 import { CrownIcon, CoinsIcon } from "components/Icons";
@@ -103,6 +104,13 @@ const ConsoleSideDrawer = () => {
           destination={`/${router.query.showId}/subscriptions/`}
           label="Memberships"
           IconComponent={CrownIcon}
+          expanded={expanded}
+        />
+        <NavigationLink
+          isSelected={router.pathname.startsWith("/[showId]/episodes")}
+          destination={`/${router.query.showId}/episodes/`}
+          label="Episodes"
+          IconComponent={Mic}
           expanded={expanded}
         />
         <NavigationLink

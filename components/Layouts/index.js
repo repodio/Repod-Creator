@@ -5,6 +5,7 @@ import TipsLayout from "./tipsLayout.tsx";
 import SettingsLayout from "./settingsLayout.tsx";
 import SubscriptionsLayout from "./subscriptionsLayout.tsx";
 import MembersLayout from "./membersLayout.tsx";
+import EpisodeLayout from "./episodesLayout.tsx";
 
 export {
   ConsoleLayout,
@@ -14,4 +15,5 @@ export {
   SettingsLayout,
   SubscriptionsLayout,
   MembersLayout,
+  EpisodeLayout,
 };
