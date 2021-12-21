@@ -11,12 +11,14 @@ import { useMediaQuery } from "react-responsive";
 import { fetchMembers } from "utils/repodAPI";
 import { ArrowLeft, Link as LinkIcon } from "react-feather";
 import Link from "next/link";
+import { Button } from "components/Buttons";
 
 const PAGE_COPY = {
   PageTitle: "Import and sync your premium RSS feed",
   QuestionTitle: "Paste the URL of your current premium RSS feed",
   QuestionSubtitle: "We’ll sync this feed and fetch new episodes every hour",
   Placeholder: "Paste your premium RSS feed",
+  ButtonLabel: "Start Import",
 };
 
 const Episodes = () => {
@@ -84,7 +86,7 @@ const Episodes = () => {
             <p className="text-repod-text-secondary text-lg text-left mb-4">
               {PAGE_COPY.QuestionSubtitle}
             </p>
-            <div className="w-full flex relative justify-start items-center">
+            <div className="w-full flex relative justify-start items-center mb-6">
               <LinkIcon
                 className="ml-2 absolute stroke-current text-repod-text-secondary "
                 size={24}
@@ -100,6 +102,13 @@ const Episodes = () => {
                 }}
               />
             </div>
+            <Button.Medium
+              className="bg-info text-repod-text-alternative uppercase text-sm tracking-wide"
+              style={{ minWidth: 300, maxWidth: 300, width: 300 }}
+              onClick={() => {}}
+            >
+              {PAGE_COPY.ButtonLabel}
+            </Button.Medium>
           </div>
         </div>
       </div>

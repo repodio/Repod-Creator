@@ -75,7 +75,7 @@ const Episodes = () => {
               {PAGE_COPY.OverviewSubTitle}
             </p>
           </div>
-          <div className="flex flex-row items-center w-full pb-12">
+          <div className="flex flex-row items-start w-full pb-12">
             <div className="rounded-lg border border-repod-border-medium flex-1 flex flex-col items-center justify-center p-8 mr-4">
               <img
                 style={{ width: 178, height: 217 }}
@@ -85,7 +85,10 @@ const Episodes = () => {
               <p className="text-lg font-bold text-repod-text-primary text-center">
                 {PAGE_COPY.UploadTitle}
               </p>
-              <p className=" text-repod-text-secondary text-center mb-4">
+              <p
+                className=" text-repod-text-secondary text-center mb-4"
+                style={{ maxWidth: 600 }}
+              >
                 {PAGE_COPY.UploadSubTitle}
               </p>
               <Button.Medium
@@ -106,7 +109,10 @@ const Episodes = () => {
               <p className="text-lg font-bold text-repod-text-primary text-center">
                 {PAGE_COPY.ImportTitle}
               </p>
-              <p className=" text-repod-text-secondary text-center mb-4">
+              <p
+                className=" text-repod-text-secondary text-center mb-4"
+                style={{ maxWidth: 600 }}
+              >
                 {PAGE_COPY.ImportSubTitle}
               </p>
               <Button.Medium
