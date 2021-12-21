@@ -57,10 +57,6 @@ const Episodes = () => {
     return <LoadingScreen />;
   }
 
-  const navigateToImport = () => {
-    router.replace(`/${showId}/episodes/import`);
-  };
-
   const subscriptionRSSFeed = null;
 
   return (
@@ -76,7 +72,7 @@ const Episodes = () => {
             </p>
           </div>
           <div className="flex flex-row items-center w-full pb-12">
-            <div className="rounded-lg border border-repod-border-medium flex-1 flex flex-col items-center justify-center p-8 mr-4">
+            <div className="rounded-lg border border-repod-border-medium flex flex-col items-center justify-center p-8 mr-4">
               <img
                 style={{ width: 178, height: 217 }}
                 src="/icons/upload-hero-icon.svg"
@@ -97,7 +93,7 @@ const Episodes = () => {
                 {PAGE_COPY.UploadButtonLabel}
               </Button.Medium>
             </div>
-            <div className="rounded-lg border border-repod-border-medium flex-1 flex flex-col items-center justify-center p-8 ml-4">
+            <div className="rounded-lg border border-repod-border-medium flex flex-col items-center justify-center p-8 ml-4">
               <img
                 style={{ width: 178, height: 217 }}
                 src="/icons/import-hero-icon.svg"
@@ -112,7 +108,7 @@ const Episodes = () => {
               <Button.Medium
                 className="bg-info text-repod-text-alternative uppercase text-sm tracking-wide"
                 style={{ minWidth: 300, maxWidth: 300, width: 300 }}
-                onClick={navigateToImport}
+                onClick={() => {}}
               >
                 {PAGE_COPY.ImportButtonLabel}
               </Button.Medium>
