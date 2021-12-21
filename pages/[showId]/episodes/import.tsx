@@ -7,26 +7,20 @@ import { useRouter } from "next/router";
 import { LoadingScreen } from "components/Loading";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
-import { EpisodeLayout } from "components/Layouts";
 import { useMediaQuery } from "react-responsive";
-import { MembersTable } from "components/Table";
 import { fetchMembers } from "utils/repodAPI";
-import { Button } from "components/Buttons";
+import { ArrowLeft, Link as LinkIcon } from "react-feather";
+import Link from "next/link";
 
 const PAGE_COPY = {
-  OverviewTitle: "Add new premium episodes",
-  OverviewSubTitle: "Start off by choosing how to add your premium episodes",
-  UploadTitle: "Add new episodes",
-  UploadSubTitle:
-    "Start a premium content feed for paid members by adding new episodes. Get setup in minutes",
-  UploadButtonLabel: "Coming Soon",
-  ImportTitle: "Import your premium RSS feed",
-  ImportSubTitle:
-    "Offer your fans premium content by moving your private RSS feed to Repod. Easily import from Patreon and other hosting platforms",
-  ImportButtonLabel: "Import from RSS feed",
+  PageTitle: "Import and sync your premium RSS feed",
+  QuestionTitle: "Paste the URL of your current premium RSS feed",
+  QuestionSubtitle: "We’ll sync this feed and fetch new episodes every hour",
+  Placeholder: "Paste your premium RSS feed",
 };
 
 const Episodes = () => {
+  const [value, setValue] = useState("");
   const router = useRouter();
   const [pageLoading, setPageLoading] = useState(true);
   const [members, setMembers] = useState([]);
@@ -60,63 +54,56 @@ const Episodes = () => {
   const subscriptionRSSFeed = null;
 
   return (
-    <EpisodeLayout>
-      {subscriptionRSSFeed ? null : (
-        <div className="flex flex-col">
-          <div className="flex flex-col items-start w-full mb-8">
-            <p className="text-xl font-bold text-repod-text-primary text-center">
-              {PAGE_COPY.OverviewTitle}
+    <>
+      <div className={`mt-6 mb-8 w-full ${isMobile ? "ml-4" : "ml-8"}`}>
+        <Link href={`/${showId}/episodes`}>
+          <a
+            className={`text-lg font-semibold text-repod-text-primary flex flex-row items-center py-4 hover:opacity-50 transition`}
+          >
+            <ArrowLeft
+              className="mr-2 stroke-current text-repod-text-primary"
+              size={24}
+            />
+            Go Back
+          </a>
+        </Link>
+      </div>
+      <div
+        className={`flex flex-col items-start w-full pt-6 ${
+          isMobile ? "px-4" : "px-8"
+        }`}
+      >
+        <p className="text-2xl font-bold text-repod-text-primary text-left mb-8">
+          {PAGE_COPY.PageTitle}
+        </p>
+        <div className="flex flex-row items-start w-full pb-12">
+          <div className="rounded-lg border border-repod-border-light flex flex-col items-start justify-center px-9 py-12 w-full">
+            <p className="text-xl font-bold text-repod-text-primary text-left">
+              {PAGE_COPY.QuestionTitle}
             </p>
-            <p className="text-md font-semibold text-repod-text-secondary text-center">
-              {PAGE_COPY.OverviewSubTitle}
+            <p className="text-repod-text-secondary text-lg text-left mb-4">
+              {PAGE_COPY.QuestionSubtitle}
             </p>
-          </div>
-          <div className="flex flex-row items-center w-full pb-12">
-            <div className="rounded-lg border border-repod-border-medium flex flex-col items-center justify-center p-8 mr-4">
-              <img
-                style={{ width: 178, height: 217 }}
-                src="/icons/upload-hero-icon.svg"
-                alt="upload icon"
+            <div className="w-full flex relative justify-start items-center">
+              <LinkIcon
+                className="ml-2 absolute stroke-current text-repod-text-secondary "
+                size={24}
               />
-              <p className="text-lg font-bold text-repod-text-primary text-center">
-                {PAGE_COPY.UploadTitle}
-              </p>
-              <p className=" text-repod-text-secondary text-center mb-4">
-                {PAGE_COPY.UploadSubTitle}
-              </p>
-              <Button.Medium
-                disabled
-                className="text-repod-text-alternative uppercase text-sm tracking-wide"
-                style={{ minWidth: 300, maxWidth: 300, width: 300 }}
-                onClick={() => {}}
-              >
-                {PAGE_COPY.UploadButtonLabel}
-              </Button.Medium>
-            </div>
-            <div className="rounded-lg border border-repod-border-medium flex flex-col items-center justify-center p-8 ml-4">
-              <img
-                style={{ width: 178, height: 217 }}
-                src="/icons/import-hero-icon.svg"
-                alt="import icon"
+
+              <input
+                className={`w-full font-semibold text-lg pl-10 pr-6 h-12 bg-repod-canvas-secondary border-2 rounded-lg border-repod-border-medium text-repod-text-primary focus:border-info focus:outline-none`}
+                type="search"
+                value={value}
+                placeholder={PAGE_COPY.Placeholder}
+                onChange={(event) => {
+                  setValue(event.target.value);
+                }}
               />
-              <p className="text-lg font-bold text-repod-text-primary text-center">
-                {PAGE_COPY.ImportTitle}
-              </p>
-              <p className=" text-repod-text-secondary text-center mb-4">
-                {PAGE_COPY.ImportSubTitle}
-              </p>
-              <Button.Medium
-                className="bg-info text-repod-text-alternative uppercase text-sm tracking-wide"
-                style={{ minWidth: 300, maxWidth: 300, width: 300 }}
-                onClick={() => {}}
-              >
-                {PAGE_COPY.ImportButtonLabel}
-              </Button.Medium>
             </div>
           </div>
         </div>
-      )}
-    </EpisodeLayout>
+      </div>
+    </>
   );
 };
 
