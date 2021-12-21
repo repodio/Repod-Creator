@@ -11,17 +11,19 @@ import { EpisodeLayout } from "components/Layouts";
 import { useMediaQuery } from "react-responsive";
 import { MembersTable } from "components/Table";
 import { fetchMembers } from "utils/repodAPI";
+import { Button } from "components/Buttons";
 
 const PAGE_COPY = {
-  StripeConnectMessage:
-    "To enable listeners to subscribe through Repod we must first connect to your Stripe Account. We use Stripe to safely and securely get you your money, setting up an account is quick and easy. Start by pressing the button below.",
-  PlaceholderTitle:
-    "Start by customizing the subscription tiers you want to offer",
-  PlaceholderSubTitle:
-    "We'll start you off with the following tier but you get to customize however you'd like",
-  OverviewTitle: "Members",
-  OverviewSubTitle:
-    "View your members at a high level. Click a member to see more details!",
+  OverviewTitle: "Add new premium episodes",
+  OverviewSubTitle: "Start off by choosing how to add your premium episodes",
+  UploadTitle: "Add new episodes",
+  UploadSubTitle:
+    "Start a premium content feed for paid members by adding new episodes. Get setup in minutes",
+  UploadButtonLabel: "Coming Soon",
+  ImportTitle: "Import your premium RSS feed",
+  ImportSubTitle:
+    "Offer your fans premium content by moving your private RSS feed to Repod. Easily import from Patreon and other hosting platforms",
+  ImportButtonLabel: "Import from RSS feed",
 };
 
 const Episodes = () => {
@@ -55,23 +57,65 @@ const Episodes = () => {
     return <LoadingScreen />;
   }
 
-  console.log("members", members);
+  const subscriptionRSSFeed = null;
 
   return (
     <EpisodeLayout>
-      <div className="flex flex-col">
-        <div className="flex flex-col items-start w-full mb-8">
-          <p className="text-xl font-bold text-repod-text-primary text-left">
-            {PAGE_COPY.OverviewTitle}
-          </p>
-          <p className="text-md font-semibold text-repod-text-secondary text-left">
-            {PAGE_COPY.OverviewSubTitle}
-          </p>
+      {subscriptionRSSFeed ? null : (
+        <div className="flex flex-col">
+          <div className="flex flex-col items-start w-full mb-8">
+            <p className="text-xl font-bold text-repod-text-primary text-center">
+              {PAGE_COPY.OverviewTitle}
+            </p>
+            <p className="text-md font-semibold text-repod-text-secondary text-center">
+              {PAGE_COPY.OverviewSubTitle}
+            </p>
+          </div>
+          <div className="flex flex-row items-center w-full pb-12">
+            <div className="rounded-lg border border-repod-border-medium flex flex-col items-center justify-center p-8 mr-4">
+              <img
+                style={{ width: 178, height: 217 }}
+                src="/icons/upload-hero-icon.svg"
+                alt="upload icon"
+              />
+              <p className="text-lg font-bold text-repod-text-primary text-center">
+                {PAGE_COPY.UploadTitle}
+              </p>
+              <p className=" text-repod-text-secondary text-center mb-4">
+                {PAGE_COPY.UploadSubTitle}
+              </p>
+              <Button.Medium
+                disabled
+                className="text-repod-text-alternative uppercase text-sm tracking-wide"
+                style={{ minWidth: 300, maxWidth: 300, width: 300 }}
+                onClick={() => {}}
+              >
+                {PAGE_COPY.UploadButtonLabel}
+              </Button.Medium>
+            </div>
+            <div className="rounded-lg border border-repod-border-medium flex flex-col items-center justify-center p-8 ml-4">
+              <img
+                style={{ width: 178, height: 217 }}
+                src="/icons/import-hero-icon.svg"
+                alt="import icon"
+              />
+              <p className="text-lg font-bold text-repod-text-primary text-center">
+                {PAGE_COPY.ImportTitle}
+              </p>
+              <p className=" text-repod-text-secondary text-center mb-4">
+                {PAGE_COPY.ImportSubTitle}
+              </p>
+              <Button.Medium
+                className="bg-info text-repod-text-alternative uppercase text-sm tracking-wide"
+                style={{ minWidth: 300, maxWidth: 300, width: 300 }}
+                onClick={() => {}}
+              >
+                {PAGE_COPY.ImportButtonLabel}
+              </Button.Medium>
+            </div>
+          </div>
         </div>
-        <div className={"flex flex-col items-center w-full pb-12"}>
-          <MembersTable data={members} />
-        </div>
-      </div>
+      )}
     </EpisodeLayout>
   );
 };
