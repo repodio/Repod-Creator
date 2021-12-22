@@ -4,14 +4,15 @@ import { useSelector, useDispatch } from "react-redux";
 import { selectors as showsSelectors } from "modules/Shows";
 
 import { useRouter } from "next/router";
-import { LoadingScreen } from "components/Loading";
+import { Loader, LoadingScreen } from "components/Loading";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
 import { useMediaQuery } from "react-responsive";
-import { fetchMembers } from "utils/repodAPI";
+import { fetchMembers, updateSubscriptionRSSFeed } from "utils/repodAPI";
 import { ArrowLeft, Link as LinkIcon } from "react-feather";
 import Link from "next/link";
 import { Button } from "components/Buttons";
+import toast from "react-hot-toast";
 
 const PAGE_COPY = {
   PageTitle: "Import and sync your premium RSS feed",
@@ -22,10 +23,11 @@ const PAGE_COPY = {
 };
 
 const Episodes = () => {
-  const [value, setValue] = useState("");
+  const [rssUrlValue, setRSSValue] = useState("");
   const router = useRouter();
   const [pageLoading, setPageLoading] = useState(true);
-  const [members, setMembers] = useState([]);
+  const [uploadLoading, setUploadLoading] = useState(false);
+  // const [members, setMembers] = useState([]);
   const { showId } = router.query;
   const showIdString = showId as string;
 
@@ -39,11 +41,11 @@ const Episodes = () => {
         router.replace(`/`);
       }
 
-      const newMembers = await fetchMembers({ showId: showIdString });
+      // const newMembers = await fetchMembers({ showId: showIdString });
 
-      console.log("newMembers: ", newMembers);
+      // console.log("newMembers: ", newMembers);
 
-      setMembers(newMembers);
+      // setMembers(newMembers);
 
       setPageLoading(false);
     })();
@@ -54,6 +56,28 @@ const Episodes = () => {
   }
 
   const subscriptionRSSFeed = null;
+
+  const handleSaveRSSUrl = async () => {
+    if (uploadLoading) {
+      return;
+    }
+
+    setUploadLoading(true);
+
+    const result = await updateSubscriptionRSSFeed({
+      showId: showIdString,
+      rssUrl: rssUrlValue,
+    });
+    console.log("result", result);
+
+    setUploadLoading(false);
+
+    if (result) {
+      toast.success("RSS feed import started");
+    } else {
+      toast.error("Something went wrong, try again later");
+    }
+  };
 
   return (
     <>
@@ -95,19 +119,19 @@ const Episodes = () => {
               <input
                 className={`w-full font-semibold text-lg pl-10 pr-6 h-12 bg-repod-canvas-secondary border-2 rounded-lg border-repod-border-medium text-repod-text-primary focus:border-info focus:outline-none`}
                 type="search"
-                value={value}
+                value={rssUrlValue}
                 placeholder={PAGE_COPY.Placeholder}
                 onChange={(event) => {
-                  setValue(event.target.value);
+                  setRSSValue(event.target.value);
                 }}
               />
             </div>
             <Button.Medium
-              className="bg-info text-repod-text-alternative uppercase text-sm tracking-wide"
+              className="bg-info text-repod-text-alternative uppercase text-sm tracking-wide flex justify-center items-center"
               style={{ minWidth: 300, maxWidth: 300, width: 300 }}
-              onClick={() => {}}
+              onClick={handleSaveRSSUrl}
             >
-              {PAGE_COPY.ButtonLabel}
+              {uploadLoading ? <Loader /> : PAGE_COPY.ButtonLabel}
             </Button.Medium>
           </div>
         </div>

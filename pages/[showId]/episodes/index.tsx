@@ -10,7 +10,7 @@ import { Action } from "redux";
 import { EpisodeLayout } from "components/Layouts";
 import { useMediaQuery } from "react-responsive";
 import { MembersTable } from "components/Table";
-import { fetchMembers } from "utils/repodAPI";
+// import { fetchSubscriptionRSSFeedAndEpisodes } from "utils/repodAPI";
 import { Button } from "components/Buttons";
 
 const PAGE_COPY = {
@@ -43,11 +43,13 @@ const Episodes = () => {
         router.replace(`/`);
       }
 
-      const newMembers = await fetchMembers({ showId: showIdString });
+      // const response = await fetchSubscriptionRSSFeedAndEpisodes({
+      //   showId: showIdString,
+      // });
 
-      console.log("newMembers: ", newMembers);
+      // console.log("fetchSubscriptionRSSFeedAndEpisodes response: ", response);
 
-      setMembers(newMembers);
+      // setMembers(newMembers);
 
       setPageLoading(false);
     })();

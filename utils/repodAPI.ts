@@ -13,6 +13,7 @@ const ROUTES = {
   claimShow: "claim-show",
   claimShows: "claim-shows",
   subscriptions: "subscriptions",
+  subscription: "subscription",
 };
 
 export const COUNTRY_CODES = {
@@ -586,6 +587,45 @@ const removeStripeAccountIdOnShow = async ({
   ).then((data) => data.json());
 };
 
+// const fetchSubscriptionRSSFeedAndEpisodes = async ({
+//   showId,
+// }: {
+//   showId: string;
+// }): Promise<MemberData[]> => {
+//   const response = await fetch(
+//     `${API_DOMAIN}/v1/${ROUTES.subscriptions}/${showId}/rss`,
+//     {
+//       method: "GET",
+//       headers: await getHeaders(),
+//     }
+//   ).then((data) => data.json());
+
+//   console.log("fetchSubscriptionRSSFeedAndEpisodes response: ", response);
+//   return response;
+// };
+
+const updateSubscriptionRSSFeed = async ({
+  showId,
+  rssUrl,
+}: {
+  showId: string;
+  rssUrl: string;
+}): Promise<boolean> => {
+  const response = await fetch(
+    `${API_DOMAIN}/v1/${ROUTES.subscription}/${showId}/rss`,
+    {
+      method: "PUT",
+      headers: await getHeaders(),
+      body: JSON.stringify({
+        rssUrl,
+      }),
+    }
+  ).then((data) => data.json());
+
+  console.log("updateSubscriptionRSSFeed response", response);
+  return response && response.success;
+};
+
 export {
   getEpisodes,
   fetchClaimedShowsAPI,
@@ -611,4 +651,5 @@ export {
   deleteSubscriptionTier,
   deleteSubscriptionBenefit,
   fetchMembers,
+  updateSubscriptionRSSFeed,
 };
