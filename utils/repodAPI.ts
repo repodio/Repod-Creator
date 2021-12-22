@@ -587,22 +587,24 @@ const removeStripeAccountIdOnShow = async ({
   ).then((data) => data.json());
 };
 
-// const fetchSubscriptionRSSFeedAndEpisodes = async ({
-//   showId,
-// }: {
-//   showId: string;
-// }): Promise<MemberData[]> => {
-//   const response = await fetch(
-//     `${API_DOMAIN}/v1/${ROUTES.subscriptions}/${showId}/rss`,
-//     {
-//       method: "GET",
-//       headers: await getHeaders(),
-//     }
-//   ).then((data) => data.json());
+const fetchSubscriptionRSSFeedAndEpisodes = async ({
+  showId,
+}: {
+  showId: string;
+}): Promise<{
+  rssUrl: string;
+  episodes: EpisodeItem[];
+}> => {
+  const response = await fetch(
+    `${API_DOMAIN}/v1/${ROUTES.subscription}/${showId}/rss`,
+    {
+      method: "GET",
+      headers: await getHeaders(),
+    }
+  ).then((data) => data.json());
 
-//   console.log("fetchSubscriptionRSSFeedAndEpisodes response: ", response);
-//   return response;
-// };
+  return response && response.data;
+};
 
 const updateSubscriptionRSSFeed = async ({
   showId,
@@ -622,7 +624,6 @@ const updateSubscriptionRSSFeed = async ({
     }
   ).then((data) => data.json());
 
-  console.log("updateSubscriptionRSSFeed response", response);
   return response && response.success;
 };
 
@@ -652,4 +653,5 @@ export {
   deleteSubscriptionBenefit,
   fetchMembers,
   updateSubscriptionRSSFeed,
+  fetchSubscriptionRSSFeedAndEpisodes,
 };

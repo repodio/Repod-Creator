@@ -8,7 +8,10 @@ import { Loader, LoadingScreen } from "components/Loading";
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
 import { useMediaQuery } from "react-responsive";
-import { fetchMembers, updateSubscriptionRSSFeed } from "utils/repodAPI";
+import {
+  fetchSubscriptionRSSFeedAndEpisodes,
+  updateSubscriptionRSSFeed,
+} from "utils/repodAPI";
 import { ArrowLeft, Link as LinkIcon } from "react-feather";
 import Link from "next/link";
 import { Button } from "components/Buttons";
@@ -41,11 +44,15 @@ const Episodes = () => {
         router.replace(`/`);
       }
 
-      // const newMembers = await fetchMembers({ showId: showIdString });
+      const response = await fetchSubscriptionRSSFeedAndEpisodes({
+        showId: showIdString,
+      });
 
-      // console.log("newMembers: ", newMembers);
+      console.log("response: ", response);
 
-      // setMembers(newMembers);
+      if (response && response.rssUrl) {
+        setRSSValue(response.rssUrl);
+      }
 
       setPageLoading(false);
     })();
