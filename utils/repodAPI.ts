@@ -593,6 +593,7 @@ const fetchSubscriptionRSSFeedAndEpisodes = async ({
   showId: string;
 }): Promise<{
   rssUrl: string;
+  rssStatus: string;
   episodes: EpisodeItem[];
 }> => {
   const response = await fetch(

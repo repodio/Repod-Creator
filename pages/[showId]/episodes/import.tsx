@@ -5,8 +5,6 @@ import { selectors as showsSelectors } from "modules/Shows";
 
 import { useRouter } from "next/router";
 import { Loader, LoadingScreen } from "components/Loading";
-import { ThunkDispatch } from "redux-thunk";
-import { Action } from "redux";
 import { useMediaQuery } from "react-responsive";
 import {
   fetchSubscriptionRSSFeedAndEpisodes,
@@ -25,17 +23,15 @@ const PAGE_COPY = {
   ButtonLabel: "Start Import",
 };
 
-const Episodes = () => {
+const RSSImport = () => {
   const [rssUrlValue, setRSSValue] = useState("");
   const router = useRouter();
   const [pageLoading, setPageLoading] = useState(true);
   const [uploadLoading, setUploadLoading] = useState(false);
-  // const [members, setMembers] = useState([]);
   const { showId } = router.query;
   const showIdString = showId as string;
 
   const show = useSelector(showsSelectors.getShowById(showIdString));
-  const dispatch = useDispatch<ThunkDispatch<{}, undefined, Action>>();
   const isMobile = useMediaQuery({ query: "(max-width: 900px)" });
 
   useEffect(() => {
@@ -61,8 +57,6 @@ const Episodes = () => {
   if (!show || pageLoading) {
     return <LoadingScreen />;
   }
-
-  const subscriptionRSSFeed = null;
 
   const handleSaveRSSUrl = async () => {
     if (uploadLoading) {
@@ -151,4 +145,4 @@ export default withAuthUser({
   whenUnauthedBeforeInit: AuthAction.SHOW_LOADER,
   whenUnauthedAfterInit: AuthAction.REDIRECT_TO_LOGIN,
   LoaderComponent: LoadingScreen,
-})(Episodes);
+})(RSSImport);

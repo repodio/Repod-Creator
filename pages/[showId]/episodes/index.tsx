@@ -9,8 +9,8 @@ import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
 import { EpisodeLayout } from "components/Layouts";
 import { useMediaQuery } from "react-responsive";
-import { MembersTable } from "components/Table";
-// import { fetchSubscriptionRSSFeedAndEpisodes } from "utils/repodAPI";
+import { EpisodesTable, MembersTable } from "components/Table";
+import { fetchSubscriptionRSSFeedAndEpisodes } from "utils/repodAPI";
 import { Button } from "components/Buttons";
 
 const PAGE_COPY = {
@@ -29,7 +29,8 @@ const PAGE_COPY = {
 const Episodes = () => {
   const router = useRouter();
   const [pageLoading, setPageLoading] = useState(true);
-  const [members, setMembers] = useState([]);
+  const [episodes, setEpisodes] = useState([]);
+  const [rssStatus, setRssStatus] = useState(null);
   const { showId } = router.query;
   const showIdString = showId as string;
 
@@ -43,13 +44,19 @@ const Episodes = () => {
         router.replace(`/`);
       }
 
-      // const response = await fetchSubscriptionRSSFeedAndEpisodes({
-      //   showId: showIdString,
-      // });
+      const response = await fetchSubscriptionRSSFeedAndEpisodes({
+        showId: showIdString,
+      });
 
-      // console.log("fetchSubscriptionRSSFeedAndEpisodes response: ", response);
+      console.log("response: ", response);
 
-      // setMembers(newMembers);
+      if (response && response.episodes) {
+        setEpisodes(response.episodes);
+      }
+
+      if (response && response.rssStatus) {
+        setRssStatus(response.rssStatus);
+      }
 
       setPageLoading(false);
     })();
@@ -63,11 +70,13 @@ const Episodes = () => {
     router.replace(`/${showId}/episodes/import`);
   };
 
-  const subscriptionRSSFeed = null;
-
   return (
     <EpisodeLayout>
-      {subscriptionRSSFeed ? null : (
+      {rssStatus ? (
+        <div className="flex flex-col">
+          <EpisodesTable data={episodes} />
+        </div>
+      ) : (
         <div className="flex flex-col">
           <div className="flex flex-col items-start w-full mb-8">
             <p className="text-xl font-bold text-repod-text-primary text-center">
