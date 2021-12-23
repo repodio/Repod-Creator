@@ -8,20 +8,18 @@ const MultiSelectButton = ({
   selected: boolean;
   onPress: () => void;
 }) => {
-  return selected ? (
+  return (
     <button
       style={{ width: 18, height: 18 }}
-      className="flex rounded bg-repod-tint justify-center items-center focus:outline-none"
+      className={`flex rounded justify-center items-center focus:outline-none ${
+        selected
+          ? "bg-repod-tint border border-repod-tint"
+          : "bg-repod-border-light border border-repod-border-medium"
+      }`}
       onClick={onPress}
     >
-      <CheckIcon />
+      {selected ? <CheckIcon /> : null}
     </button>
-  ) : (
-    <button
-      style={{ width: 18, height: 18 }}
-      className="flex rounded bg-canvas bg-repod-border-light border border-repod-border-medium justify-center items-center focus:outline-none"
-      onClick={onPress}
-    ></button>
   );
 };
 
