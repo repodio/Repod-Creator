@@ -24,6 +24,10 @@ const PAGE_COPY = {
   ImportSubTitle:
     "Offer your fans premium content by moving your private RSS feed to Repod. Easily import from Patreon and other hosting platforms",
   ImportButtonLabel: "Import from RSS feed",
+  RSSImportUnfetched:
+    "Your RSS feed is being imported! You can leave this page while we import your episodes. You'll see your episodes in the table below once the import is complete.",
+  RSSImportTitle: "Premium Episodes",
+  RSSImportSubTitle: "View all your premium episodes at a high level",
 };
 
 const Episodes = () => {
@@ -74,6 +78,17 @@ const Episodes = () => {
     <EpisodeLayout>
       {rssStatus ? (
         <div className="flex flex-col">
+          <div className="flex flex-col items-start w-full mb-8">
+            <p className="text-xl font-bold text-repod-text-primary text-left">
+              {PAGE_COPY.RSSImportTitle}
+            </p>
+            <p className="text-md font-semibold text-repod-text-secondary text-left">
+              {PAGE_COPY.RSSImportSubTitle}
+            </p>
+          </div>
+          <div className="border border-repod-tint bg-tint-08 rounded-lg p-5 text-lg font-semibold text-repod-tint">
+            {PAGE_COPY.RSSImportUnfetched}
+          </div>
           <EpisodesTable data={episodes} />
         </div>
       ) : (

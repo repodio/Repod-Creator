@@ -45,6 +45,7 @@ module.exports = {
         twitter: "#1DA1F2",
 
         "white-100": "rgba(255, 255, 255, 0.1)",
+        "tint-08": "rgba(64, 225, 169, 0.08)",
 
         "bg-warning": "rgba(255, 170, 0, 0.08)",
         "bg-info": "rgba(0, 149, 255, 0.08)",
