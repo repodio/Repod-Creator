@@ -6,6 +6,7 @@ import { formatDate } from "utils/formats";
 import { useMediaQuery } from "react-responsive";
 import { MultiSelectButton } from "components/Buttons";
 import { filter, map } from "lodash/fp";
+import { ChevronDown } from "react-feather";
 
 const ManageEpisodesTable = ({
   data,
@@ -56,12 +57,12 @@ const ManageEpisodesTable = ({
       }
     };
 
-    console.log("selectedIds", selectedIds);
-
     return [
       {
         Header: () => (
-          <MultiSelectButton selected={selectAll} onPress={handleSelectAll} />
+          <div className="mt-1">
+            <MultiSelectButton selected={selectAll} onPress={handleSelectAll} />
+          </div>
         ),
         accessor: "episodeId",
         width: 12,
@@ -129,9 +130,23 @@ const ManageEpisodesTable = ({
   }
 
   return data && data.length ? (
-    <Table data={data} columns={columns} isMobile={isMobile} />
+    <>
+      <div className="flex flex-row justify-between items-center w-full mt-8">
+        <p className="text-lg font-semibold text-repod-text-primary">
+          {data?.length || 0} Episodes
+        </p>
+        <button className="rounded-md border border-text-repod-text-secondary px-2 flex flex-row justify-center items-center">
+          <p className="text-md text-repod-text-secondary">Edit</p>
+          <ChevronDown
+            className="stroke-current text-repod-text-secondary ml-2"
+            size={16}
+          />
+        </button>
+      </div>
+      <Table data={data} columns={columns} isMobile={isMobile} />
+    </>
   ) : (
-    <EmptyTable loading={loading} message="No episode data yet" />
+    <EmptyTable loading={loading} message="No episodes yet" />
   );
 };
 

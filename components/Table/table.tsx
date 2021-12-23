@@ -26,9 +26,9 @@ const TableComponent = ({
 
       <div {...getTableProps()} className="table w-full my-8">
         {!isMobile ? (
-          <div className="mb-4">
+          <div className="pb-4 border-solid border-b border-repod-border-light">
             {headerGroups.map((headerGroup) => (
-              <div {...headerGroup.getHeaderGroupProps()} className="tr">
+              <div {...headerGroup.getHeaderGroupProps()} className="tr ">
                 {headerGroup.headers.map((column) => (
                   <div
                     {...column.getHeaderProps()}
