@@ -9,7 +9,7 @@ import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
 import { EpisodeLayout } from "components/Layouts";
 import { useMediaQuery } from "react-responsive";
-import { EpisodesTable, MembersTable } from "components/Table";
+import { ManageEpisodesTable } from "components/Table";
 import { fetchSubscriptionRSSFeedAndEpisodes } from "utils/repodAPI";
 import { Button } from "components/Buttons";
 
@@ -89,7 +89,7 @@ const Episodes = () => {
           <div className="border border-repod-tint bg-tint-08 rounded-lg p-5 text-lg font-semibold text-repod-tint">
             {PAGE_COPY.RSSImportUnfetched}
           </div>
-          <EpisodesTable data={episodes} />
+          <ManageEpisodesTable data={episodes} />
         </div>
       ) : (
         <div className="flex flex-col">
