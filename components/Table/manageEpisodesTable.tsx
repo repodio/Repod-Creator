@@ -190,6 +190,24 @@ const ManageEpisodesTable = ({
                         </button>
                       )}
                     </Menu.Item>
+                    <Menu.Item>
+                      {({ active }) => (
+                        <button
+                          disabled={disabledActions}
+                          key="Assign to Tier"
+                          onClick={handleRemovePressed}
+                          className={`${
+                            active ? "bg-repod-canvas-secondary" : ""
+                          } group flex rounded-md items-center w-full px-2 py-2 text-md z-10 ${
+                            disabledActions
+                              ? "text-repod-text-disabled cursor-default"
+                              : "text-repod-text-primary"
+                          }`}
+                        >
+                          Assign to Tier
+                        </button>
+                      )}
+                    </Menu.Item>
                   </div>
                 </Menu.Items>
               </Transition>
