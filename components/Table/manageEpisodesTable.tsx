@@ -13,13 +13,16 @@ import { RemoveEpisodesModal, AssignTierModal } from "components/Modals";
 const ManageEpisodesTable = ({
   data,
   loading,
-  total,
-  fetchData,
+  subscriptionTiers,
+  handleAssignTiers,
 }: {
   data: EpisodeItem[];
   loading?: boolean;
-  total?: number;
-  fetchData?: (pageIndex: number) => void;
+  subscriptionTiers?: SubscriptionTierItem[];
+  handleAssignTiers: (props: {
+    episodeIds: string[];
+    subscriptionTierIds: string[];
+  }) => void;
 }) => {
   const isMobile = useMediaQuery({ query: "(max-width: 1224px)" });
   const [selectAll, setSelectAll] = useState(false);
@@ -130,20 +133,6 @@ const ManageEpisodesTable = ({
     ];
   }, [isMobile, selectAll, selectedIds]);
 
-  if (fetchData) {
-    return data && data.length ? (
-      <PaginationTable
-        data={data}
-        columns={columns}
-        loading={loading}
-        total={total}
-        fetchData={fetchData}
-      />
-    ) : (
-      <EmptyTable loading={loading} message="No episode data yet" />
-    );
-  }
-
   return data && data.length ? (
     <>
       <div className="flex flex-row justify-between items-center w-full mt-8">
@@ -181,6 +170,24 @@ const ManageEpisodesTable = ({
                       {({ active }) => (
                         <button
                           disabled={disabledActions}
+                          key="Assign to Tier"
+                          onClick={handleAssignPressed}
+                          className={`${
+                            active ? "bg-repod-canvas-secondary" : ""
+                          } group flex rounded-md items-center w-full px-2 py-2 text-md z-10 ${
+                            disabledActions
+                              ? "text-repod-text-disabled cursor-default"
+                              : "text-repod-text-primary"
+                          }`}
+                        >
+                          Assign to Tier
+                        </button>
+                      )}
+                    </Menu.Item>
+                    <Menu.Item>
+                      {({ active }) => (
+                        <button
+                          disabled={disabledActions}
                           key="Delete"
                           onClick={handleRemovePressed}
                           className={`${
@@ -195,24 +202,6 @@ const ManageEpisodesTable = ({
                         </button>
                       )}
                     </Menu.Item>
-                    <Menu.Item>
-                      {({ active }) => (
-                        <button
-                          disabled={disabledActions}
-                          key="Assign to Tier"
-                          onClick={handleRemovePressed}
-                          className={`${
-                            active ? "bg-repod-canvas-secondary" : ""
-                          } group flex rounded-md items-center w-full px-2 py-2 text-md z-10 ${
-                            disabledActions
-                              ? "text-repod-text-disabled cursor-default"
-                              : "text-repod-text-primary"
-                          }`}
-                        >
-                          Assign to Tier
-                        </button>
-                      )}
-                    </Menu.Item>
                   </div>
                 </Menu.Items>
               </Transition>
@@ -223,6 +212,8 @@ const ManageEpisodesTable = ({
           isModalOpen={assignTiersModalOpen}
           setIsModalOpen={setAssignTiersModalOpen}
           episodeIds={selectedIds}
+          subscriptionTiers={subscriptionTiers}
+          handleAssignTiers={handleAssignTiers}
         />
         <RemoveEpisodesModal
           isModalOpen={removeTierModalOpen}

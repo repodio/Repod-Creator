@@ -1,17 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { withAuthUser, AuthAction } from "next-firebase-auth";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { selectors as showsSelectors } from "modules/Shows";
 
 import { useRouter } from "next/router";
 import { LoadingScreen } from "components/Loading";
-import { ThunkDispatch } from "redux-thunk";
-import { Action } from "redux";
 import { EpisodeLayout } from "components/Layouts";
-import { useMediaQuery } from "react-responsive";
 import { ManageEpisodesTable } from "components/Table";
-import { fetchSubscriptionRSSFeedAndEpisodes } from "utils/repodAPI";
+import {
+  fetchSubscriptionRSSFeedAndEpisodes,
+  updateSubscriptionTiersForEpisodes,
+} from "utils/repodAPI";
 import { Button } from "components/Buttons";
+import toast from "react-hot-toast";
 
 const PAGE_COPY = {
   OverviewTitle: "Add new premium episodes",
@@ -35,12 +36,11 @@ const Episodes = () => {
   const [pageLoading, setPageLoading] = useState(true);
   const [episodes, setEpisodes] = useState([]);
   const [rssStatus, setRssStatus] = useState(null);
+  const [subscriptionTiers, setSubscriptionTiers] = useState(null);
   const { showId } = router.query;
   const showIdString = showId as string;
 
   const show = useSelector(showsSelectors.getShowById(showIdString));
-  const dispatch = useDispatch<ThunkDispatch<{}, undefined, Action>>();
-  const isMobile = useMediaQuery({ query: "(max-width: 900px)" });
 
   useEffect(() => {
     (async () => {
@@ -52,14 +52,16 @@ const Episodes = () => {
         showId: showIdString,
       });
 
-      console.log("response: ", response);
-
       if (response && response.episodes) {
         setEpisodes(response.episodes);
       }
 
       if (response && response.rssStatus) {
         setRssStatus(response.rssStatus);
+      }
+
+      if (response && response.subscriptionTiers) {
+        setSubscriptionTiers(response.subscriptionTiers);
       }
 
       setPageLoading(false);
@@ -72,6 +74,20 @@ const Episodes = () => {
 
   const navigateToImport = () => {
     router.replace(`/${showId}/episodes/import`);
+  };
+
+  const handleAssignTiers = async ({
+    episodeIds = [],
+    subscriptionTierIds = [],
+  }) => {
+    if (episodeIds.length) {
+      await updateSubscriptionTiersForEpisodes({
+        showId: showIdString,
+        episodeIds,
+        subscriptionTierIds,
+      });
+      toast.success("Updated subscription tiers!");
+    }
   };
 
   return (
@@ -89,7 +105,11 @@ const Episodes = () => {
           <div className="border border-repod-tint bg-tint-08 rounded-lg p-5 text-lg font-semibold text-repod-tint">
             {PAGE_COPY.RSSImportUnfetched}
           </div>
-          <ManageEpisodesTable data={episodes} />
+          <ManageEpisodesTable
+            data={episodes}
+            subscriptionTiers={subscriptionTiers}
+            handleAssignTiers={handleAssignTiers}
+          />
         </div>
       ) : (
         <div className="flex flex-col">

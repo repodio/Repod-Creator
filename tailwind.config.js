@@ -57,7 +57,12 @@ module.exports = {
     },
   },
   variants: {
-    extend: {},
+    visibility: ["responsive", "hover", "focus", "group-hover"],
+    opacity: ["disabled", "hover"],
+    extend: {
+      opacity: ["disabled"],
+      cursor: ["disabled"],
+    },
   },
   plugins: [],
 };

@@ -1,27 +1,38 @@
-import { useRouter } from "next/router";
-import { useDispatch } from "react-redux";
 import Modal from "./baseModal";
-import { deleteBenefit } from "modules/Subscriptions";
-import { Button } from "components/Buttons";
-import { ThunkDispatch } from "redux-thunk";
-import { Action } from "redux";
+import { Button, MultiSelectButton } from "components/Buttons";
 import toast from "react-hot-toast";
+import { filter, map } from "lodash/fp";
+import { useState } from "react";
+import { Loader } from "components/Loading";
 
 type AssignTierModalProps = {
   isModalOpen: boolean;
   setIsModalOpen: (b: boolean) => void;
   episodeIds: string[];
+  subscriptionTiers: SubscriptionTierItem[];
+  handleAssignTiers: (props: {
+    episodeIds: string[];
+    subscriptionTierIds: string[];
+  }) => void;
 };
 
 const AssignTierModal = ({
   isModalOpen,
   setIsModalOpen,
   episodeIds,
+  subscriptionTiers,
+  handleAssignTiers,
 }: AssignTierModalProps) => {
-  const dispatch = useDispatch<ThunkDispatch<{}, undefined, Action>>();
-  const router = useRouter();
-  const { showId } = router.query;
-  const showIdString = showId as string;
+  const [selectedIds, setSelectedIds] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  const toggleSelect = (id) => {
+    if (!selectedIds.includes(id)) {
+      setSelectedIds([...selectedIds, id]);
+    } else {
+      setSelectedIds(filter((selectedId) => selectedId !== id)(selectedIds));
+    }
+  };
 
   const closeModal = () => {
     setIsModalOpen(false);
@@ -29,28 +40,48 @@ const AssignTierModal = ({
 
   const assignTiers = async () => {
     try {
-      // await dispatch(
-      //   deleteBenefit({
-      //     benefitId,
-      //     showId: showIdString,
-      //   })
-      // );
-      console.log("episodeIds", episodeIds);
-      toast.success("Episodes Deleted");
+      setLoading(true);
+      await handleAssignTiers({
+        episodeIds,
+        subscriptionTierIds: selectedIds,
+      });
+      setLoading(false);
+
       setIsModalOpen(false);
+      setSelectedIds([]);
     } catch (error) {
       console.error("assignTiers error", error);
       toast.error("Something went wrong, try again later");
     }
   };
 
+  const disabled = loading || !selectedIds.length;
+
   return (
     <Modal
       title={`What tier would you like to assign these ${episodeIds?.length} episodes to?`}
       isModalOpen={isModalOpen}
       setIsModalOpen={setIsModalOpen}
-      minWidth={100}
     >
+      <div className="w-full flex flex-col items-start justify-start px-4 mb-4">
+        {map((subscriptionTier: SubscriptionTierItem) => (
+          <div
+            key={subscriptionTier.subscriptionTierId}
+            className="flex flex-row justify-center items-center  mb-2"
+          >
+            <MultiSelectButton
+              selected={selectedIds.includes(
+                subscriptionTier.subscriptionTierId
+              )}
+              onPress={() => toggleSelect(subscriptionTier.subscriptionTierId)}
+            />
+            <p className="font-semibold text-repod-text-primary ml-2">
+              {subscriptionTier.title}
+            </p>
+          </div>
+        ))(subscriptionTiers)}
+      </div>
+
       <div className="w-full flex flex-row items-center justify-between">
         <Button.Small
           className="bg-repod-canvas text-repod-text-secondary"
@@ -61,11 +92,16 @@ const AssignTierModal = ({
         </Button.Small>
 
         <Button.Small
-          className="bg-danger text-repod-text-alternative"
+          disabled={disabled}
+          className={
+            disabled
+              ? "bg-repod-disabled-bg text-repod-text-disabled cursor-default flex justify-center items-center"
+              : "bg-info text-repod-text-alternative"
+          }
           style={{ minWidth: 100, maxWidth: 100, width: 100 }}
           onClick={assignTiers}
         >
-          Add
+          {loading ? <Loader /> : "Add"}
         </Button.Small>
       </div>
     </Modal>

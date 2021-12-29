@@ -595,6 +595,7 @@ const fetchSubscriptionRSSFeedAndEpisodes = async ({
   rssUrl: string;
   rssStatus: string;
   episodes: EpisodeItem[];
+  subscriptionTiers: SubscriptionTierItem[];
 }> => {
   const response = await fetch(
     `${API_DOMAIN}/v1/${ROUTES.subscription}/${showId}/rss`,
@@ -621,6 +622,30 @@ const updateSubscriptionRSSFeed = async ({
       headers: await getHeaders(),
       body: JSON.stringify({
         rssUrl,
+      }),
+    }
+  ).then((data) => data.json());
+
+  return response && response.success;
+};
+
+const updateSubscriptionTiersForEpisodes = async ({
+  showId,
+  episodeIds,
+  subscriptionTierIds,
+}: {
+  showId: string;
+  episodeIds: string[];
+  subscriptionTierIds: string[];
+}): Promise<void> => {
+  const response = await fetch(
+    `${API_DOMAIN}/v1/${ROUTES.subscription}/${showId}/episodes`,
+    {
+      method: "POST",
+      headers: await getHeaders(),
+      body: JSON.stringify({
+        episodeIds,
+        subscriptionTierIds,
       }),
     }
   ).then((data) => data.json());
@@ -655,4 +680,5 @@ export {
   fetchMembers,
   updateSubscriptionRSSFeed,
   fetchSubscriptionRSSFeedAndEpisodes,
+  updateSubscriptionTiersForEpisodes,
 };
