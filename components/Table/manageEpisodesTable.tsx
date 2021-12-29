@@ -8,7 +8,7 @@ import { MultiSelectButton } from "components/Buttons";
 import { filter, map } from "lodash/fp";
 import { ChevronDown } from "react-feather";
 import { Menu, Transition } from "@headlessui/react";
-import { RemoveEpisodesModal } from "components/Modals";
+import { RemoveEpisodesModal, AssignTierModal } from "components/Modals";
 
 const ManageEpisodesTable = ({
   data,
@@ -25,9 +25,14 @@ const ManageEpisodesTable = ({
   const [selectAll, setSelectAll] = useState(false);
   const [selectedIds, setSelectedIds] = useState([]);
   const [removeTierModalOpen, setRemoveTierModalOpen] = useState(false);
+  const [assignTiersModalOpen, setAssignTiersModalOpen] = useState(false);
 
   const handleRemovePressed = () => {
     setRemoveTierModalOpen(true);
+  };
+
+  const handleAssignPressed = () => {
+    setAssignTiersModalOpen(true);
   };
 
   const disabledActions = !selectedIds?.length;
@@ -214,6 +219,11 @@ const ManageEpisodesTable = ({
             </>
           )}
         </Menu>
+        <AssignTierModal
+          isModalOpen={assignTiersModalOpen}
+          setIsModalOpen={setAssignTiersModalOpen}
+          episodeIds={selectedIds}
+        />
         <RemoveEpisodesModal
           isModalOpen={removeTierModalOpen}
           setIsModalOpen={setRemoveTierModalOpen}

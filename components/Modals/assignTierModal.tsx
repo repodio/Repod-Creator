@@ -27,7 +27,7 @@ const AssignTierModal = ({
     setIsModalOpen(false);
   };
 
-  const removeEpisodes = async () => {
+  const assignTiers = async () => {
     try {
       // await dispatch(
       //   deleteBenefit({
@@ -39,7 +39,7 @@ const AssignTierModal = ({
       toast.success("Episodes Deleted");
       setIsModalOpen(false);
     } catch (error) {
-      console.error("removeEpisodes error", error);
+      console.error("assignTiers error", error);
       toast.error("Something went wrong, try again later");
     }
   };
@@ -63,9 +63,9 @@ const AssignTierModal = ({
         <Button.Small
           className="bg-danger text-repod-text-alternative"
           style={{ minWidth: 100, maxWidth: 100, width: 100 }}
-          onClick={removeEpisodes}
+          onClick={assignTiers}
         >
-          Remove
+          Add
         </Button.Small>
       </div>
     </Modal>
