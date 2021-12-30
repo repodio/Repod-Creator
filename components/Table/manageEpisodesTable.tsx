@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useEffect, useMemo, useState } from "react";
 import Table from "./table";
 import PaginationTable from "./paginationTable";
 import EmptyTable from "./emptyTable";
@@ -9,6 +9,7 @@ import { filter, map } from "lodash/fp";
 import { ChevronDown } from "react-feather";
 import { Menu, Transition } from "@headlessui/react";
 import { RemoveEpisodesModal, AssignTierModal } from "components/Modals";
+import { convertArrayToObject } from "utils/normalizing";
 
 const ManageEpisodesTable = ({
   data,
@@ -40,7 +41,12 @@ const ManageEpisodesTable = ({
 
   const disabledActions = !selectedIds?.length;
 
-  const columns = React.useMemo(() => {
+  const subscriptionTiersMap = useMemo(
+    () => convertArrayToObject(subscriptionTiers, "subscriptionTierId"),
+    [subscriptionTiers]
+  );
+
+  const columns = useMemo(() => {
     if (isMobile) {
       return [
         {
@@ -111,16 +117,20 @@ const ManageEpisodesTable = ({
         },
       },
       {
-        Header: () => <div style={{ textAlign: "right" }}>Status</div>,
-        accessor: "status",
-        width: 48,
-        Cell: (row) => <div style={{ textAlign: "right" }}>{row.value}</div>,
-      },
-      {
-        Header: () => <div style={{ textAlign: "right" }}>Listens</div>,
-        accessor: "listens",
-        width: 48,
-        Cell: (row) => <div style={{ textAlign: "right" }}>{row.value}</div>,
+        Header: () => <div style={{ textAlign: "left" }}>Tiers</div>,
+        accessor: "subscriptionTierIds",
+        Cell: (row) => (
+          <div className="flex flex-row justify-start items-center">
+            {map((subscriptionTierId: string) => (
+              <div
+                className="bg-tint-08 text-repod-tint text-sm px-2 py-1 ml-1"
+                key={subscriptionTierId}
+              >
+                <p>{(subscriptionTiersMap[subscriptionTierId] || {}).title}</p>
+              </div>
+            ))(row.value || [])}
+          </div>
+        ),
       },
       {
         Header: () => <div style={{ textAlign: "right" }}>Published Date</div>,

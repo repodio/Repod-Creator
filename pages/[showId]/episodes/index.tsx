@@ -53,6 +53,7 @@ const Episodes = () => {
       });
 
       if (response && response.episodes) {
+        console.log("response.episodes", response.episodes);
         setEpisodes(response.episodes);
       }
 
