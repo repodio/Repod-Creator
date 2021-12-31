@@ -105,7 +105,7 @@ const ManageEpisodesTable = ({
         accessor: "title",
         Cell: (row) => {
           return (
-            <div className="flex flex-row justify-start items-center">
+            <div className="flex flex-row justify-start items-center truncate">
               <img
                 className="w-10 h-10 object-cover rounded mr-2"
                 src={row.row.original.artworkUrl}
