@@ -120,13 +120,15 @@ const ManageEpisodesTable = ({
         Header: () => <div style={{ textAlign: "left" }}>Tiers</div>,
         accessor: "subscriptionTierIds",
         Cell: (row) => (
-          <div className="flex flex-row justify-start items-center">
+          <div className="flex flex-wrap justify-start items-center">
             {map((subscriptionTierId: string) => (
               <div
-                className="bg-tint-08 text-repod-tint text-sm px-2 py-1 ml-1"
+                className="bg-tint-08 text-repod-tint text-sm px-2 py-1 ml-1 my-0.5"
                 key={subscriptionTierId}
               >
-                <p>{(subscriptionTiersMap[subscriptionTierId] || {}).title}</p>
+                <p className="">
+                  {(subscriptionTiersMap[subscriptionTierId] || {}).title}
+                </p>
               </div>
             ))(row.value || [])}
           </div>
