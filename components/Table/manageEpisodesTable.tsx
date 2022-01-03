@@ -147,7 +147,7 @@ const ManageEpisodesTable = ({
 
   return data && data.length ? (
     <>
-      <div className="flex flex-row justify-between items-center w-full mt-8">
+      <div className="flex flex-row justify-between items-center w-full">
         <p className="text-lg font-semibold text-repod-text-primary">
           {data?.length || 0} Episodes
         </p>

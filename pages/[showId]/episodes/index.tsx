@@ -29,6 +29,7 @@ const PAGE_COPY = {
     "Your RSS feed is being imported! You can leave this page while we import your episodes. You'll see your episodes in the table below once the import is complete.",
   RSSImportTitle: "Premium Episodes",
   RSSImportSubTitle: "View all your premium episodes at a high level",
+  ConfigureRSSButtonLabel: "Configure RSS Feed",
 };
 
 const Episodes = () => {
@@ -53,7 +54,6 @@ const Episodes = () => {
       });
 
       if (response && response.episodes) {
-        console.log("response.episodes", response.episodes);
         setEpisodes(response.episodes);
       }
 
@@ -99,13 +99,25 @@ const Episodes = () => {
             <p className="text-xl font-bold text-repod-text-primary text-left">
               {PAGE_COPY.RSSImportTitle}
             </p>
-            <p className="text-md font-semibold text-repod-text-secondary text-left">
-              {PAGE_COPY.RSSImportSubTitle}
-            </p>
+            <div className="flex flex-row items-center justify-between w-full">
+              <p className="text-md font-semibold text-repod-text-secondary text-left">
+                {PAGE_COPY.RSSImportSubTitle}
+              </p>
+
+              <Button.Tiny
+                className={`bg-info text-repod-text-alternative uppercase`}
+                onClick={navigateToImport}
+                style={{ minWidth: 200, maxWidth: 200, width: 200 }}
+              >
+                {PAGE_COPY.ConfigureRSSButtonLabel}
+              </Button.Tiny>
+            </div>
           </div>
-          <div className="border border-repod-tint bg-tint-08 rounded-lg p-5 text-lg font-semibold text-repod-tint">
-            {PAGE_COPY.RSSImportUnfetched}
-          </div>
+          {rssStatus === "unfetched" ? (
+            <div className="border border-repod-tint bg-tint-08 rounded-lg p-5 text-lg font-semibold text-repod-tint mb-8">
+              {PAGE_COPY.RSSImportUnfetched}
+            </div>
+          ) : null}
           <ManageEpisodesTable
             data={episodes}
             subscriptionTiers={subscriptionTiers}
