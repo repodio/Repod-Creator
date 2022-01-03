@@ -596,6 +596,7 @@ const fetchSubscriptionRSSFeedAndEpisodes = async ({
   rssStatus: string;
   episodes: EpisodeItem[];
   subscriptionTiers: SubscriptionTierItem[];
+  total: number;
 }> => {
   const response = await fetch(
     `${API_DOMAIN}/v1/${ROUTES.subscription}/${showId}/rss`,

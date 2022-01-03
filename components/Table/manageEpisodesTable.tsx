@@ -16,6 +16,7 @@ const ManageEpisodesTable = ({
   loading,
   subscriptionTiers,
   handleAssignTiers,
+  total,
 }: {
   data: EpisodeItem[];
   loading?: boolean;
@@ -24,6 +25,7 @@ const ManageEpisodesTable = ({
     episodeIds: string[];
     subscriptionTierIds: string[];
   }) => void;
+  total: number;
 }) => {
   const isMobile = useMediaQuery({ query: "(max-width: 1224px)" });
   const [selectAll, setSelectAll] = useState(false);
@@ -149,7 +151,7 @@ const ManageEpisodesTable = ({
     <>
       <div className="flex flex-row justify-between items-center w-full">
         <p className="text-lg font-semibold text-repod-text-primary">
-          {data?.length || 0} Episodes
+          {total || 0} Episodes
         </p>
         <Menu as="div" className="relative text-left">
           {({ open }) => (

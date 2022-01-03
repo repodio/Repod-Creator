@@ -36,6 +36,7 @@ const Episodes = () => {
   const router = useRouter();
   const [pageLoading, setPageLoading] = useState(true);
   const [episodes, setEpisodes] = useState([]);
+  const [totalEpisodes, setTotalEpisodes] = useState(0);
   const [rssStatus, setRssStatus] = useState(null);
   const [subscriptionTiers, setSubscriptionTiers] = useState(null);
   const { showId } = router.query;
@@ -55,6 +56,10 @@ const Episodes = () => {
 
       if (response && response.episodes) {
         setEpisodes(response.episodes);
+      }
+
+      if (response && response.total) {
+        setTotalEpisodes(response.total);
       }
 
       if (response && response.rssStatus) {
@@ -120,6 +125,7 @@ const Episodes = () => {
           ) : null}
           <ManageEpisodesTable
             data={episodes}
+            total={totalEpisodes}
             subscriptionTiers={subscriptionTiers}
             handleAssignTiers={handleAssignTiers}
           />
