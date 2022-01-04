@@ -59,11 +59,16 @@ const Episodes = () => {
 
     const response = await fetchSubscriptionRSSFeedAndEpisodes({
       showId: showIdString,
-      cursor: page * pageSize,
+      offset: page * pageSize,
       size: pageSize,
     });
 
     if (response && response.episodes) {
+      console.log(
+        "response && response.episodes",
+        response && response.episodes
+      );
+
       setEpisodes(response.episodes);
     }
 

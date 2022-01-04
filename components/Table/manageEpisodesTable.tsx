@@ -277,7 +277,9 @@ const ManageEpisodesTable = ({
               }}
             >
               {map((page: { value: number; label: string }) => (
-                <option value={page.value}>{page.label}</option>
+                <option key={page.value} value={page.value}>
+                  {page.label}
+                </option>
               ))(PAGE_SIZING)}
             </select>
           </label>
