@@ -64,11 +64,6 @@ const Episodes = () => {
     });
 
     if (response && response.episodes) {
-      console.log(
-        "response && response.episodes",
-        response && response.episodes
-      );
-
       setEpisodes(response.episodes);
     }
 
@@ -151,7 +146,11 @@ const Episodes = () => {
   return (
     <EpisodeLayout>
       {rssStatus ? (
-        <div className="flex flex-col relative">
+        <div
+          className={`flex flex-col relative pb-8 ${
+            tableLoading ? "opacity-50" : ""
+          }`}
+        >
           <div className="flex flex-col items-start w-full mb-8">
             <p className="text-xl font-bold text-repod-text-primary text-left">
               {PAGE_COPY.RSSImportTitle}
