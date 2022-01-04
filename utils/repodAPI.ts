@@ -589,8 +589,12 @@ const removeStripeAccountIdOnShow = async ({
 
 const fetchSubscriptionRSSFeedAndEpisodes = async ({
   showId,
+  cursor,
+  size,
 }: {
   showId: string;
+  cursor: number;
+  size: number;
 }): Promise<{
   rssUrl: string;
   rssStatus: string;
@@ -599,7 +603,7 @@ const fetchSubscriptionRSSFeedAndEpisodes = async ({
   total: number;
 }> => {
   const response = await fetch(
-    `${API_DOMAIN}/v1/${ROUTES.subscription}/${showId}/rss`,
+    `${API_DOMAIN}/v1/${ROUTES.subscription}/${showId}/rss?cursor=${cursor}&size=${size}`,
     {
       method: "GET",
       headers: await getHeaders(),

@@ -6,10 +6,29 @@ import { formatDate } from "utils/formats";
 import { useMediaQuery } from "react-responsive";
 import { MultiSelectButton } from "components/Buttons";
 import { filter, map } from "lodash/fp";
-import { ChevronDown } from "react-feather";
+import { ChevronDown, ChevronLeft, ChevronRight } from "react-feather";
 import { Menu, Transition } from "@headlessui/react";
 import { RemoveEpisodesModal, AssignTierModal } from "components/Modals";
 import { convertArrayToObject } from "utils/normalizing";
+
+const PAGE_SIZING = [
+  {
+    value: 10,
+    label: "10",
+  },
+  {
+    value: 25,
+    label: "25",
+  },
+  {
+    value: 50,
+    label: "50",
+  },
+  {
+    value: 100,
+    label: "100",
+  },
+];
 
 const ManageEpisodesTable = ({
   data,
@@ -17,6 +36,11 @@ const ManageEpisodesTable = ({
   subscriptionTiers,
   handleAssignTiers,
   total,
+  pageSize = 10,
+  page = 0,
+  handleChangePageSize,
+  handlePrev,
+  handleNext,
 }: {
   data: EpisodeItem[];
   loading?: boolean;
@@ -26,6 +50,11 @@ const ManageEpisodesTable = ({
     subscriptionTierIds: string[];
   }) => void;
   total: number;
+  pageSize: number;
+  page: number;
+  handleChangePageSize: (value: number) => void;
+  handlePrev: () => void;
+  handleNext: () => void;
 }) => {
   const isMobile = useMediaQuery({ query: "(max-width: 1224px)" });
   const [selectAll, setSelectAll] = useState(false);
@@ -236,6 +265,37 @@ const ManageEpisodesTable = ({
         />
       </div>
       <Table data={data} columns={columns} isMobile={isMobile} />
+      <div className="flex flex-row justify-between items-center w-full stroke-current text-repod-text-secondary">
+        <div className="flex flex-row justify-end items-center">
+          <label className="flex flex-row justify-start items-center">
+            Rows per page:
+            <select
+              className="ml-2 cursor-pointer"
+              value={pageSize}
+              onChange={(event) => {
+                handleChangePageSize(Number(event.target.value));
+              }}
+            >
+              {map((page: { value: number; label: string }) => (
+                <option value={page.value}>{page.label}</option>
+              ))(PAGE_SIZING)}
+            </select>
+          </label>
+        </div>
+
+        <div className="flex flex-row justify-end items-center">
+          <p>
+            {1 + page * pageSize} - {Math.min((page + 1) * pageSize, total)} of{" "}
+            {total}
+          </p>
+          <button onClick={handlePrev}>
+            <ChevronLeft size={20} className="mx-2" />
+          </button>
+          <button onClick={handleNext}>
+            <ChevronRight size={20} className="mx-2" />
+          </button>
+        </div>
+      </div>
     </>
   ) : (
     <EmptyTable loading={loading} message="No episodes yet" />

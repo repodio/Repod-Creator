@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import { selectors as showsSelectors } from "modules/Shows";
 
 import { useRouter } from "next/router";
-import { LoadingScreen } from "components/Loading";
+import { Loader, LoadingScreen } from "components/Loading";
 import { EpisodeLayout } from "components/Layouts";
 import { ManageEpisodesTable } from "components/Table";
 import {
@@ -13,6 +13,7 @@ import {
 } from "utils/repodAPI";
 import { Button } from "components/Buttons";
 import toast from "react-hot-toast";
+import { LOADER_COLORS } from "components/Loading/loader";
 
 const PAGE_COPY = {
   OverviewTitle: "Add new premium episodes",
@@ -35,8 +36,11 @@ const PAGE_COPY = {
 const Episodes = () => {
   const router = useRouter();
   const [pageLoading, setPageLoading] = useState(true);
+  const [tableLoading, setTableLoading] = useState(true);
   const [episodes, setEpisodes] = useState([]);
   const [totalEpisodes, setTotalEpisodes] = useState(0);
+  const [page, setPage] = useState(0);
+  const [pageSize, setPageSize] = useState(10);
   const [rssStatus, setRssStatus] = useState(null);
   const [subscriptionTiers, setSubscriptionTiers] = useState(null);
   const { showId } = router.query;
@@ -44,32 +48,46 @@ const Episodes = () => {
 
   const show = useSelector(showsSelectors.getShowById(showIdString));
 
+  const fetchData = async ({
+    page,
+    pageSize,
+  }: {
+    page: number;
+    pageSize: number;
+  }) => {
+    setTableLoading(true);
+
+    const response = await fetchSubscriptionRSSFeedAndEpisodes({
+      showId: showIdString,
+      cursor: page * pageSize,
+      size: pageSize,
+    });
+
+    if (response && response.episodes) {
+      setEpisodes(response.episodes);
+    }
+
+    if (response && response.total) {
+      setTotalEpisodes(response.total);
+    }
+
+    if (response && response.rssStatus) {
+      setRssStatus(response.rssStatus);
+    }
+
+    if (response && response.subscriptionTiers) {
+      setSubscriptionTiers(response.subscriptionTiers);
+    }
+    setTableLoading(false);
+  };
+
   useEffect(() => {
     (async () => {
       if (!show) {
         router.replace(`/`);
       }
 
-      const response = await fetchSubscriptionRSSFeedAndEpisodes({
-        showId: showIdString,
-      });
-
-      if (response && response.episodes) {
-        setEpisodes(response.episodes);
-      }
-
-      if (response && response.total) {
-        setTotalEpisodes(response.total);
-      }
-
-      if (response && response.rssStatus) {
-        setRssStatus(response.rssStatus);
-      }
-
-      if (response && response.subscriptionTiers) {
-        setSubscriptionTiers(response.subscriptionTiers);
-      }
-
+      await fetchData({ page, pageSize });
       setPageLoading(false);
     })();
   }, []);
@@ -96,10 +114,39 @@ const Episodes = () => {
     }
   };
 
+  const handleChangePageSize = (value: number) => {
+    setPageSize(value);
+    setPage(0);
+    fetchData({
+      page: 0,
+      pageSize: value,
+    });
+  };
+
+  const handlePrev = () => {
+    if (page) {
+      setPage(page - 1);
+      fetchData({
+        page: page - 1,
+        pageSize,
+      });
+    }
+  };
+
+  const handleNext = () => {
+    if ((page + 1) * pageSize <= totalEpisodes) {
+      setPage(page + 1);
+      fetchData({
+        page: page + 1,
+        pageSize,
+      });
+    }
+  };
+
   return (
     <EpisodeLayout>
       {rssStatus ? (
-        <div className="flex flex-col">
+        <div className="flex flex-col relative">
           <div className="flex flex-col items-start w-full mb-8">
             <p className="text-xl font-bold text-repod-text-primary text-left">
               {PAGE_COPY.RSSImportTitle}
@@ -123,11 +170,22 @@ const Episodes = () => {
               {PAGE_COPY.RSSImportUnfetched}
             </div>
           ) : null}
+
+          {tableLoading ? (
+            <div className="z-10 justify-center items-center flex absolute m-auto w-full mt-80">
+              <Loader size={48} color={LOADER_COLORS.dark} />
+            </div>
+          ) : null}
           <ManageEpisodesTable
             data={episodes}
             total={totalEpisodes}
             subscriptionTiers={subscriptionTiers}
             handleAssignTiers={handleAssignTiers}
+            page={page}
+            pageSize={pageSize}
+            handleChangePageSize={handleChangePageSize}
+            handlePrev={handlePrev}
+            handleNext={handleNext}
           />
         </div>
       ) : (
