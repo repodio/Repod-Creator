@@ -35,6 +35,7 @@ const ManageEpisodesTable = ({
   loading,
   subscriptionTiers,
   handleAssignTiers,
+  handleRemoveEpisodes,
   total,
   pageSize = 10,
   page = 0,
@@ -49,6 +50,7 @@ const ManageEpisodesTable = ({
     episodeIds: string[];
     subscriptionTierIds: string[];
   }) => void;
+  handleRemoveEpisodes: (props: { episodeIds: string[] }) => void;
   total: number;
   pageSize: number;
   page: number;
@@ -76,6 +78,11 @@ const ManageEpisodesTable = ({
     () => convertArrayToObject(subscriptionTiers, "subscriptionTierId"),
     [subscriptionTiers]
   );
+
+  const unselectAll = () => {
+    setSelectAll(false);
+    setSelectedIds([]);
+  };
 
   const columns = useMemo(() => {
     if (isMobile) {
@@ -270,6 +277,8 @@ const ManageEpisodesTable = ({
           isModalOpen={removeTierModalOpen}
           setIsModalOpen={setRemoveTierModalOpen}
           episodeIds={selectedIds}
+          handleRemoveEpisodes={handleRemoveEpisodes}
+          unselectAll={unselectAll}
         />
       </div>
       <Table data={data} columns={columns} isMobile={isMobile} />

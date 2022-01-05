@@ -9,11 +9,13 @@ import { EpisodeLayout } from "components/Layouts";
 import { ManageEpisodesTable } from "components/Table";
 import {
   fetchSubscriptionRSSFeedAndEpisodes,
+  removeSubscriptionEpisodes,
   updateSubscriptionTiersForEpisodes,
 } from "utils/repodAPI";
 import { Button } from "components/Buttons";
 import toast from "react-hot-toast";
 import { LOADER_COLORS } from "components/Loading/loader";
+import { filter } from "lodash/fp";
 
 const PAGE_COPY = {
   OverviewTitle: "Add new premium episodes",
@@ -114,6 +116,22 @@ const Episodes = () => {
     }
   };
 
+  const handleRemoveEpisodes = async ({ episodeIds = [] }) => {
+    if (episodeIds.length) {
+      await removeSubscriptionEpisodes({
+        showId: showIdString,
+        episodeIds,
+      });
+      const newEpisodes = filter(
+        (episode: { episodeId: string }) =>
+          !episodeIds.includes(episode.episodeId)
+      )(episodes);
+      setEpisodes(newEpisodes);
+      setTotalEpisodes(Math.min(totalEpisodes - episodeIds.length, 0));
+      toast.success("Episodes Removed!");
+    }
+  };
+
   const handleChangePageSize = (value: number) => {
     setPageSize(value);
     setPage(0);
@@ -185,6 +203,7 @@ const Episodes = () => {
             total={totalEpisodes}
             subscriptionTiers={subscriptionTiers}
             handleAssignTiers={handleAssignTiers}
+            handleRemoveEpisodes={handleRemoveEpisodes}
             page={page}
             pageSize={pageSize}
             handleChangePageSize={handleChangePageSize}

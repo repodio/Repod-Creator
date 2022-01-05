@@ -658,6 +658,27 @@ const updateSubscriptionTiersForEpisodes = async ({
   return response && response.success;
 };
 
+const removeSubscriptionEpisodes = async ({
+  showId,
+  episodeIds,
+}: {
+  showId: string;
+  episodeIds: string[];
+}): Promise<void> => {
+  const response = await fetch(
+    `${API_DOMAIN}/v1/${ROUTES.subscription}/${showId}/remove-episodes`,
+    {
+      method: "POST",
+      headers: await getHeaders(),
+      body: JSON.stringify({
+        episodeIds,
+      }),
+    }
+  ).then((data) => data.json());
+
+  return response && response.success;
+};
+
 export {
   getEpisodes,
   fetchClaimedShowsAPI,
@@ -686,4 +707,5 @@ export {
   updateSubscriptionRSSFeed,
   fetchSubscriptionRSSFeedAndEpisodes,
   updateSubscriptionTiersForEpisodes,
+  removeSubscriptionEpisodes,
 };
