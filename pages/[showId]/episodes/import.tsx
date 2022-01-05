@@ -42,6 +42,8 @@ const RSSImport = () => {
 
       const response = await fetchSubscriptionRSSFeedAndEpisodes({
         showId: showIdString,
+        offset: 0,
+        size: 0,
       });
 
       console.log("response: ", response);
