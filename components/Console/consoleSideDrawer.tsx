@@ -6,6 +6,7 @@ import {
   ChevronRight,
   Sliders,
   Users,
+  Mic,
 } from "react-feather";
 import { ProfileDropdown } from "components/Dropdown";
 import { CrownIcon, CoinsIcon } from "components/Icons";
@@ -21,6 +22,7 @@ const NavigationLink = ({
   label = "",
   isSelected = false,
   expanded,
+  useStrokeOverFill = false,
 }) => (
   <Link href={destination}>
     <a
@@ -31,9 +33,10 @@ const NavigationLink = ({
       {expanded ? (
         <div className="w-full p-3 flex flex-row">
           <IconComponent
-            className={`mr-2 fill-current transition ${
+            className={`mr-2 transition ${
               isSelected ? "text-repod-tint" : "text-repod-text-alternative"
-            }`}
+            }
+             ${useStrokeOverFill ? " stroke-current" : " fill-current"}`}
             size={24}
           />
 
@@ -48,9 +51,10 @@ const NavigationLink = ({
       ) : (
         <div className="w-full m-3 flex flex-row">
           <IconComponent
-            className={`mr-2 fill-current transition ${
+            className={`mr-2 transition ${
               isSelected ? "text-repod-tint" : "text-repod-text-alternative"
-            }`}
+            }
+            ${useStrokeOverFill ? " stroke-current" : " fill-current"}`}
             size={24}
           />
         </div>
@@ -103,6 +107,14 @@ const ConsoleSideDrawer = () => {
           destination={`/${router.query.showId}/subscriptions/`}
           label="Memberships"
           IconComponent={CrownIcon}
+          expanded={expanded}
+        />
+        <NavigationLink
+          isSelected={router.pathname.startsWith("/[showId]/episodes")}
+          destination={`/${router.query.showId}/episodes/`}
+          label="Episodes"
+          IconComponent={Mic}
+          useStrokeOverFill
           expanded={expanded}
         />
         <NavigationLink

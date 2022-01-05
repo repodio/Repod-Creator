@@ -42,9 +42,13 @@ const ERRORS_LOOKUP = {
     "You've attempted to claim a podcast too many times today, reach out to us to manually get your show claimed",
   default: "Something went wrong.",
 };
+
+const RESULTS_PER_PAGE = 5;
+
 const ClaimSearchPodcast = ({ onShowSelect }: ClaimSearchPodcastProps) => {
   const [value, setValue] = useState("");
   const [searchResults, setSearchResults] = useState([]);
+  const [page, setPage] = useState(0);
   const [noResults, setNoResults] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
   const debouncedSearchTerm: string = useDebounce(value, 400);
@@ -57,8 +61,27 @@ const ClaimSearchPodcast = ({ onShowSelect }: ClaimSearchPodcastProps) => {
     [setValue]
   );
 
+  const searchWithCursor = async (page) => {
+    const searchResponse = await searchShows({
+      query: debouncedSearchTerm,
+      includeRSS: true,
+      cursor: page * RESULTS_PER_PAGE,
+      size: RESULTS_PER_PAGE,
+    });
+
+    const { items = [] } = searchResponse;
+
+    if (!items && !items.length) {
+      setNoResults(true);
+    }
+
+    setSearchResults(items.slice(0, 5));
+    setIsSearching(false);
+  };
+
   useEffect(
     () => {
+      setPage(0);
       if (debouncedSearchTerm) {
         setNoResults(false);
 
@@ -66,19 +89,8 @@ const ClaimSearchPodcast = ({ onShowSelect }: ClaimSearchPodcastProps) => {
           setIsSearching(true);
         }, 150);
 
-        searchShows({
-          query: debouncedSearchTerm,
-          includeRSS: true,
-        }).then((searchResponse) => {
-          const { items = [] } = searchResponse;
+        searchWithCursor(0).then(() => {
           clearTimeout(searchingTimeout);
-
-          if (!items && !items.length) {
-            setNoResults(true);
-          }
-
-          setSearchResults(items.slice(0, 5));
-          setIsSearching(false);
         });
       } else {
         setSearchResults([]);
@@ -86,6 +98,20 @@ const ClaimSearchPodcast = ({ onShowSelect }: ClaimSearchPodcastProps) => {
     },
     [debouncedSearchTerm] // Only call effect if debounced search term changes
   );
+
+  const handleNextPage = () => {
+    const newPage = page + 1;
+
+    setPage(newPage);
+    searchWithCursor(newPage);
+  };
+
+  const handlePrevPage = () => {
+    const newPage = Math.max(0, page - 1);
+    setPage(newPage);
+
+    searchWithCursor(newPage);
+  };
 
   return (
     <div className="flex flex-col justify-center items-center max-w-xl w-full">
@@ -155,6 +181,23 @@ const ClaimSearchPodcast = ({ onShowSelect }: ClaimSearchPodcastProps) => {
                   );
                 })
               : null}
+
+            {!isSearching && !!searchResults.length && (
+              <div className="flex flex-row w-full justify-between items-center">
+                <button onClick={page ? handlePrevPage : () => {}}>
+                  <p
+                    className={`px-2 ${
+                      page ? "text-info" : "text-repod-text-disabled"
+                    }`}
+                  >
+                    Previous
+                  </p>
+                </button>
+                <button onClick={handleNextPage}>
+                  <p className="px-2 text-info">Next</p>
+                </button>
+              </div>
+            )}
           </ul>
         </div>
       ) : null}

@@ -4,6 +4,7 @@ import FeaturedEpisodesTable from "./featuredEpisodesTable";
 import MembersTable from "./membersTable";
 import TeamMembersTable from "./teamMembersTable";
 import TipsTable from "./tipsTable";
+import ManageEpisodesTable from "./manageEpisodesTable";
 
 export {
   FollowersTable,
@@ -12,4 +13,5 @@ export {
   MembersTable,
   TeamMembersTable,
   TipsTable,
+  ManageEpisodesTable,
 };

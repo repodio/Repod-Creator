@@ -19,10 +19,6 @@ const ItemTypes = {
   CARD: "card",
 };
 
-const PAGE_COPY = {
-  NoRSSMessage: "No RSS Feed",
-};
-
 const BenefitCard = ({
   benefitId,
   index,
@@ -35,11 +31,10 @@ const BenefitCard = ({
   const benefit = useSelector(subscriptionsSelectors.getBenefit(benefitId)) || {
     benefitId: "",
     title: "",
-    rssFeed: "",
     type: "",
   };
 
-  const { title, rssFeed, type } = benefit;
+  const { title, type } = benefit;
 
   const [{ handlerId }, drop] = useDrop({
     accept: ItemTypes.CARD,
@@ -122,23 +117,6 @@ const BenefitCard = ({
         <p className="truncate text-md font-semibold text-repod-text-primary">
           {title}
         </p>
-        {TypesRequiringRSSFeed.includes(type) ? (
-          rssFeed ? (
-            <p
-              style={{ width: 300 }}
-              className="truncate text-sm font-book text-repod-text-secondary"
-            >
-              {rssFeed}
-            </p>
-          ) : (
-            <div className="flex flex-row justify-start items-center">
-              <AlertCircle className="stroke-current text-danger" size={18} />
-              <p className="truncate text-sm font-book text-danger ml-1">
-                {PAGE_COPY.NoRSSMessage}
-              </p>
-            </div>
-          )
-        ) : null}
       </div>
       <div className={"flex flex-row items-center justify-center my-2"}>
         <button

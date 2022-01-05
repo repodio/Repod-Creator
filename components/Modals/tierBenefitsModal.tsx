@@ -22,39 +22,33 @@ import toast from "react-hot-toast";
 
 const SUBSCRIPTION_BENEFITS = {
   [SubscriptionBenefits.custom]: {
-    includesRSS: false,
     type: SubscriptionBenefits.custom,
     title: "Custom Benefit",
     description:
       "You can edit everything about this benefit to provice a unique reward for your members",
   },
   [SubscriptionBenefits.adFreeEpisodes]: {
-    includesRSS: true,
     type: SubscriptionBenefits.adFreeEpisodes,
     title: "Ad-free Episodes",
     description: "Provide ad-free versions of your work",
   },
   [SubscriptionBenefits.bonusEpisodes]: {
-    includesRSS: true,
     type: SubscriptionBenefits.bonusEpisodes,
     title: "Bonus Episodes",
     description:
       "Provide any extra episodes whether it’s behind the scenes, bloopers, or bonus content",
   },
   [SubscriptionBenefits.digitalDownloads]: {
-    includesRSS: false,
     type: SubscriptionBenefits.digitalDownloads,
     title: "Digital Downloads",
     description: "Send your members something special",
   },
   [SubscriptionBenefits.earlyAccessEpisodes]: {
-    includesRSS: true,
     type: SubscriptionBenefits.earlyAccessEpisodes,
     title: "Early Access Episodes",
     description: "Give your members early episodes of your content",
   },
   [SubscriptionBenefits.privateDiscussions]: {
-    includesRSS: false,
     type: SubscriptionBenefits.privateDiscussions,
     title: "Private Discussion Room",
     description: "Enable a special feed on your show that is members only",
@@ -66,8 +60,6 @@ const MODAL_COPY = {
   RequiredSubLabel: "Required",
   EditTitlePlaceholder: "Early Access to Episodes",
   CategoryLabel: "Category",
-  RSSLabel: "RSS Feed",
-  RSSPlaceholder: "https://feeds.com/myfeed",
   CreateDescription:
     "Choose from our list of top benefits for your tier. If you can’t find exactly what you’re looking for then you can make a custom one",
 };
@@ -82,7 +74,6 @@ type TierBenefitsModalProps = {
 
 type FormInputs = {
   title: string;
-  rssFeed: string;
 };
 
 const ListedTierBenefits = ({
@@ -191,7 +182,7 @@ const EditBenefits = ({
 
   const edittedBenefit = useSelector(
     subscriptionsSelectors.getBenefit(benefitId)
-  ) || { title: "", rssFeed: "", type: "" };
+  ) || { title: "", type: "" };
 
   const [edittedBenefitType, setEdittedBenefitType] = useState(
     edittedBenefit.type
@@ -205,27 +196,18 @@ const EditBenefits = ({
   } = useForm<FormInputs>({
     defaultValues: {
       title: edittedBenefit.title,
-      rssFeed: edittedBenefit.rssFeed,
     },
   });
 
   const saveBenefit = useCallback(
-    async ({ title, rssFeed }) => {
+    async ({ title }) => {
       try {
-        console.log(
-          "saveBenefit edittedBenefitType, title, rssFeed",
-          edittedBenefitType,
-          title,
-          rssFeed
-        );
-
         dispatch(
           saveSubscriptionBenefit({
             showId: showIdString,
             benefitId,
             title,
             type: edittedBenefitType,
-            rssFeed,
           })
         );
 
@@ -268,19 +250,6 @@ const EditBenefits = ({
         onOptionChange={setEdittedBenefitType}
         initialOption={edittedBenefit.type}
       />
-      {TypesRequiringRSSFeed.includes(edittedBenefitType) ? (
-        <ListItem.Input
-          key="rss"
-          label={MODAL_COPY.RSSLabel}
-          subLabel={MODAL_COPY.RequiredSubLabel}
-          value={edittedBenefit.rssFeed}
-          placeholder={MODAL_COPY.RSSPlaceholder}
-          name="rssFeed"
-          inputType="text"
-          registerInput={register("rssFeed", { required: false })}
-          error={errors.rssFeed}
-        />
-      ) : null}
       <div className="w-full h-0 my-2 border border-solid border-t-0 border-repod-border-light mb-6" />
       <div className="w-full flex flex-row items-center justify-start">
         <Button.Small

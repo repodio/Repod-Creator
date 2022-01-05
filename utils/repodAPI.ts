@@ -13,6 +13,7 @@ const ROUTES = {
   claimShow: "claim-show",
   claimShows: "claim-shows",
   subscriptions: "subscriptions",
+  subscription: "subscription",
 };
 
 export const COUNTRY_CODES = {
@@ -137,15 +138,17 @@ const searchShows = async ({
   query,
   size = 5,
   includeRSS = false,
+  cursor = 0,
 }: {
   query: string;
   size?: number;
   includeRSS?: boolean;
+  cursor?: number;
 }) => {
   const response = await fetch(
     `${API_DOMAIN}/v1/${
       ROUTES.search
-    }?type=shows&size=${size}&queryString=${query}&includeRSS=${
+    }?type=shows&size=${size}&cursor=${cursor}&queryString=${query}&includeRSS=${
       includeRSS ? 1 : 0
     }`,
     {
@@ -292,13 +295,11 @@ const updateSubscriptionBenefit = async ({
   benefitId,
   title,
   type,
-  rssFeed,
 }: {
   showId: string;
   benefitId: string;
   title: string;
   type: string;
-  rssFeed: string;
 }): Promise<string> => {
   const response = await fetch(
     `${API_DOMAIN}/v1/${ROUTES.subscriptions}/${showId}/benefits/${benefitId}`,
@@ -308,7 +309,6 @@ const updateSubscriptionBenefit = async ({
       body: JSON.stringify({
         title,
         type,
-        rssFeed,
       }),
     }
   );
@@ -321,12 +321,10 @@ const createSubscriptionBenefit = async ({
   showId,
   title,
   type,
-  rssFeed,
 }: {
   showId?: string;
   title: string;
   type: string;
-  rssFeed?: string;
 }): Promise<string> => {
   const response = await fetch(
     `${API_DOMAIN}/v1/${ROUTES.subscriptions}/${showId}/benefits`,
@@ -336,7 +334,6 @@ const createSubscriptionBenefit = async ({
       body: JSON.stringify({
         title,
         type,
-        rssFeed,
       }),
     }
   );
@@ -590,6 +587,98 @@ const removeStripeAccountIdOnShow = async ({
   ).then((data) => data.json());
 };
 
+const fetchSubscriptionRSSFeedAndEpisodes = async ({
+  showId,
+  offset,
+  size,
+}: {
+  showId: string;
+  offset: number;
+  size: number;
+}): Promise<{
+  rssUrl: string;
+  rssStatus: string;
+  episodes: EpisodeItem[];
+  subscriptionTiers: SubscriptionTierItem[];
+  total: number;
+}> => {
+  const response = await fetch(
+    `${API_DOMAIN}/v1/${ROUTES.subscription}/${showId}/rss?offset=${offset}&size=${size}`,
+    {
+      method: "GET",
+      headers: await getHeaders(),
+    }
+  ).then((data) => data.json());
+
+  return response && response.data;
+};
+
+const updateSubscriptionRSSFeed = async ({
+  showId,
+  rssUrl,
+}: {
+  showId: string;
+  rssUrl: string;
+}): Promise<boolean> => {
+  const response = await fetch(
+    `${API_DOMAIN}/v1/${ROUTES.subscription}/${showId}/rss`,
+    {
+      method: "PUT",
+      headers: await getHeaders(),
+      body: JSON.stringify({
+        rssUrl,
+      }),
+    }
+  ).then((data) => data.json());
+
+  return response && response.success;
+};
+
+const updateSubscriptionTiersForEpisodes = async ({
+  showId,
+  episodeIds,
+  subscriptionTierIds,
+}: {
+  showId: string;
+  episodeIds: string[];
+  subscriptionTierIds: string[];
+}): Promise<void> => {
+  const response = await fetch(
+    `${API_DOMAIN}/v1/${ROUTES.subscription}/${showId}/episodes`,
+    {
+      method: "POST",
+      headers: await getHeaders(),
+      body: JSON.stringify({
+        episodeIds,
+        subscriptionTierIds,
+      }),
+    }
+  ).then((data) => data.json());
+
+  return response && response.success;
+};
+
+const removeSubscriptionEpisodes = async ({
+  showId,
+  episodeIds,
+}: {
+  showId: string;
+  episodeIds: string[];
+}): Promise<void> => {
+  const response = await fetch(
+    `${API_DOMAIN}/v1/${ROUTES.subscription}/${showId}/remove-episodes`,
+    {
+      method: "POST",
+      headers: await getHeaders(),
+      body: JSON.stringify({
+        episodeIds,
+      }),
+    }
+  ).then((data) => data.json());
+
+  return response && response.success;
+};
+
 export {
   getEpisodes,
   fetchClaimedShowsAPI,
@@ -615,4 +704,8 @@ export {
   deleteSubscriptionTier,
   deleteSubscriptionBenefit,
   fetchMembers,
+  updateSubscriptionRSSFeed,
+  fetchSubscriptionRSSFeedAndEpisodes,
+  updateSubscriptionTiersForEpisodes,
+  removeSubscriptionEpisodes,
 };
