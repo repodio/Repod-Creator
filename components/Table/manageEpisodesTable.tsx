@@ -2,7 +2,7 @@ import React, { Fragment, useEffect, useMemo, useState } from "react";
 import Table from "./table";
 import PaginationTable from "./paginationTable";
 import EmptyTable from "./emptyTable";
-import { formatDate } from "utils/formats";
+import { formatDate, formatDuration } from "utils/formats";
 import { useMediaQuery } from "react-responsive";
 import { MultiSelectButton } from "components/Buttons";
 import { filter, map } from "lodash/fp";
@@ -164,6 +164,14 @@ const ManageEpisodesTable = ({
             ))(row.value || [])}
           </div>
         ),
+      },
+      {
+        Header: () => <div style={{ textAlign: "right" }}>Duration</div>,
+        Cell: (row) => (
+          <div style={{ textAlign: "right" }}>{formatDuration(row.value)}</div>
+        ),
+        accessor: "calculatedDuration",
+        width: 40,
       },
       {
         Header: () => <div style={{ textAlign: "right" }}>Published Date</div>,
