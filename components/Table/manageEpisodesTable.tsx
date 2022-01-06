@@ -85,15 +85,6 @@ const ManageEpisodesTable = ({
   };
 
   const columns = useMemo(() => {
-    if (isMobile) {
-      return [
-        {
-          Header: "Title",
-          accessor: "title",
-        },
-      ];
-    }
-
     const handleSelectAll = () => {
       if (selectAll) {
         setSelectAll(false);
@@ -118,6 +109,55 @@ const ManageEpisodesTable = ({
         }
       }
     };
+
+    if (isMobile) {
+      return [
+        {
+          Header: () => (
+            <div className="mt-1">
+              <MultiSelectButton
+                selected={selectAll}
+                onPress={handleSelectAll}
+              />
+            </div>
+          ),
+          accessor: "episodeId",
+          width: 12,
+          Cell: (row) => {
+            const selected = selectedIds.includes(row.value);
+            return (
+              <MultiSelectButton
+                selected={selected}
+                onPress={() => handleSelectSpecific(row.value, !selected)}
+              />
+            );
+          },
+        },
+        {
+          Header: "Episode",
+          accessor: "title",
+          Cell: (row) => {
+            return (
+              <div className="flex flex-col justify-start items-start truncate">
+                <p>{row.value}</p>
+                <div className="flex flex-wrap justify-start items-center">
+                  {map((subscriptionTierId: string) => (
+                    <div
+                      className="bg-tint-08 text-repod-tint text-sm px-2 py-1 ml-1 my-0.5"
+                      key={subscriptionTierId}
+                    >
+                      <p className="">
+                        {(subscriptionTiersMap[subscriptionTierId] || {}).title}
+                      </p>
+                    </div>
+                  ))(row.row.original.subscriptionTierIds || [])}
+                </div>
+              </div>
+            );
+          },
+        },
+      ];
+    }
 
     return [
       {
