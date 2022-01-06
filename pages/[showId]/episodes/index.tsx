@@ -134,6 +134,24 @@ const Episodes = () => {
     }
   };
 
+  const handleRemoveTiers = async ({ episodeIds = [] }) => {
+    if (episodeIds.length) {
+      await updateSubscriptionTiersForEpisodes({
+        showId: showIdString,
+        episodeIds,
+        subscriptionTierIds: [],
+      });
+
+      // const newEpisodes = filter(
+      //   (episode: { episodeId: string }) =>
+      //     !episodeIds.includes(episode.episodeId)
+      // )(episodes);
+      // setEpisodes(newEpisodes);
+      // setTotalEpisodes(Math.min(totalEpisodes - episodeIds.length, 0));
+      toast.success("Updated subscription tiers!");
+    }
+  };
+
   const handleChangePageSize = (value: number) => {
     setPageSize(value);
     setPage(0);
@@ -210,6 +228,7 @@ const Episodes = () => {
             subscriptionTiers={subscriptionTiers}
             handleAssignTiers={handleAssignTiers}
             handleRemoveEpisodes={handleRemoveEpisodes}
+            handleRemoveTiers={handleRemoveTiers}
             page={page}
             pageSize={pageSize}
             handleChangePageSize={handleChangePageSize}

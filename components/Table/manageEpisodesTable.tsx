@@ -8,7 +8,10 @@ import { MultiSelectButton } from "components/Buttons";
 import { filter, map } from "lodash/fp";
 import { ChevronDown, ChevronLeft, ChevronRight } from "react-feather";
 import { Menu, Transition } from "@headlessui/react";
-import { RemoveEpisodesModal, AssignTierModal } from "components/Modals";
+import {
+  ManageEpisodesModal,
+  ManageEpisodesModalTypes,
+} from "components/Modals";
 import { convertArrayToObject } from "utils/normalizing";
 
 const PAGE_SIZING = [
@@ -36,6 +39,7 @@ const ManageEpisodesTable = ({
   subscriptionTiers,
   handleAssignTiers,
   handleRemoveEpisodes,
+  handleRemoveTiers,
   total,
   pageSize = 10,
   page = 0,
@@ -51,6 +55,7 @@ const ManageEpisodesTable = ({
     subscriptionTierIds: string[];
   }) => void;
   handleRemoveEpisodes: (props: { episodeIds: string[] }) => void;
+  handleRemoveTiers: (props: { episodeIds: string[] }) => void;
   total: number;
   pageSize: number;
   page: number;
@@ -61,15 +66,22 @@ const ManageEpisodesTable = ({
   const isMobile = useMediaQuery({ query: "(max-width: 1224px)" });
   const [selectAll, setSelectAll] = useState(false);
   const [selectedIds, setSelectedIds] = useState([]);
-  const [removeTierModalOpen, setRemoveTierModalOpen] = useState(false);
-  const [assignTiersModalOpen, setAssignTiersModalOpen] = useState(false);
+  const [modalType, setModalType] = useState(null);
+  const [modalOpen, setModalOpen] = useState(false);
 
-  const handleRemovePressed = () => {
-    setRemoveTierModalOpen(true);
+  const handleRemoveEpisodesPressed = () => {
+    setModalType(ManageEpisodesModalTypes.RemoveEpisodes);
+    setModalOpen(true);
   };
 
   const handleAssignPressed = () => {
-    setAssignTiersModalOpen(true);
+    setModalType(ManageEpisodesModalTypes.AssignTiers);
+    setModalOpen(true);
+  };
+
+  const handleRemoveTiersPressed = () => {
+    setModalType(ManageEpisodesModalTypes.RemoveTiers);
+    setModalOpen(true);
   };
 
   const disabledActions = !selectedIds?.length;
@@ -286,14 +298,32 @@ const ManageEpisodesTable = ({
                       {({ active }) => (
                         <button
                           disabled={disabledActions}
-                          key="Delete"
-                          onClick={handleRemovePressed}
+                          key="Remove Subscription Tiers"
+                          onClick={handleRemoveTiersPressed}
                           className={`${
                             active ? "bg-repod-canvas-secondary" : ""
                           } group flex rounded-md items-center w-full px-2 py-2 text-md z-10 ${
                             disabledActions
                               ? "text-repod-text-disabled cursor-default"
                               : "text-danger"
+                          }`}
+                        >
+                          Remove Subscription Tiers
+                        </button>
+                      )}
+                    </Menu.Item>
+                    <Menu.Item>
+                      {({ active }) => (
+                        <button
+                          disabled={disabledActions}
+                          key="Delete"
+                          onClick={handleRemoveEpisodesPressed}
+                          className={`${
+                            active ? "bg-repod-canvas-secondary" : ""
+                          } group flex rounded-md items-center w-full px-2 py-2 text-md z-10 ${
+                            disabledActions
+                              ? "text-repod-text-disabled cursor-default"
+                              : "text-repod-text-primary"
                           }`}
                         >
                           Delete
@@ -306,18 +336,15 @@ const ManageEpisodesTable = ({
             </>
           )}
         </Menu>
-        <AssignTierModal
-          isModalOpen={assignTiersModalOpen}
-          setIsModalOpen={setAssignTiersModalOpen}
-          episodeIds={selectedIds}
+        <ManageEpisodesModal
+          isModalOpen={modalOpen}
+          setIsModalOpen={setModalOpen}
+          modalType={modalType}
           subscriptionTiers={subscriptionTiers}
-          handleAssignTiers={handleAssignTiers}
-        />
-        <RemoveEpisodesModal
-          isModalOpen={removeTierModalOpen}
-          setIsModalOpen={setRemoveTierModalOpen}
           episodeIds={selectedIds}
+          handleAssignTiers={handleAssignTiers}
           handleRemoveEpisodes={handleRemoveEpisodes}
+          handleRemoveTiers={handleRemoveTiers}
           unselectAll={unselectAll}
         />
       </div>
