@@ -444,7 +444,6 @@ export const createNewSubscriptionBenefit =
         showId,
         title,
         type,
-        rssFeed: "",
       });
 
       if (!benefitId) {
@@ -458,7 +457,6 @@ export const createNewSubscriptionBenefit =
               showId,
               title,
               type,
-              rssFeed: "",
               benefitId,
               createdOn: new Date(),
             },
@@ -478,13 +476,11 @@ export const saveSubscriptionBenefit =
     benefitId,
     title,
     type,
-    rssFeed,
   }: {
     showId: string;
     benefitId: string;
     title?: string;
     type?: string;
-    rssFeed?: string;
   }): ThunkResult<Promise<void>> =>
   async (dispatch: AsyncDispatch) => {
     try {
@@ -493,7 +489,6 @@ export const saveSubscriptionBenefit =
         benefitId,
         title,
         type,
-        rssFeed,
       });
 
       dispatch(
@@ -502,7 +497,6 @@ export const saveSubscriptionBenefit =
             [benefitId]: {
               title,
               type,
-              rssFeed,
               updatedOn: new Date(),
             },
           },

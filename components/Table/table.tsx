@@ -7,11 +7,13 @@ const TableComponent = ({
   columns,
   loading = false,
   isMobile,
+  keepHeaderOnMobile = false,
 }: {
   data: {}[];
   columns: {}[];
   loading?: boolean;
   isMobile: boolean;
+  keepHeaderOnMobile?: boolean;
 }) => {
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
     useTable({ columns, data }, useFlexLayout);
@@ -25,10 +27,10 @@ const TableComponent = ({
       ) : null}
 
       <div {...getTableProps()} className="table w-full my-8">
-        {!isMobile ? (
-          <div className="mb-4">
+        {!(isMobile && !keepHeaderOnMobile) ? (
+          <div className="pb-4 border-solid border-b border-repod-border-light">
             {headerGroups.map((headerGroup) => (
-              <div {...headerGroup.getHeaderGroupProps()} className="tr">
+              <div {...headerGroup.getHeaderGroupProps()} className="tr ">
                 {headerGroup.headers.map((column) => (
                   <div
                     {...column.getHeaderProps()}
