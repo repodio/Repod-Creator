@@ -63,6 +63,7 @@ const ManageEpisodesTable = ({
 }) => {
   const isMobile = useMediaQuery({ query: "(max-width: 1224px)" });
   const [selectAll, setSelectAll] = useState(false);
+  const [selectTotalEpisodes, setSelectTotalEpisodes] = useState(false);
   const [selectedIds, setSelectedIds] = useState([]);
   const [modalType, setModalType] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
@@ -350,7 +351,12 @@ const ManageEpisodesTable = ({
           unselectAll={unselectAll}
         />
       </div>
-      <Table data={data} columns={columns} isMobile={isMobile} />
+      <Table
+        data={data}
+        columns={columns}
+        isMobile={isMobile}
+        keepHeaderOnMobile
+      />
       <div className="flex flex-row justify-between items-center w-full stroke-current text-repod-text-secondary">
         <div className="flex flex-row justify-end items-center">
           <label className="flex flex-row justify-start items-center">
