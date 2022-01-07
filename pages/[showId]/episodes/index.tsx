@@ -15,7 +15,8 @@ import {
 import { Button } from "components/Buttons";
 import toast from "react-hot-toast";
 import { LOADER_COLORS } from "components/Loading/loader";
-import { filter } from "lodash/fp";
+import { filter, map } from "lodash/fp";
+import { useMediaQuery } from "react-responsive";
 
 const PAGE_COPY = {
   OverviewTitle: "Add new premium episodes",
@@ -47,6 +48,7 @@ const Episodes = () => {
   const [subscriptionTiers, setSubscriptionTiers] = useState(null);
   const { showId } = router.query;
   const showIdString = showId as string;
+  const isMobile = useMediaQuery({ query: "(max-width: 815px)" });
 
   const show = useSelector(showsSelectors.getShowById(showIdString));
 
@@ -112,6 +114,17 @@ const Episodes = () => {
         episodeIds,
         subscriptionTierIds,
       });
+      const newEpisodes = map((episode: { episodeId: string }) => {
+        if (episodeIds.includes(episode.episodeId)) {
+          return {
+            ...episode,
+            subscriptionTierIds,
+          };
+        } else {
+          return episode;
+        }
+      })(episodes);
+      setEpisodes(newEpisodes);
       toast.success("Updated subscription tiers!");
     }
   };
@@ -161,6 +174,16 @@ const Episodes = () => {
     }
   };
 
+  const EditRSSButton = () => (
+    <Button.Tiny
+      className={`bg-info text-repod-text-alternative uppercase`}
+      onClick={navigateToImport}
+      style={{ minWidth: 200, maxWidth: 200, width: 200 }}
+    >
+      {PAGE_COPY.ConfigureRSSButtonLabel}
+    </Button.Tiny>
+  );
+
   return (
     <EpisodeLayout>
       {rssStatus ? (
@@ -169,23 +192,17 @@ const Episodes = () => {
             tableLoading ? "opacity-50" : ""
           }`}
         >
-          <div className="flex flex-col items-start w-full mb-8">
+          <div className="flex flex-col items-start w-full mb-6">
             <p className="text-xl font-bold text-repod-text-primary text-left">
               {PAGE_COPY.RSSImportTitle}
             </p>
-            <div className="flex flex-row items-center justify-between w-full">
+            <div className="flex flex-row items-center justify-between w-full mb-2">
               <p className="text-md font-semibold text-repod-text-secondary text-left">
                 {PAGE_COPY.RSSImportSubTitle}
               </p>
-
-              <Button.Tiny
-                className={`bg-info text-repod-text-alternative uppercase`}
-                onClick={navigateToImport}
-                style={{ minWidth: 200, maxWidth: 200, width: 200 }}
-              >
-                {PAGE_COPY.ConfigureRSSButtonLabel}
-              </Button.Tiny>
+              {!isMobile ? <EditRSSButton /> : null}
             </div>
+            {isMobile ? <EditRSSButton /> : null}
           </div>
           {rssStatus === "unfetched" ? (
             <div className="border border-repod-tint bg-tint-08 rounded-lg p-5 text-lg font-semibold text-repod-tint mb-8">

@@ -8,7 +8,10 @@ import { MultiSelectButton } from "components/Buttons";
 import { filter, map } from "lodash/fp";
 import { ChevronDown, ChevronLeft, ChevronRight } from "react-feather";
 import { Menu, Transition } from "@headlessui/react";
-import { RemoveEpisodesModal, AssignTierModal } from "components/Modals";
+import {
+  ManageEpisodesModal,
+  ManageEpisodesModalTypes,
+} from "components/Modals";
 import { convertArrayToObject } from "utils/normalizing";
 
 const PAGE_SIZING = [
@@ -27,6 +30,10 @@ const PAGE_SIZING = [
   {
     value: 100,
     label: "100",
+  },
+  {
+    value: 250,
+    label: "250",
   },
 ];
 
@@ -60,16 +67,29 @@ const ManageEpisodesTable = ({
 }) => {
   const isMobile = useMediaQuery({ query: "(max-width: 1224px)" });
   const [selectAll, setSelectAll] = useState(false);
+  const [selectTotalEpisodes, setSelectTotalEpisodes] = useState(false);
   const [selectedIds, setSelectedIds] = useState([]);
-  const [removeTierModalOpen, setRemoveTierModalOpen] = useState(false);
-  const [assignTiersModalOpen, setAssignTiersModalOpen] = useState(false);
+  const [modalType, setModalType] = useState(null);
+  const [modalOpen, setModalOpen] = useState(false);
 
-  const handleRemovePressed = () => {
-    setRemoveTierModalOpen(true);
+  const handleRemoveEpisodesPressed = () => {
+    setModalType(ManageEpisodesModalTypes.RemoveEpisodes);
+    setModalOpen(true);
   };
 
   const handleAssignPressed = () => {
-    setAssignTiersModalOpen(true);
+    setModalType(ManageEpisodesModalTypes.AssignTiers);
+    setModalOpen(true);
+  };
+
+  const handleRemoveTiersPressed = () => {
+    setModalType(ManageEpisodesModalTypes.RemoveTiers);
+    setModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setModalType(null);
+    setModalOpen(false);
   };
 
   const disabledActions = !selectedIds?.length;
@@ -85,15 +105,6 @@ const ManageEpisodesTable = ({
   };
 
   const columns = useMemo(() => {
-    if (isMobile) {
-      return [
-        {
-          Header: "Title",
-          accessor: "title",
-        },
-      ];
-    }
-
     const handleSelectAll = () => {
       if (selectAll) {
         setSelectAll(false);
@@ -118,6 +129,55 @@ const ManageEpisodesTable = ({
         }
       }
     };
+
+    if (isMobile) {
+      return [
+        {
+          Header: () => (
+            <div className="mt-1">
+              <MultiSelectButton
+                selected={selectAll}
+                onPress={handleSelectAll}
+              />
+            </div>
+          ),
+          accessor: "episodeId",
+          width: 12,
+          Cell: (row) => {
+            const selected = selectedIds.includes(row.value);
+            return (
+              <MultiSelectButton
+                selected={selected}
+                onPress={() => handleSelectSpecific(row.value, !selected)}
+              />
+            );
+          },
+        },
+        {
+          Header: "Episode",
+          accessor: "title",
+          Cell: (row) => {
+            return (
+              <div className="flex flex-col justify-start items-start truncate">
+                <p>{row.value}</p>
+                <div className="flex flex-wrap justify-start items-center">
+                  {map((subscriptionTierId: string) => (
+                    <div
+                      className="bg-tint-08 text-repod-tint text-sm px-2 py-1 ml-1 my-0.5"
+                      key={subscriptionTierId}
+                    >
+                      <p className="">
+                        {(subscriptionTiersMap[subscriptionTierId] || {}).title}
+                      </p>
+                    </div>
+                  ))(row.row.original.subscriptionTierIds || [])}
+                </div>
+              </div>
+            );
+          },
+        },
+      ];
+    }
 
     return [
       {
@@ -246,8 +306,26 @@ const ManageEpisodesTable = ({
                       {({ active }) => (
                         <button
                           disabled={disabledActions}
+                          key="Remove Subscription Tiers"
+                          onClick={handleRemoveTiersPressed}
+                          className={`${
+                            active ? "bg-repod-canvas-secondary" : ""
+                          } group flex rounded-md items-center w-full px-2 py-2 text-md z-10 ${
+                            disabledActions
+                              ? "text-repod-text-disabled cursor-default"
+                              : "text-repod-text-primary"
+                          }`}
+                        >
+                          Remove Subscription Tiers
+                        </button>
+                      )}
+                    </Menu.Item>
+                    <Menu.Item>
+                      {({ active }) => (
+                        <button
+                          disabled={disabledActions}
                           key="Delete"
-                          onClick={handleRemovePressed}
+                          onClick={handleRemoveEpisodesPressed}
                           className={`${
                             active ? "bg-repod-canvas-secondary" : ""
                           } group flex rounded-md items-center w-full px-2 py-2 text-md z-10 ${
@@ -266,22 +344,23 @@ const ManageEpisodesTable = ({
             </>
           )}
         </Menu>
-        <AssignTierModal
-          isModalOpen={assignTiersModalOpen}
-          setIsModalOpen={setAssignTiersModalOpen}
-          episodeIds={selectedIds}
+        <ManageEpisodesModal
+          isModalOpen={modalOpen}
+          closeModal={closeModal}
+          modalType={modalType}
           subscriptionTiers={subscriptionTiers}
-          handleAssignTiers={handleAssignTiers}
-        />
-        <RemoveEpisodesModal
-          isModalOpen={removeTierModalOpen}
-          setIsModalOpen={setRemoveTierModalOpen}
           episodeIds={selectedIds}
+          handleAssignTiers={handleAssignTiers}
           handleRemoveEpisodes={handleRemoveEpisodes}
           unselectAll={unselectAll}
         />
       </div>
-      <Table data={data} columns={columns} isMobile={isMobile} />
+      <Table
+        data={data}
+        columns={columns}
+        isMobile={isMobile}
+        keepHeaderOnMobile
+      />
       <div className="flex flex-row justify-between items-center w-full stroke-current text-repod-text-secondary">
         <div className="flex flex-row justify-end items-center">
           <label className="flex flex-row justify-start items-center">
