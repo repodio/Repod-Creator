@@ -75,7 +75,8 @@ const AssignTiersModal = ({
         {map((subscriptionTier: SubscriptionTierItem) => (
           <div
             key={subscriptionTier.subscriptionTierId}
-            className="flex flex-row justify-center items-center  mb-2"
+            className="flex flex-row justify-center items-center  mb-2 cursor-pointer"
+            onClick={() => toggleSelect(subscriptionTier.subscriptionTierId)}
           >
             <MultiSelectButton
               selected={selectedIds.includes(
