@@ -31,6 +31,10 @@ const PAGE_SIZING = [
     value: 100,
     label: "100",
   },
+  {
+    value: 250,
+    label: "250",
+  },
 ];
 
 const ManageEpisodesTable = ({
