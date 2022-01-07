@@ -15,7 +15,7 @@ import {
 import { Button } from "components/Buttons";
 import toast from "react-hot-toast";
 import { LOADER_COLORS } from "components/Loading/loader";
-import { filter } from "lodash/fp";
+import { filter, map } from "lodash/fp";
 import { useMediaQuery } from "react-responsive";
 
 const PAGE_COPY = {
@@ -114,6 +114,17 @@ const Episodes = () => {
         episodeIds,
         subscriptionTierIds,
       });
+      const newEpisodes = map((episode: { episodeId: string }) => {
+        if (episodeIds.includes(episode.episodeId)) {
+          return {
+            ...episode,
+            subscriptionTierIds,
+          };
+        } else {
+          return episode;
+        }
+      })(episodes);
+      setEpisodes(newEpisodes);
       toast.success("Updated subscription tiers!");
     }
   };
@@ -131,24 +142,6 @@ const Episodes = () => {
       setEpisodes(newEpisodes);
       setTotalEpisodes(Math.min(totalEpisodes - episodeIds.length, 0));
       toast.success("Episodes Removed!");
-    }
-  };
-
-  const handleRemoveTiers = async ({ episodeIds = [] }) => {
-    if (episodeIds.length) {
-      await updateSubscriptionTiersForEpisodes({
-        showId: showIdString,
-        episodeIds,
-        subscriptionTierIds: [],
-      });
-
-      // const newEpisodes = filter(
-      //   (episode: { episodeId: string }) =>
-      //     !episodeIds.includes(episode.episodeId)
-      // )(episodes);
-      // setEpisodes(newEpisodes);
-      // setTotalEpisodes(Math.min(totalEpisodes - episodeIds.length, 0));
-      toast.success("Updated subscription tiers!");
     }
   };
 
@@ -228,7 +221,6 @@ const Episodes = () => {
             subscriptionTiers={subscriptionTiers}
             handleAssignTiers={handleAssignTiers}
             handleRemoveEpisodes={handleRemoveEpisodes}
-            handleRemoveTiers={handleRemoveTiers}
             page={page}
             pageSize={pageSize}
             handleChangePageSize={handleChangePageSize}

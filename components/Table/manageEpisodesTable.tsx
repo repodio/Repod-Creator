@@ -39,7 +39,6 @@ const ManageEpisodesTable = ({
   subscriptionTiers,
   handleAssignTiers,
   handleRemoveEpisodes,
-  handleRemoveTiers,
   total,
   pageSize = 10,
   page = 0,
@@ -55,7 +54,6 @@ const ManageEpisodesTable = ({
     subscriptionTierIds: string[];
   }) => void;
   handleRemoveEpisodes: (props: { episodeIds: string[] }) => void;
-  handleRemoveTiers: (props: { episodeIds: string[] }) => void;
   total: number;
   pageSize: number;
   page: number;
@@ -82,6 +80,11 @@ const ManageEpisodesTable = ({
   const handleRemoveTiersPressed = () => {
     setModalType(ManageEpisodesModalTypes.RemoveTiers);
     setModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setModalType(null);
+    setModalOpen(false);
   };
 
   const disabledActions = !selectedIds?.length;
@@ -305,7 +308,7 @@ const ManageEpisodesTable = ({
                           } group flex rounded-md items-center w-full px-2 py-2 text-md z-10 ${
                             disabledActions
                               ? "text-repod-text-disabled cursor-default"
-                              : "text-danger"
+                              : "text-repod-text-primary"
                           }`}
                         >
                           Remove Subscription Tiers
@@ -323,7 +326,7 @@ const ManageEpisodesTable = ({
                           } group flex rounded-md items-center w-full px-2 py-2 text-md z-10 ${
                             disabledActions
                               ? "text-repod-text-disabled cursor-default"
-                              : "text-repod-text-primary"
+                              : "text-danger"
                           }`}
                         >
                           Delete
@@ -338,13 +341,12 @@ const ManageEpisodesTable = ({
         </Menu>
         <ManageEpisodesModal
           isModalOpen={modalOpen}
-          setIsModalOpen={setModalOpen}
+          closeModal={closeModal}
           modalType={modalType}
           subscriptionTiers={subscriptionTiers}
           episodeIds={selectedIds}
           handleAssignTiers={handleAssignTiers}
           handleRemoveEpisodes={handleRemoveEpisodes}
-          handleRemoveTiers={handleRemoveTiers}
           unselectAll={unselectAll}
         />
       </div>
