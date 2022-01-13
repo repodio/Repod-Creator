@@ -40,7 +40,14 @@ export const formatDate = (incomingDate) => {
     : incomingDate;
 
   const momentIncoming = moment(date);
-  return momentIncoming.format("MMM DD, hh:mm A");
+  const unixYTD = moment().startOf("year").unix();
+  const incomingDateInUnix = momentIncoming.unix();
+
+  if (incomingDateInUnix > unixYTD) {
+    return momentIncoming.format("MMM DD, hh:mm A");
+  } else {
+    return momentIncoming.format("MMM Do ’YY");
+  }
 };
 
 export const formatIntegers = (num, fixed = 1) => {
