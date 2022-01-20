@@ -515,8 +515,7 @@ const fetchMembers = async ({
     }
   ).then((data) => data.json());
 
-  console.log("fetchMembers response: ", response);
-  return response.members;
+  return (response && response.members) || [];
 };
 
 const fetchConnectedAccountOnboardingUrl = async ({
