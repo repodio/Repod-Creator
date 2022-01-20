@@ -46,8 +46,6 @@ const Subscriptions = () => {
 
       const newMembers = await fetchMembers({ showId: showIdString });
 
-      console.log("newMembers: ", newMembers);
-
       setMembers(newMembers);
 
       setPageLoading(false);
@@ -57,8 +55,6 @@ const Subscriptions = () => {
   if (!show || pageLoading) {
     return <LoadingScreen />;
   }
-
-  console.log("members", members);
 
   return (
     <MembersLayout>
