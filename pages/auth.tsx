@@ -27,6 +27,14 @@ const AUTH_ERROR_CODES = {
   "auth/user-not-found": Copy.Auth.userNotFoundError,
   "auth/email-already-in-use": Copy.Auth.emailAlreadyInUseError,
   "auth/weak-password": Copy.Auth.weakPasswordError,
+  "auth/wrong-password": Copy.Auth.wrongPassword,
+  "auth/account-exists-with-different-credential":
+    Copy.Auth.accountExistsWithDifferentCredentials,
+  "auth/invalid-credential": Copy.Auth.invalidCredential,
+  "auth/operation-not-allowed": Copy.Auth.operationNotAllowed,
+  "auth/user-disabled": Copy.Auth.userDisabled,
+  "auth/invalid-verification-code": Copy.Auth.invalidVerificationCode,
+  "auth/invalid-verification-id": Copy.Auth.invalidVerificationId,
 };
 
 const SignUp = ({ handleToggleSignupMode, authError, setAuthError }) => {
