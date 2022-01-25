@@ -13,6 +13,7 @@
     "@nivo/line": "^0.69.1",
     "@popperjs/core": "2.9.1",
     "@uiw/react-md-editor": "^3.6.6",
+    "amplitude-js": "^8.16.1",
     "firebase": "^8.4.1",
     "firebase-admin": "^9.6.0",
     "immutability-helper": "^3.1.1",
