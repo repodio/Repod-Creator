@@ -1,5 +1,13 @@
 const Copy = {
   Auth: {
+    accountExistsWithDifferentCredentials:
+      "Something went wrong. Try again later. (800)",
+    invalidCredential: "Something went wrong. Try again later. (801)",
+    operationNotAllowed: "Something went wrong. Try again later. (802)",
+    userDisabled: "Something went wrong. Try again later. (803)",
+    invalidVerificationCode: "Something went wrong. Try again later. (804)",
+    invalidVerificationId: "Something went wrong. Try again later. (805)",
+    wrongPassword: "Couldn't find an account by this email/password.",
     userNotFoundError: "Couldn't find an account by this email/password",
     emailAlreadyInUseError: "That email is already in use",
     weakPasswordError: "Password must be at least 6 characters",
