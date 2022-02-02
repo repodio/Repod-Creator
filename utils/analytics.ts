@@ -1,5 +1,4 @@
 import amplitude from "amplitude-js";
-const AMPLITUDE_API_KEY = process.env.AMPLITUDE_API_KEY;
 
 const analyticsEnabled = () => process.env.NODE_ENV === "development";
 
@@ -8,8 +7,8 @@ const initAnalytics = () => {
     console.log("disabling analytics");
     return;
   }
-  console.log("enabling analytics");
-  amplitude.getInstance().init(AMPLITUDE_API_KEY);
+  console.log("enabling analytics", process.env.AMPLITUDE_API_KEY);
+  amplitude.getInstance().init(process.env.AMPLITUDE_API_KEY);
 };
 
 const identifyUser = (userId) => {
