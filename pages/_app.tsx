@@ -7,13 +7,17 @@ import { ConsoleLayout } from "components/Layouts";
 import { useRouter } from "next/router";
 import { Toaster } from "react-hot-toast";
 import { initAnalytics } from "utils/analytics";
+import { useEffect } from "react";
 
 initAuth();
-initAnalytics();
 
 function MyApp({ Component, pageProps }) {
   const store: any = useStore();
   const router = useRouter();
+
+  useEffect(() => {
+    initAnalytics();
+  }, []);
 
   // store.__persistor && store.__persistor.purge();
 
