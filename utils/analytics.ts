@@ -7,7 +7,6 @@ const initAnalytics = () => {
     console.log("disabling analytics");
     return;
   }
-  console.log("enabling analytics", process.env.AMPLITUDE_API_KEY);
   amplitude.getInstance().init(process.env.AMPLITUDE_API_KEY);
 };
 
@@ -15,8 +14,6 @@ const identifyUser = (userId) => {
   if (analyticsEnabled()) {
     return;
   }
-  console.log("identifying user", userId);
-
   amplitude.getInstance().setUserId(userId);
 };
 
@@ -41,7 +38,6 @@ const logEvent = (eventName = "unnamed_event", eventProps = {}) => {
   if (analyticsEnabled()) {
     return;
   }
-  console.log("logging event", eventName, eventProps);
 
   amplitude.getInstance().logEvent(eventName, eventProps);
 };
