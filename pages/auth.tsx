@@ -140,7 +140,7 @@ const LogIn = ({ handleToggleSignupMode, authError, setAuthError }) => {
 
   return (
     <>
-      <h1 className="text-3xl mb-4">Log In</h1>
+      <h1 className="text-3xl mb-4">Slog In</h1>
 
       <form className=" w-full" onSubmit={handleSubmit(onSubmit)}>
         <FormInput
