@@ -6,6 +6,7 @@ import { selectors as authSelectors } from "modules/Auth";
 import { useSelector, useDispatch } from "react-redux";
 import { useRouter } from "next/router";
 import { LoadingScreen } from "components/Loading";
+import { identifyUser } from "utils/analytics";
 
 const Home = () => {
   const AuthUser = useAuthUser();
@@ -26,6 +27,9 @@ const Home = () => {
           router.replace(`/auth`);
         }
       }
+
+      identifyUser(AuthUser.id);
+
       const claimedShows = await dispatch(fetchClaimedShows());
 
       if (!claimedShows || !claimedShows.length) {

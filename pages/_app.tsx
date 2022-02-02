@@ -1,17 +1,23 @@
 import "../styles/globals.css";
 import { initAuth } from "firebaseHelpers/init";
-import { Provider, useStore } from "react-redux";
+import { Provider, useSelector, useStore } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 import { wrapper } from "reduxConfig/store";
 import { ConsoleLayout } from "components/Layouts";
 import { useRouter } from "next/router";
 import { Toaster } from "react-hot-toast";
+import { initAnalytics } from "utils/analytics";
+import { useEffect } from "react";
 
 initAuth();
 
 function MyApp({ Component, pageProps }) {
   const store: any = useStore();
   const router = useRouter();
+
+  useEffect(() => {
+    initAnalytics();
+  }, []);
 
   // store.__persistor && store.__persistor.purge();
 

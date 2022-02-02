@@ -14,6 +14,7 @@ import {
 } from "components/Buttons";
 
 import Copy from "constants/i18n";
+import { analyticsEvents, logEvent } from "utils/analytics";
 
 initAuth();
 
@@ -56,6 +57,7 @@ const SignUp = ({ handleToggleSignupMode, authError, setAuthError }) => {
       const errorMessage =
         AUTH_ERROR_CODES[response.error.code] || Copy.Auth.defaultError;
       setAuthError(errorMessage);
+      logEvent(analyticsEvents.signup_error, response.error);
     }
   };
 
@@ -130,9 +132,9 @@ const LogIn = ({ handleToggleSignupMode, authError, setAuthError }) => {
 
     if (response && response.error) {
       const errorMessage =
-        AUTH_ERROR_CODES[response.error.code] ||
-        "Something went wrong. Try again later";
+        AUTH_ERROR_CODES[response.error.code] || Copy.Auth.defaultError;
       setAuthError(errorMessage);
+      logEvent(analyticsEvents.login_error, response.error);
     }
   };
 
