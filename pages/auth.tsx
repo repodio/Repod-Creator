@@ -36,6 +36,7 @@ const AUTH_ERROR_CODES = {
   "auth/user-disabled": Copy.Auth.userDisabled,
   "auth/invalid-verification-code": Copy.Auth.invalidVerificationCode,
   "auth/invalid-verification-id": Copy.Auth.invalidVerificationId,
+  "auth/too-many-requests": Copy.Auth.tooManyRequests,
 };
 
 const SignUp = ({ handleToggleSignupMode, authError, setAuthError }) => {
@@ -135,7 +136,10 @@ const LogIn = ({ handleToggleSignupMode, authError, setAuthError }) => {
       const errorMessage =
         AUTH_ERROR_CODES[response.error.code] || Copy.Auth.defaultError;
       setAuthError(errorMessage);
-      logEvent(analyticsEvents.login_error, response.error);
+      logEvent(analyticsEvents.login_error, {
+        ...(response.error || {}),
+        email,
+      });
     }
   };
 
