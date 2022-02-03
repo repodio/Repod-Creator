@@ -125,6 +125,7 @@ const LogIn = ({ handleToggleSignupMode, authError, setAuthError }) => {
     control,
   } = useForm<Inputs>();
   const onSubmit = async ({ email, password }) => {
+    logEvent(analyticsEvents.login_attempt, { email });
     const response = await signIn({
       email,
       password,
