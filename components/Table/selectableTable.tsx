@@ -14,7 +14,7 @@ const SelectableTableComponent = ({
   data: {}[];
   columns: {}[];
   loading?: boolean;
-  isMobile: boolean;
+  isMobile?: boolean;
 }) => {
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
     useTable({ columns, data }, useFlexLayout);

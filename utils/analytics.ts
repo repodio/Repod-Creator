@@ -28,8 +28,12 @@ const analyticsEvents: {
   login_error: "login_error",
   signup_error: "signup_error",
 
+  // API
+  api_error: "api_error",
+
   // Other
   debug: "debug",
+  generic_error: "generic_error",
 };
 
 /**
