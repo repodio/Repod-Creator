@@ -11,6 +11,8 @@ const Copy = {
     userNotFoundError: "Couldn't find an account by this email/password",
     emailAlreadyInUseError: "That email is already in use",
     weakPasswordError: "Password must be at least 6 characters",
+    tooManyRequests:
+      "Access to this account has been temporarily disabled due to many failed login attempts. Please contact us at hello@repod.io",
     defaultError: "Something went wrong. Try again later",
     authTitle: "The community platform for podcasters",
     authSubTitle:

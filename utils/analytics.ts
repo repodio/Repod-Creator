@@ -24,6 +24,7 @@ const analyticsEvents: {
   [key: string]: string;
 } = {
   // Auth
+  login_attempt: "login_attempt",
   login_error: "login_error",
   signup_error: "signup_error",
 
