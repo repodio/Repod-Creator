@@ -1,5 +1,6 @@
 import { pickBy } from "lodash/fp";
 import { getIdToken } from "firebaseHelpers/getIdToken";
+import { analyticsEvents, logEvent } from "./analytics";
 
 const API_DOMAIN = process.env.REPOD_API_URL;
 
@@ -507,15 +508,21 @@ const fetchMembers = async ({
 }: {
   showId: string;
 }): Promise<MemberData[]> => {
-  const response = await fetch(
-    `${API_DOMAIN}/v1/${ROUTES.claimShow}/${showId}/members`,
-    {
-      method: "GET",
-      headers: await getHeaders(),
-    }
-  ).then((data) => data.json());
+  try {
+    const response = await fetch(
+      `${API_DOMAIN}/v1/${ROUTES.claimShow}/${showId}/members`,
+      {
+        method: "GET",
+        headers: await getHeaders(),
+      }
+    ).then((data) => data.json());
 
-  return (response && response.members) || [];
+    return (response && response.members) || [];
+  } catch (error) {
+    logEvent(analyticsEvents.api_error, { ...(error || {}), showId });
+
+    return [];
+  }
 };
 
 const fetchConnectedAccountOnboardingUrl = async ({

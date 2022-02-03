@@ -1,4 +1,5 @@
 import moment from "moment";
+import { analyticsEvents, logEvent } from "./analytics";
 
 const unixDay = 86400;
 const unixYTD = moment().startOf("year").unix();
@@ -31,22 +32,31 @@ moment.locale("en", {
 });
 
 export const formatDate = (incomingDate) => {
-  if (!incomingDate) {
-    return null;
-  }
+  try {
+    if (!incomingDate) {
+      return null;
+    }
 
-  const date = incomingDate._seconds
-    ? incomingDate._seconds * 1000
-    : incomingDate;
+    const date = incomingDate._seconds
+      ? incomingDate._seconds * 1000
+      : incomingDate;
 
-  const momentIncoming = moment(date);
-  const unixYTD = moment().startOf("year").unix();
-  const incomingDateInUnix = momentIncoming.unix();
+    const momentIncoming = moment(date);
+    const unixYTD = moment().startOf("year").unix();
+    const incomingDateInUnix = momentIncoming.unix();
 
-  if (incomingDateInUnix > unixYTD) {
-    return momentIncoming.format("MMM DD, hh:mm A");
-  } else {
-    return momentIncoming.format("MMM Do ’YY");
+    if (incomingDateInUnix > unixYTD) {
+      return momentIncoming.format("MMM DD, hh:mm A");
+    } else {
+      return momentIncoming.format("MMM Do ’YY");
+    }
+  } catch (error) {
+    logEvent(analyticsEvents.generic_error, {
+      function: "formatDate",
+      incomingDate: incomingDate,
+      typeOf: typeof incomingDate,
+    });
+    return "";
   }
 };
 
@@ -144,11 +154,31 @@ export const formatDuration = (
   return longSec ? `${inSeconds} sec` : `${inSeconds}s`;
 };
 
-export const formatCurrency = (cents) =>
-  (cents / 100).toLocaleString("en-US", {
-    style: "currency",
-    currency: "USD",
-  });
+export const formatCurrency = (cents = 0) => {
+  try {
+    return (cents / 100).toLocaleString("en-US", {
+      style: "currency",
+      currency: "USD",
+    });
+  } catch (error) {
+    logEvent(analyticsEvents.generic_error, {
+      function: "formatCurrency",
+      cents: cents,
+      typeOf: typeof cents,
+    });
+    return "";
+  }
+};
 
-export const formatMonthsFromToday = (incomingDate: Date): number =>
-  Math.ceil(moment().diff(moment(incomingDate), "months", true));
+export const formatMonthsFromToday = (incomingDate: Date): number => {
+  try {
+    return Math.ceil(moment().diff(moment(incomingDate), "months", true));
+  } catch (error) {
+    logEvent(analyticsEvents.generic_error, {
+      function: "formatMonthsFromToday",
+      incomingDate: incomingDate,
+      typeOf: typeof incomingDate,
+    });
+    return 0;
+  }
+};

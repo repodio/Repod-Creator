@@ -10,73 +10,62 @@ const MembersTable = ({ data }) => {
 
   const columns = React.useMemo(() => {
     const options = [];
-    if (isMobile) {
-      options.push([
-        {
-          Header: "Name",
-          accessor: "displayName",
-          Cell: (row) => (
-            <p className=" text-md text-repod-text-primary">{row.cell.value}</p>
-          ),
-        },
-      ]);
-    } else {
-      options.push({
-        Header: "",
-        Cell: (row) => (
-          <div style={{ minWidth: 42 }}>
-            <ProfileAvatar url={row.cell.value} />
-          </div>
-        ),
-        width: 42,
-        accessor: "avatarUrl",
-      });
-      options.push({
-        Header: "Name",
-        accessor: "displayName",
-        Cell: (row) => (
-          <p className=" text-md text-repod-text-primary">{row.cell.value}</p>
-        ),
-      });
-      options.push({
-        Header: "Status",
-        accessor: "status",
-        Cell: (row) => (
-          <p className=" text-md text-repod-text-primary">{row.cell.value}</p>
-        ),
-      });
-      options.push({
-        Header: "Tier",
-        accessor: "tier",
-        Cell: (row) => (
-          <p className=" text-md text-repod-text-primary">{row.cell.value}</p>
-        ),
-      });
-      options.push({
-        Header: () => <div style={{ textAlign: "right" }}>Pledge</div>,
-        accessor: "monthlyPrice",
-        Cell: (row) => (
-          <p className=" text-md text-repod-text-primary text-right">
-            {formatCurrency(row.cell.value)}
-          </p>
-        ),
-      });
-      options.push({
-        Header: () => <div style={{ textAlign: "right" }}>Member Since</div>,
-        accessor: "createdOn",
-        Cell: (row) => (
-          <p className=" text-md text-repod-text-primary text-right">
-            {formatDate(row.value)}
-          </p>
-        ),
-      });
-    }
+
+    options.push({
+      Header: "",
+      Cell: (row) => (
+        <div style={{ minWidth: 42 }}>
+          <ProfileAvatar url={row.cell.value} />
+        </div>
+      ),
+      width: 42,
+      accessor: "avatarUrl",
+    });
+    options.push({
+      Header: "Name",
+      accessor: "displayName",
+      Cell: (row) => (
+        <p className=" text-md text-repod-text-primary">{row.cell.value}</p>
+      ),
+    });
+    options.push({
+      Header: "Status",
+      accessor: "status",
+      Cell: (row) => (
+        <p className=" text-md text-repod-text-primary">{row.cell.value}</p>
+      ),
+    });
+    options.push({
+      Header: "Tier",
+      accessor: "tier",
+      Cell: (row) => (
+        <p className=" text-md text-repod-text-primary">{row.cell.value}</p>
+      ),
+    });
+    options.push({
+      Header: () => <div style={{ textAlign: "right" }}>Pledge</div>,
+      accessor: "monthlyPrice",
+      Cell: (row) => (
+        <p className=" text-md text-repod-text-primary text-right">
+          {formatCurrency(row.cell.value)}
+        </p>
+      ),
+    });
+    options.push({
+      Header: () => <div style={{ textAlign: "right" }}>Member Since</div>,
+      accessor: "createdOn",
+      Cell: (row) => (
+        <p className=" text-md text-repod-text-primary text-right">
+          {formatDate(row.value)}
+        </p>
+      ),
+    });
 
     return options;
   }, [isMobile]);
 
   return data && data.length ? (
-    <SelectableTable data={data} columns={columns} isMobile={isMobile} />
+    <SelectableTable data={data} columns={columns} />
   ) : (
     <EmptyTable message="No members yet" />
   );
