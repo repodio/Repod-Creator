@@ -1,5 +1,4 @@
-import "react-markdown-editor-lite/lib/index.css";
-import MarkdownIt from "markdown-it";
+import "react-quill/dist/quill.snow.css";
 import React, { useState } from "react";
 import dynamic from "next/dynamic";
 import { withAuthUser, AuthAction } from "next-firebase-auth";
@@ -18,7 +17,6 @@ import { map, forEach } from "lodash/fp";
 import { Button, SelectButton } from "components/Buttons";
 import { formatCurrency } from "utils/formats";
 import toast from "react-hot-toast";
-import { convertToMD, convertToHTML } from "utils/markdown";
 
 const PAGE_COPY = {
   PageTitle: "Custom Welcome Notes",
@@ -32,15 +30,13 @@ const PAGE_COPY = {
   TierLabel: "Tier",
 };
 
-const MdEditor = dynamic(() => import("react-markdown-editor-lite"), {
+const ReactQuill = dynamic(() => import("react-quill"), {
   ssr: false,
 });
 
 const WelcomeMessages = () => {
   const router = useRouter();
   const dispatch = useDispatch<ThunkDispatch<{}, undefined, Action>>();
-
-  const mdParser = new MarkdownIt(/* Markdown-it options */);
 
   const { showId } = router.query;
   const showIdString = showId as string;
@@ -61,16 +57,15 @@ const WelcomeMessages = () => {
 
   const [globalTextValue, setGlobalTextValue] = React.useState(
     claimedShow && claimedShow.globalWelcomeNote
-      ? convertToMD(claimedShow.globalWelcomeNote || "")
+      ? claimedShow.globalWelcomeNote || ""
       : "Thanks for supporting the podcast!"
   );
 
   const initialCustomTextValues = {};
 
   forEach((subscriptionTier: SubscriptionTierItem) => {
-    initialCustomTextValues[subscriptionTier.subscriptionTierId] = convertToMD(
-      subscriptionTier.customWelcomeNote || ""
-    );
+    initialCustomTextValues[subscriptionTier.subscriptionTierId] =
+      subscriptionTier.customWelcomeNote || "";
   })(subscriptionTiers);
 
   const [customTextValue, setCustomTextValue] = React.useState(
@@ -82,7 +77,7 @@ const WelcomeMessages = () => {
       const customWelcomeNotes = map((key: string) => {
         return {
           subscriptionTierId: key,
-          customWelcomeNote: convertToHTML(customTextValue[key] || ""),
+          customWelcomeNote: customTextValue[key] || "",
         };
       })(Object.keys(customTextValue));
 
@@ -90,7 +85,7 @@ const WelcomeMessages = () => {
         handleWelcomeNotesSet({
           showId: showIdString,
           customWelcomeNotesPerTier,
-          globalWelcomeNote: convertToHTML(globalTextValue || ""),
+          globalWelcomeNote: globalTextValue || "",
           customWelcomeNotes,
         })
       );
@@ -147,14 +142,11 @@ const WelcomeMessages = () => {
 
           {!customWelcomeNotesPerTier ? (
             <div className="flex flex-row items-center justify-start w-full mb-16 mt-2">
-              <MdEditor
-                style={{ height: "250px", width: "100%" }}
+              <ReactQuill
+                theme="snow"
                 value={globalTextValue}
-                renderHTML={(text) => mdParser.render(text)}
-                onChange={({ text }) => {
-                  setGlobalTextValue(text);
-                }}
-                plugins={["font-bold", "font-italic", "link", "mode-toggle"]}
+                onChange={setGlobalTextValue}
+                style={{ height: "250px", width: "100%" }}
               />
             </div>
           ) : (
@@ -180,22 +172,16 @@ const WelcomeMessages = () => {
                       )} PER MONTH`}
                     </p>
                   </div>
-                  <MdEditor
-                    style={{ height: "250px", width: "100%" }}
+                  <ReactQuill
+                    theme="snow"
                     value={customTextValue[subscriptionTier.subscriptionTierId]}
-                    renderHTML={(text) => mdParser.render(text)}
-                    onChange={({ text }) => {
+                    onChange={(text) => {
                       setCustomTextValue({
                         ...customTextValue,
                         [subscriptionTier.subscriptionTierId]: text,
                       });
                     }}
-                    plugins={[
-                      "font-bold",
-                      "font-italic",
-                      "link",
-                      "mode-toggle",
-                    ]}
+                    style={{ height: "250px", width: "100%" }}
                   />
                 </div>
               ))(subscriptionTiers)}
